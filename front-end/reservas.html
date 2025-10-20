@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale=1.0" />
+    <title>Gestión de Flota de Vehículos Eléctricos</title>
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/reservas.css">
+    <script src="js/index.js"></script>
+    <script src="js/formulario.js"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+  
+    <!--  Logo -->
+    <div class="logo">
+      <a href="index.html" aria-label="Ir a la página de inicio">
+        <img src="img/logo.png" alt="Logo de ZeroFleet" title="Logo" width="100">
+        <h1>ZeroFleet</h1>
+      </a>
+    </div>
+  
+    <!-- Barra de Navegación -->
+    <nav> 
+      <ul>
+        <li><a href="index.html" aria-label="Ir a la página de inicio" lang="es">Inicio</a></li>
+        <li><a href="vehiculos.html" aria-label="Ir a la página de vehículos" lang="es">Vehículos</a></li>
+        <li><a href="reservas.html" aria-label="Ir a la página de reserva"  lang="es" accesskey="r">Reserva</a></li>
+        <li><a href="contacto.html" aria-label="Ir a la página de contacto" lang="es">Contacto</a>
+  
+        <li hidden><a href="index.html" aria-label="Ir a la página de inicio" lang="en" hidden>Home</a></li>
+        <li hidden><a href="vehiculos.html" aria-label="Ir a la página de vehículos" lang="en" hidden>Vehicles</a></li>
+        <li hidden><a href="reservas.html" aria-label="Ir a la página de reserva" lang="en" hidden accesskey="r">Reserve</a></li>
+        <li hidden><a href="contacto.html" aria-label="Ir a la página de contacto" lang="en" hidden>Contact</a></li>
+
+      </ul>
+    </nav>
+
+    <div class="acciones">
+      <!-- Iniciar sesión -->
+      <a id="iniciar-sesion" href="iniciarSesion.html">Iniciar sesión</a>
+
+      <!-- Registro -->
+      <a id="registrar" href="registro.html">Registrarse</a>
+  
+      <!-- Selector de Idioma y Boton de contraste -->
+      <div class="utilidades">
+        <select id="idioma" name="idioma" onchange="cambiarIdioma()" aria-label="Cambiar idioma">
+          <option value="es" aria-label="español" selected>ES</option>
+          <option value="en" aria-label="english">EN</option>
+        </select>
+      
+        <button id="contraste" onclick="activarAltoContraste()" aria-label="activar modo alto contraste"><img src="assets/icons/darkMode.png" alt="modo oscuro" width="25px"></button>
+      </div>
+    </div>
+    
+
+  </header>
+
+  <main>
+      <section id="reserva">
+          <h2>Reserva</h2>
+          <form aria-label="Formulario de reserva de vehiculos" id="formulario-reserva">
+            <div id="contenedor-progreso">
+                <label for="progreso">Progreso</label>
+                <progress id="progreso" max="100" min="0" value=""></progress><br> 
+            </div>
+              
+              <fieldset> 
+                  <legend>Información personal</legend>
+                  <label for="nombre">Nombre: </label>
+                  <input type="text" id="nombre" name="nombre" required>
+  
+                  <label for="apellido"><br>Apellido: </label>
+                  <input type="text" id="apellido" name="apellido" required>
+  
+                  <label for="correo"><br>Correo electrónico: </label>
+                  <input type="email" id="correo" name="correo" required>
+  
+                  <label for="telefono"><br>Teléfono: </label>
+                  <input type="tel" id="telefono" name="teléfono" pattern="[0-9]{9}">
+  
+              </fieldset>
+  
+              <label for="lista-vehiculos">Seleciona el vehiculo: </label>
+              <select id="lista-vehiculos" name="lista-vehiculos" required>
+                  <option value="" disabled selected>Seleccione un vehículo</option>
+                  <option value="1">Coche</option>
+                  <option value="2">Moto</option>
+                  <option value="3">Patinete Electrico</option>
+              </select><br>
+  
+              <fieldset>
+                  <legend>Fecha de Inicio</legend>
+                  <label for="fecha-ini">Fecha: </label>
+                  <input type="date" id="fecha-ini" name="fecha-ini" required>
+  
+                  <label for="hora-ini">Hora: </label>
+                  <input type="time" id="hora-ini" name="hora-ini" required>
+  
+              </fieldset>
+  
+              <fieldset>
+                  <legend>Fecha de Fin</legend>
+                  <label for="fecha-fin">Fecha: </label>
+                  <input type="date" id="fecha-fin" name="fecha-fin" required>
+  
+                  <label for="hora-fin">Hora: </label>
+                  <input type="time" id="hora-fin" name="hora-fin" required>
+              </fieldset>
+  
+              <label for="duracion">Horas de reserva: </label>
+              <input type="number" id="duracion" min="1"><br>
+  
+              <label for="condiciones">Condiciones</label>
+              <input type="checkbox" id="condiciones" name="condiciones" required><br>
+  
+              <input type="submit" value="Enviar">
+              <input type="reset" value="Borrar">
+          </form>
+      </section>
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale=1.0" />
+    <title>Gestión de Flota de Vehículos Eléctricos</title>
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/registro.css">
+    <script src="js/index.js"></script>
+    <script src="js/registro.js"></script>
+</head>
+
+<body>
+  <header>
+    <!--  Logo -->
+    <div class="logo">
+      <a href="index.html" aria-label="Ir a la página de inicio">
+        <img src="img/logo.png" alt="Logo de ZeroFleet" title="Logo" width="100">
+        <h1>ZeroFleet</h1>
+      </a>
+    </div>
+  </header>  
+  
+  <main>
+    <form aria-label="Formulario de registro a ZeroFleet" id="formulario-registro">
+      <h1>Registrarse</h1>
+      <div class="contenedor-input">
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+      </div>
+
+      <div class="contenedor-input">
+        <input type="text" id="apellido" name="apellido" placeholder="Apellido">
+      </div>
+  
+      <div class="contenedor-input">
+        <input type="email" id="correo" name="correo" placeholder="Correo electrónico" required>
+      </div>
+  
+      <div class="contenedor-input">
+        <input type="tel" id="telefono" name="teléfono" placeholder="Teléfono" pattern="[0-9]{9}" required>
+      </div>
+  
+      <div class="contenedor-input">
+        <input type="password" id="contrasenia" placeholder="Contraseña" required>
+      </div>
+
+      <div class="contenedor-input">
+        <input type="password" id="repetir-contrasenia" placeholder="Repetir contraseña" required>
+      </div>
+  
+      <input type="submit" id="btn-crear" value="Crear cuenta">
+    </form>
+
+  </main>
+</body>
+
+</html>

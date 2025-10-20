@@ -1,0 +1,48 @@
+body {
+    background-color: #f7f7f7;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#reserva {
+    width: 80%;
+}
+
+#contenedor-progreso {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: left;
+    padding-block: 10px;
+}
+
+fieldset {
+    border-radius: 5px;
+}
+
+#idioma {
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+}
+input, select {
+    font-size: 16px;
+    padding: 4px;
+    margin-block:7px;
+    margin-inline-end: 7px;
+    border: 0.12px solid black;
+    border-radius: 4px;
+}
+
+select {
+    border-radius: 6px;
+}
+
+fieldset {
+    margin-block: 10px;
+}

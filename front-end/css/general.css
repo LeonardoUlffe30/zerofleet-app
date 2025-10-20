@@ -1,0 +1,154 @@
+body {
+    background-color: #f7f7f7;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0 auto;
+}
+
+body.alto-contraste {
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+body.alto-contraste header {
+    background-color: rgba(0, 0, 0, 0);
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.25);
+}
+
+nav a.alto-contraste {
+    color: white;
+}
+
+header.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+body.alto-contraste header.scrolled-contraste {
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 3px 8px rgba(255,255,255,0.15);
+}
+
+.logo img {
+    border-radius: 8px;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: black
+}
+
+body.alto-contraste .logo a,
+body.alto-contraste nav a {
+    color: white;
+}
+
+body.alto-contraste nav a:hover {
+    color: black;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    position: relative;
+    text-decoration: none;
+    color: #222;
+    font-weight: bolder;
+    font-size: large;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    background-color: #dbdbdb;
+    color: #000;
+}
+
+.acciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-weight: bolder;
+}
+
+#iniciar-sesion {
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    font-size: large;
+    cursor: pointer;
+}
+
+body.alto-contraste #iniciar-sesion {
+    background-color: rgba(255, 255, 255, 0.842);
+    color: black;
+}
+
+#registrar {
+    text-decoration: none;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 2px solid black;
+    font-size: large;
+    cursor: pointer;
+}
+
+body.alto-contraste #registrar {
+    border: 2px solid white;
+    color: white;
+}
+
+.utilidades {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+#idioma {
+    border-radius: 5px;
+}
+
+#contraste {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+main, footer {
+    padding: 20px;
+}
+
+
+table, th, td {
+    border: 1px solid black;
+}
