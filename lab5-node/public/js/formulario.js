@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (!condicion) {
-            error.textContent = mensaje; ""
+            error.textContent = mensaje;
             error.style.color = "red"
             campo.style.border = "2px solid red";
             return false;
