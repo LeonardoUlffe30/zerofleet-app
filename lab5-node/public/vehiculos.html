@@ -2,11 +2,12 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width = device-width, initial-scale=1.0" />
-  <title>Gestión de Flota de Vehículos Eléctricos</title>
-  <link id="estilo" rel="stylesheet" href="css/general.css">
-  <script src="js/index.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width = device-width, initial-scale=1.0" />
+    <title>Gestión de Flota de Vehículos Eléctricos</title>
+    <link rel="stylesheet" href="css/general.css">
+    <script src="js/index.js"></script>
+    <script src="js/formulario.js"></script>
 </head>
 
 <body>
@@ -60,57 +61,23 @@
 
   <!-- Contenido principal -->
   <main>
-    <h1>Plataforma de movilidad sostenible</h1>
-
-    <video controls width="480">
-      <source src="videos/videoAutoElectrico.mp4" type="video/mp4">
-      <source src="videos/videoAutoElectrico.webm" type="video/webm">
-      Tu navegador no soporta la etiqueta de video.
-    </video>
-
-    <p>
-      Bienvenido a nuestra <strong>plataforma web de gestión de flotas de vehículos eléctricos</strong>,
-      una solución innovadora que facilita la <em>reserva de vehículos</em> en el entorno corporativo.
-      El sistema permite a los empleados reservar y devolver vehículos de manera sencilla,
-      verificando siempre la autonomía y la disponibilidad.
-    </p>
-
-    <a href="img/cocheElectrico.png">
-      <img src="img/cocheElectrico.png" alt="Coche electrico" title="Coche Electrico" width="200">
-    </a>
-
-
-    <p>Los beneficios de los coches eléctricos son:</p>
-    <ol>
-      <li>Sostenibilidad ambiental</li>
-      <li>Ahorro económico</li>
-      <li>Innovación y eficiencia</li>
-    </ol>
-    <ul>
-      <li>Gestión de reservas y devoluciones</li>
-      <li>Administración de flotas y concesionarios</li>
-      <li>Generación de estadísticas y reportes</li>
-    </ul>
-
-    <!-- Definiciones de tecnologías web -->
-    <dl>
-      <dt>HTML</dt>
-      <dd>Lenguaje de marcado para estructurar páginas web &reg;.</dd>
-    
-      <dt>CSS</dt>
-      <dd>Lenguaje de estilos para dar formato al contenido.</dd>
-    
-      <dt>JavaScript</dt>
-      <dd>Lenguaje de programación para añadir interactividad.</dd>
-    </dl>
+    <section id="vehiculos">
+      <table border="1">
+        <caption><h2>Vehiculos disponibles</h2></caption>
+        <thead>
+          <tr>
+            <th scope="col">Matricula</th>
+            <th scope="col">Marca</th>
+            <th scope="col">Autonomía (km)</th>
+            <th scope="col">Tipo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <!-- Aquí el servidor insertará filas dinámicamente -->
+          </tr>
+        </tbody>
+      </table>
+    </section>
   </main>
-  
-  <!-- Footer -->
-  <footer>
-    <a href="https://www.ucm.es/" aria-label="Ir a la página de la UCM">UCM</a>
-    <p>&copy; 2025 Todos los derechos reservados</p>
-  </footer>
-
 </body>
-
-</html>
