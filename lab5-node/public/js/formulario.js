@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function validarFormulario(event) {
         const validarFecha = validarFechaIni() && validarFechaFin() && validarHoraIni() && validarHoraFin();
 
-        if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarFecha || !validarVehiculo() || !validarTelefono() || !validarDuracion() || !validarHora()) {
+        if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarFecha || !validarVehiculo() || !validarTelefono() || !validarDuracion() || !validarHoraIni() || !validarHoraFin()) {
             event.preventDefault(); // detiene el envío del formulario
             alert("Por favor, corrige los errores antes de enviar el formulario.");
             return false;

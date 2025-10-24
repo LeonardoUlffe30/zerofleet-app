@@ -1,21 +1,17 @@
-const http = require("http"); // importamos el módulo de http
 const url = require("url"); // importamos el módulo de url
 const fs = require("fs"); // importamos el módulo de sistema de archivos
 const path = require("path"); // importamos el modulo de path
-
-const PORT = 3000;
 
 const publicPath = path.join(__dirname, "../lab5-node/public");
 
 const reservas=[];
 
-const server = http.createServer((req, res) => {
-
+function handleRequest(req, res) {
     const parsedUrl = url.parse(req.url, true); // objeto url
     const pathname = parsedUrl.pathname; // ultimo elemento de la cadena de la url
     const method = req.method; // metodo (POST, GET, DELETE) de la petición
 
-    if (pathname === '/') {
+     if (pathname === '/') {
         const filePath = path.join(publicPath, "index.html");
 
         fs.readFile(filePath, { encoding: "utf8" }, (error, data) => {
@@ -85,7 +81,7 @@ const server = http.createServer((req, res) => {
             }
         });
     }
-    
+
     else if (pathname === '/reserva' && method === "POST") {
         let body = '';
 
@@ -110,7 +106,9 @@ const server = http.createServer((req, res) => {
             const fechaFin = params.get("fecha-fin");
             const horaFin = params.get("hora-fin");
             const duracion = params.get("duracion");
+            const tipo = params.get("tipo");
 
+            
             console.log("Datos recibidos:");
             console.log(`Nombre: ${nombre}`);
             console.log(`Apellido: ${apellido}`);
@@ -122,6 +120,7 @@ const server = http.createServer((req, res) => {
             console.log(`Fecha Fin: ${fechaFin}`);
             console.log(`Hora Fin: ${horaFin}`);
             console.log(`Duración: ${duracion}`);
+            console.log(`Tipo: ${tipo}`);
 
             const nuevaReserva = {
                 nombre,
@@ -133,39 +132,56 @@ const server = http.createServer((req, res) => {
                 horaIni,
                 fechaFin,
                 horaFin,
-                duracion
+                duracion,
+                tipo
             };
 
             reservas.push(nuevaReserva);
-            console.log("Reserva almacenada:");
+            console.log("RESERVA ALMACENADA CORRECTAMENTE");
 
             res.writeHead(200, { "Content-type": "text/plain" });
             res.end("Datos recibidos de POST correctamente");
         })
   
-    }else if(pathname === '/lista-reservas'){
-        let data = '';
-        for(let i=0;i<reservas.length;i++){
-            console.log(`Reserva ${i+1}:`);
-            data+=`Reserva ${i+1}:\n`;
-            data+=`Nombre: ${reservas[i].nombre}\n`;
-            data+=`Apellido: ${reservas[i].apellido}\n`;
-            data+=`Correo: ${reservas[i].correo}\n`;
-            data+=`Teléfono: ${reservas[i].telefono}\n`;
-            data+=`Vehículo: ${reservas[i].vehiculo}\n`;
-            data+=`Fecha Inicio: ${reservas[i].fechaIni}\n`;
-            data+=`Hora Inicio: ${reservas[i].horaIni}\n`;
-            data+=`Fecha Fin: ${reservas[i].fechaFin}\n`;
-            data+=`Hora Fin: ${reservas[i].horaFin}\n`;
-            data+=`Duración: ${reservas[i].duracion}\n\n`;
-        }
-        res.writeHead(200, { "Content-type": 'text/html' });
-        res.end(data);
+    }
+
+    else if(pathname === '/lista-reservas'){
+        const filePath = path.join(publicPath, "lista-reservas.html");
+
+        fs.readFile(filePath, { encoding: "utf8" }, (error, data) => {
+            if (error) {
+                res.writeHead(500, { 'Content-Type': 'text/html' });
+                res.end('<h1>Error al leer el archivo de lista de reservas</h1>');
+                return;
+            } else {
+                const filas = reservas.map(r =>
+                    `<tr>
+                        <td>${r.nombre}</td>
+                        <td>${r.apellido}</td>
+                        <td>${r.correo}</td>
+                        <td>${r.telefono}</td>
+                        <td>${r.fechaIni}</td>
+                        <td>${r.horaIni}</td>
+                        <td>${r.fechaFin}</td>
+                        <td>${r.horaFin}</td>
+                        <td>${r.duracion}</td>
+                        <td>${r.tipo}</td>
+                    </tr>`
+                ).join("");
+
+                const htmlFinal = data.replace(
+                    "<!-- Aquí el servidor insertará la lista de las reservas realizadas -->",
+                    filas
+                );
+
+                res.writeHead(200, { "Content-type": 'text/html' });
+                res.end(htmlFinal);
+            }
+     });
         
     }
 
-    // Bloque genérico para recursos estáticos
-    else {
+    else {      // Bloque genérico para recursos estáticos
         const filePath = path.join(publicPath, pathname);
 
         fs.readFile(filePath, (error, data) => {
@@ -192,14 +208,6 @@ const server = http.createServer((req, res) => {
             }
         })
     }
+}
 
-});
-
-
-server.listen(PORT, (error) => {
-    if (error) {
-        console.log('Error al iniciar el servidor');
-    } else {
-        console.log(`Servidor escuchando en http://localhost:${PORT}`);
-    }
-})
+module.exports = {handleRequest};
