@@ -9,6 +9,6 @@ server.listen(PORT, (error) => {
     if(error){
         console.log("Error al iniciar el servidor:", error);
     }else{
-        console.log(`Servidor escuchando en el puerto ${PORT}`);
+        console.log(`Servidor escuchando en http://localhost:${PORT}`);
     }
 });
