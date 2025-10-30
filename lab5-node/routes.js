@@ -27,7 +27,7 @@ function handleRequest(req, res) {
     }
 
     else if (pathname === '/vehiculos') {
-        const filePath = path.join(publicPath, "vehiculos.html");
+       // const filePath = path.join(publicPath, "vehiculos.html");
         const tipo = parsedUrl.query.tipo; // obtener el parámetro tipo de la consulta
         const vehiculos = [
             { matricula: '1234ABC', marca: 'Tesla', autonomia: '100km', tipo: 'coche' },
@@ -37,7 +37,27 @@ function handleRequest(req, res) {
             { matricula: '7890MNO', marca: 'Ducati', autonomia: '100km', tipo: 'moto' }
         ]
 
-        fs.readFile(filePath, { encoding: "utf8" }, (error, data) => {
+        let html = `
+        <html>
+        <head>
+        <title> Lista de Vehículos </title>
+        </head>
+        <body>
+        <ul>
+        `;
+
+        vehiculos.forEach(function(v){
+        html += `<li>Marca: ${v.marca} Modelo ${v.modelo} Autonomia: ${v.autonomia}</li>`;
+        })
+
+        html += `</ul>
+        </body>
+        </html>`;
+
+        res.writeHead(200, { "Content-Type": "text/html" });
+        res.end(html);
+
+        /*fs.readFile(filePath, { encoding: "utf8" }, (error, data) => {
             if (error) {
                 res.writeHead(500, { 'Content-Type': 'text/html' });
                 res.end('<h1>Error al leer el archivo de vehículos</h1>');
@@ -64,7 +84,7 @@ function handleRequest(req, res) {
                 res.writeHead(200, { "Content-Type": "text/html" });
                 res.end(htmlFinal);;
             }
-        });
+        });*/
     }
 
     else if (pathname === '/reserva' && method === "GET") {
@@ -146,9 +166,28 @@ function handleRequest(req, res) {
     }
 
     else if(pathname === '/lista-reservas'){
-        const filePath = path.join(publicPath, "lista-reservas.html");
+        const listaReservas = [{nombre: 'Juan', apellido: 'Pérez', correo: 'asdf@gmail.com', telefono: '123456789', fechaIni: '2024-07-01', horaIni: '10:00', fechaFin: '2024-07-01', horaFin: '12:00', duracion: '2 horas', tipo: 'coche'}];
+        let html = `
+        <html>
+        <head>
+        <title> Lista de Vehículos </title>
+        </head>
+        <body>
+        <ul>
+        `;
 
-        fs.readFile(filePath, { encoding: "utf8" }, (error, data) => {
+        listaReservas.forEach(function(r){
+        html += `<li>Nombre: ${r.nombre} Apellido: ${r.apellido} Correo: ${r.correo} Teléfono: ${r.telefono} Fecha Inicio: ${r.fechaIni} Hora Inicio: ${r.horaIni} Fecha Fin: ${r.fechaFin} Hora Fin: ${r.horaFin} Duración: ${r.duracion} Tipo: ${r.tipo}</li>`;
+        })
+
+        html += `</ul>
+        </body>
+        </html>`;
+        res.writeHead(200, { "Content-type": 'text/html' });
+        res.end(html);
+
+        //  const filePath = path.join(publicPath, "lista-reservas.html");
+       /* fs.readFile(filePath, { encoding: "utf8" }, (error, data) => {
             if (error) {
                 res.writeHead(500, { 'Content-Type': 'text/html' });
                 res.end('<h1>Error al leer el archivo de lista de reservas</h1>');
@@ -177,7 +216,7 @@ function handleRequest(req, res) {
                 res.writeHead(200, { "Content-type": 'text/html' });
                 res.end(htmlFinal);
             }
-     });
+     });*/
         
     }
 
