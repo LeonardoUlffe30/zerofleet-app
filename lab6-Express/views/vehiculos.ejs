@@ -74,7 +74,14 @@
         </thead>
         <tbody>
           <tr>
-            <!-- Aquí el servidor insertará filas dinámicamente -->
+            <% vehiculos.forEach(function(v) { %>
+                <tr>
+                <td><%= v.matricula %></td>
+                <td><%= v.marca %></td>
+                <td><%= v.autonomia %></td>
+                <td><%= v.tipo %></td>
+                </tr>
+            <% }); %>
           </tr>
         </tbody>
       </table>
