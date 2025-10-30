@@ -4,7 +4,7 @@ const path = require("path"); // importamos el modulo de path
 
 const publicPath = path.join(__dirname, "../lab5-node/public");
 
-const reservas=[];
+const reservas=[{nombre: 'Juan', apellido: 'Pérez', correo: 'asdf@gmail.com', telefono: '123456789', fechaIni: '2024-07-01', horaIni: '10:00', fechaFin: '2024-07-01', horaFin: '12:00', duracion: '2 horas', tipo: 'coche'}];
 
 function handleRequest(req, res) {
     const parsedUrl = url.parse(req.url, true); // objeto url
@@ -166,7 +166,6 @@ function handleRequest(req, res) {
     }
 
     else if(pathname === '/lista-reservas'){
-        const listaReservas = [{nombre: 'Juan', apellido: 'Pérez', correo: 'asdf@gmail.com', telefono: '123456789', fechaIni: '2024-07-01', horaIni: '10:00', fechaFin: '2024-07-01', horaFin: '12:00', duracion: '2 horas', tipo: 'coche'}];
         let html = `
         <html>
         <head>

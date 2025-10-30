@@ -61,7 +61,7 @@
 
   <!-- Contenido principal -->
   <main>
-    <section id="lista-reservas">
+    <section id="listareserva">
       <table border="1">
         <caption><h2>Lista de reservas</h2></caption>
         <thead>
@@ -80,7 +80,20 @@
         </thead>
         <tbody>
           <tr>
-            <!-- Aquí el servidor insertará la lista de las reservas realizadas -->
+            <% reservas.forEach(function(reserva) { %>
+              <tr>
+                <td><%= reserva.nombre %></td>
+                <td><%= reserva.apellido %></td>
+                <td><%= reserva.correo %></td>
+                <td><%= reserva.telefono %></td>
+                <td><%= reserva.fechaIni %></td>
+                <td><%= reserva.horaIni %></td>
+                <td><%= reserva.fechaFin %></td>
+                <td><%= reserva.horaFin %></td>
+                <td><%= reserva.duracion %></td>
+                <td><%= reserva.tipo %></td>
+              </tr>
+            <% }); %>
           </tr>
         </tbody>
       </table>

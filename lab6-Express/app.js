@@ -29,10 +29,21 @@ app.get("/vehiculos", function(request, response){
     response.render("vehiculos", {vehiculos: vehiculos});
 });
 
+app.get("/vehiculos/:id", function(request, response){
+    response.status(200);
+    response.render("vehiculos", {vehiculos: vehiculos.filter(v => v.matricula === request.params.id)});
+});
+
 app.get("/reserva", function(request, response){
     response.sendFile(path.join(__dirname, "public", "reserva.html"))
 });
 
+const reservas = [{nombre: 'Juan', apellido: 'Pérez', correo: 'asdf@gmail.com', telefono: '123456789', fechaIni: '2024-07-01', horaIni: '10:00', fechaFin: '2024-07-01', horaFin: '12:00', duracion: '2 horas', tipo: 'coche'},
+                        {nombre: 'María', apellido: 'Gómez', correo: 'mariaG@gmail.com', telefono: '987654321', fechaIni: '2024-07-02', horaIni: '14:00', fechaFin: '2024-07-02', horaFin: '16:00', duracion: '2 horas', tipo: 'moto'}];
+app.get("/listareserva", function(request, response){
+    response.status(200);
+    response.render("listareserva", {reservas: reservas});
+});
 
 
 app.listen(PORT, function(err){
