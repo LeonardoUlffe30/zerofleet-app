@@ -100,6 +100,17 @@ app.get("/listareserva", function (request, response) {
 });
 
 
+//Gestión de errores
+app.use(function(request, response, next){
+    response.status(404);
+    response.render("error", {url: request.originalUrl});
+});
+
+app.use(function(request, response, next){
+    response.status(500);
+    response.send("Error interno del servidor");
+});
+
 app.listen(PORT, function (err) {
     if (err) {
         console.log("No se pudo inicializar el servidor:", err);
