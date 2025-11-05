@@ -27,7 +27,9 @@ router.post("/", function (request, response) {
     const tipo = request.body["tipo"];
 
     if (!nombre || !apellido || !correo || !telefono || !vehiculo || !fechaIni || !horaIni || !fechaFin || !horaFin || !duracion || !tipo) {
-        return response.status(400).send()
+        const error = new Error("Faltan datos en el formulario de reservas");
+        error.status = 404;
+        return next(error);
     }
 
     const nuevaReserva = {
