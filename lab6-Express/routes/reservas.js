@@ -13,7 +13,7 @@ router.get("/", function (request, response) {
     response.sendFile(path.join(__dirname, "..", "public", "reservas.html"))
 });
 
-router.post("/", function (request, response) {
+router.post("/", function (request, response, next) {
     const nombre = request.body["nombre"];
     const apellido = request.body["apellido"];
     const correo = request.body["correo"];
@@ -28,7 +28,7 @@ router.post("/", function (request, response) {
 
     if (!nombre || !apellido || !correo || !telefono || !vehiculo || !fechaIni || !horaIni || !fechaFin || !horaFin || !duracion || !tipo) {
         const error = new Error("Faltan datos en el formulario de reservas");
-        error.status = 404;
+        error.status = 400;
         return next(error);
     }
 

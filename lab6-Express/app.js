@@ -30,9 +30,9 @@ app.use(function(request, response, next){
     response.render("error", {url: request.originalUrl});
 });
 
-app.use(function(request, response, next){
-    response.status(500);
-    response.send("Error interno del servidor");
+app.use(function(error, request, response, next){
+    response.status(error.status || 500);
+    response.send(error.message || "Error interno del servidor");
 });
 
 app.listen(PORT, function (err) {
