@@ -19,4 +19,8 @@ router.get("/:id", function (request, response) {
     response.render("vehiculos", { vehiculos: vehiculos.filter(v => v.matricula === request.params.id) });
 });
 
+router.get("/api/vehiculos", function (request, response){
+    response.json(vehiculos);
+});
+
 module.exports = router;
