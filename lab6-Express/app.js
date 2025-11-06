@@ -11,9 +11,11 @@ app.use(express.urlencoded({ extended: true })); // Para parsear el body de las 
 //Impotar rutas
 const vehiculosRouter = require("./routes/vehiculos");
 const reservasRouter = require("./routes/reservas");
+const {router} = require("./routes/autentificar");
 
 app.use("/vehiculos", vehiculosRouter);
 app.use("/reservas", reservasRouter);
+app.use("/autentificar", router);
 
 //Motor de views
 app.set("view engine", "ejs");

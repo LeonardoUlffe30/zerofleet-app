@@ -11,7 +11,7 @@ const vehiculos = [
 
 router.get("/", function (request, response) {
     response.status(200);
-    response.render("vehiculos", { vehiculos: vehiculos });
+        response.render("vehiculos", { vehiculos: vehiculos });
 });
 
 router.get("/:id", function (request, response) {
