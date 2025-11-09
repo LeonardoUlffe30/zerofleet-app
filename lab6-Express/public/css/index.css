@@ -1,0 +1,8 @@
+.video-responsive {
+  width: 100%;
+  max-width: 40rem; /* limita el tamaño máximo */
+  height: auto;
+  border-radius: 10px; /* opcional, estética */
+  display: block;
+  margin: 0; /* centrado */
+}

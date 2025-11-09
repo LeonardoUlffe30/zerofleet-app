@@ -29,7 +29,7 @@ app.use("/autenticar", router);
 app.get("/", function (request, response) {
     response.render("index", {
         titulo: "Gestión de Flota de Vehículos Eléctricos",
-        estilo: "",
+        estilo: "index.css",
         script: ""
     });
 });

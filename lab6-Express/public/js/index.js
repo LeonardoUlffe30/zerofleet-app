@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
         modalIniciarSesion.show();
     }
 
+
+
 })
 
 window.addEventListener("scroll", function () {
@@ -59,4 +61,19 @@ function cambiarIdioma() {
     document.querySelectorAll('[lang]').forEach(el => {
         el.hidden = (el.getAttribute('lang') !== lang);
     })
+}
+
+function desplegarBar() {
+    const btnToggleIcon = document.querySelector('.btn-toggle img');
+    const menuDropdown = document.querySelector('.menu-dropdown');
+
+    menuDropdown.classList.toggle('open');
+    const isOpen = menuDropdown.classList.contains('open');
+
+    if (isOpen) {
+        btnToggleIcon.src = '/assets/icons/darkXmark.svg';
+    } else {
+        btnToggleIcon.src = '/assets/icons/darkBars.svg'
+    }
+
 }

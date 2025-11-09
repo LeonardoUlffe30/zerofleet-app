@@ -10,18 +10,23 @@ body.alto-contraste {
     color: white;
 }
 
-.navbar {
+header {
+    width: 100%;
     position: sticky;
     top: 0;
     z-index: 1000;
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.navbar {
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    backdrop-filter: blur(8px);
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 body.alto-contraste header {
@@ -54,6 +59,12 @@ body.alto-contraste header.scrolled-contraste {
     gap: 1rem;
     text-decoration: none;
     color: black
+}
+
+.logo a h2 {
+    padding: 0;
+    margin: 0;
+    font-weight: 500;
 }
 
 body.alto-contraste .logo a,
@@ -161,22 +172,32 @@ table, th, td {
 }
 
 /* Menu dropdown */ 
-
 .menu-dropdown {
     display: none;
     position: absolute;
-    right: 0;
-    top: 90px;
+    right: 2rem;
+    top: 95px;
+    z-index: 1000;
+    height: 0px;
     width: 300px;
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(15px);
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 10px;
     overflow: hidden;
-    justify-content: space-between;
-    padding: 2rem;
+    transition: height 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.menu-dropdown.open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 380px;
 }
 
 .menu-dropdown nav {
-    margin-bottom: 3rem;
+    margin-block: 1.5rem;
 }
 
 .menu-dropdown nav ul {
@@ -188,13 +209,14 @@ table, th, td {
     gap: 1.2rem;
 }
 
-.menu-dropdown div {
+.menu-dropdown .acciones {
     display: flex;
     flex-direction: column;
+    padding-block: 0.5rem;
 }
 
 /* Diseño responsivo */
-@media (max-width: 992px) {
+@media (max-width: 1110px) {
     nav .links, #iniciar-sesion, #registrar {
         display: none;
     }
@@ -202,5 +224,31 @@ table, th, td {
     .btn-toggle, .menu-dropdown {
         display: block;
     }
+    
+    .acciones a:first-child {
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: black;
+        color: white;
+        border-radius: 20px;
+        font-size: large;
+        cursor: pointer;
+    }
 
+    .acciones a:nth-child(2) {
+        text-decoration: none;
+        color: black;
+        padding: 10px 20px;
+        border-radius: 20px;
+        border: 2px solid black;
+        font-size: large;
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 576px) {
+    .menu-dropdown {
+        left: 2rem;
+        width: unset;
+    }
 }
