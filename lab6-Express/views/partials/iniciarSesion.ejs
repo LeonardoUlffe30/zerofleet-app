@@ -6,6 +6,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
+        <% if(error){ %>
+          <div class = "alert alert-danger" role = "alert">
+            <%= error %>
+          </div>
+          <% } %>
         <form aria-label="Formulario de inicio de sesión a ZeroFleet" id="formulario-iniciar-sesion" action = "/autenticar/iniciarSesion" method="POST">
           <div class="contenedor-input">
             <input type="email" class="correo" name="correo" placeholder="Correo electrónico" required>

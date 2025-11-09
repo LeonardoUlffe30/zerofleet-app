@@ -30,7 +30,7 @@
   <%- include('partials/footer') %>
 
   <!-- Modales globales -->
-  <%- include('partials/iniciarSesion') %>
+  <%- include('partials/iniciarSesion', {error: typeof error !== 'undefined' ? error: null}) %>
   <%- include('partials/registrar') %>
 
   <!-- Bootstrap JS -->

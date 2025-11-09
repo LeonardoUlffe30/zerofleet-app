@@ -1,10 +1,19 @@
 "use strict";
 const express = require("express");     // importamos el módulo de express
 const path = require("path");
+const session = require("express-session");
 const expressLayouts = require("express-ejs-layouts");
 
 const app = express();      // creamos la aplicación de express
 const PORT = 3000;
+
+//Configuración de la sesión
+const middlewareSesion = session({
+    saveUninitialized: false,
+    secret: "claveSecreta",
+    resave: false
+});
+app.use(middlewareSesion);
 
 //Para servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
@@ -25,12 +34,16 @@ app.use("/vehiculos", vehiculosRouter);
 app.use("/reservas", reservasRouter);
 app.use("/autenticar", router);
 
+
+
 //Ruta principal
 app.get("/", function (request, response) {
+    const usuario = request.session.usuario || null;
     response.render("index", {
         titulo: "Gestión de Flota de Vehículos Eléctricos",
         estilo: "index.css",
-        script: ""
+        script: "",
+        usuario: usuario
     });
 });
 

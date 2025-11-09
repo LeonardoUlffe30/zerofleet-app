@@ -1,9 +1,8 @@
 const express = require("express");
 const path = require("path");
 const router = express.Router();
-const session = require("express-session");
 
-const usuarios = []
+const usuarios = [{nombre: "qwerty", apellido: "qwerty", correo:"qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555"}];
 
 router.get("/registrar", function (request, response) {
     response.status(200);
@@ -37,24 +36,33 @@ router.post("/registrar", function (request, response) {
     `);
 })
 
-const middlewareSesion = session({
-    saveUninitialized: false,
-    secret: "foobar34",
-    resave: false
-});
-
 router.get("/iniciarSesion", function (request, response) {
     response.status(200);
     response.render("partials/iniciarSesion", {
         titulo: "Iniciar sesión",
         estilo: "autenticar.css",
         script: "iniciarSesion.js",
-        abrirModalIniciarSesion: true
+        abrirModalIniciarSesion: true,
+        error: null
     });
-    /*
-    console.log(request.session.correo);
-    response.end();*/
 });
+
+router.post("/iniciarSesion", function (request, response){
+    const u = usuarios.find(u => u.correo === request.body.correo && u.contrasenia === request.body.contrasenia);
+    if(u){
+        request.session.usuario = u;
+        response.redirect("/");
+    }
+    else{
+        response.render("partials/iniciarSesion",{
+        titulo: "Iniciar sesión",
+            estilo: "autenticar.css",
+            script: "iniciarSesion.js",
+            abrirModalIniciarSesion: true,
+            error: "Correo o contraseña incorrectos"
+        });
+    }
+})
 
 function verificarUsuario(request, response, next) {
     if (request.session && request.session.correo) {
