@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     const formulario = document.getElementById("formulario-registro");
     const campos = {
-        nombre: document.getElementById("nombre"),
-        apellido: document.getElementById("apellido"),
-        correo: document.getElementById("correo"),
-        telefono: document.getElementById("telefono"),
-        contraseña: document.getElementById("contrasenia"),
-        repetirContraseña: document.getElementById("repetir-contrasenia"),
+        nombre: document.getElementById("nombre-registro"),
+        apellido: document.getElementById("apellido-registro"),
+        correo: document.getElementById("correo-registro"),
+        telefono: document.getElementById("telefono-registro"),
+        contraseña: document.getElementById("contrasenia-registro"),
+        repetirContraseña: document.getElementById("repetir-contrasenia-registro"),
     }
 
     function validarFormulario(event) {

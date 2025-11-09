@@ -11,15 +11,25 @@ const vehiculos = [
 
 router.get("/", function (request, response) {
     response.status(200);
-        response.render("vehiculos", { vehiculos: vehiculos });
+    response.render("vehiculos", {
+        titulo: "Vehículos",
+        estilo: "vehiculos.css",
+        script: "",
+        vehiculos: vehiculos
+    });
 });
 
 router.get("/:id", function (request, response) {
     response.status(200);
-    response.render("vehiculos", { vehiculos: vehiculos.filter(v => v.matricula === request.params.id) });
+    response.render("vehiculos", {
+        titulo: "Vehículos",
+        estilo: "vehiculos.css",
+        script: "",
+        vehiculos: vehiculos.filter(v => v.matricula === request.params.id)
+    });
 });
 
-router.get("/api/vehiculos", function (request, response){
+router.get("/api/vehiculos", function (request, response) {
     response.json(vehiculos);
 });
 

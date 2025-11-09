@@ -1,0 +1,22 @@
+<div class="modal fade" id="modalIniciarSesion" tabindex="-1" aria-labelledby="modalIniciarSesionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalIniciarSesionLabel">Iniciar sesión</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form aria-label="Formulario de inicio de sesión a ZeroFleet" id="formulario-iniciar-sesion" action = "/autenticar/iniciarSesion" method="POST">
+          <div class="contenedor-input">
+            <input type="email" class="correo" name="correo" placeholder="Correo electrónico" required>
+          </div>
+          <div class="contenedor-input">
+            <input type="password" class="contrasenia" name="contrasenia" placeholder="Contraseña" required>
+          </div>
+
+          <input type="submit" class="btn-autenticar" value="Acceder">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

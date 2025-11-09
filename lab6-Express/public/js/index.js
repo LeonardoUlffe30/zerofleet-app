@@ -1,3 +1,14 @@
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.abrirModalRegistrar) {
+        const modalRegistrar = new bootstrap.Modal(document.getElementById('modalRegistrar'));
+        modalRegistrar.show();
+    } else if (window.abrirModalIniciarSesion) {
+        const modalIniciarSesion = new bootstrap.Modal(document.getElementById('modalIniciarSesion'));
+        modalIniciarSesion.show();
+    }
+
+})
+
 window.addEventListener("scroll", function () {
     const header = document.querySelector("header");
     const altoContraste = document.body.classList.contains("alto-contraste");

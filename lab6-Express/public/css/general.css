@@ -10,7 +10,7 @@ body.alto-contraste {
     color: white;
 }
 
-header {
+.navbar {
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -65,7 +65,7 @@ body.alto-contraste nav a:hover {
     color: black;
 }
 
-nav ul {
+nav .links {
     list-style: none;
     display: flex;
     justify-content: center;
@@ -106,6 +106,13 @@ nav a:hover {
     border-radius: 20px;
     font-size: large;
     cursor: pointer;
+}
+
+.btn-toggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: none;
 }
 
 body.alto-contraste #iniciar-sesion {
@@ -151,4 +158,49 @@ main, footer {
 
 table, th, td {
     border: 1px solid black;
+}
+
+/* Menu dropdown */ 
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 90px;
+    width: 300px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(15px);
+    overflow: hidden;
+    justify-content: space-between;
+    padding: 2rem;
+}
+
+.menu-dropdown nav {
+    margin-bottom: 3rem;
+}
+
+.menu-dropdown nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    gap: 1.2rem;
+}
+
+.menu-dropdown div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Diseño responsivo */
+@media (max-width: 992px) {
+    nav .links, #iniciar-sesion, #registrar {
+        display: none;
+    }
+
+    .btn-toggle, .menu-dropdown {
+        display: block;
+    }
+
 }

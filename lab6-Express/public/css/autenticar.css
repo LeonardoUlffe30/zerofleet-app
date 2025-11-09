@@ -1,28 +1,4 @@
-body {
-    height: 100%;
-    margin: 0;
-} 
-
-h1 {
-    margin-bottom: 1rem;
-}
-
-header {
-    height: 80px;
-    margin: 0;
-    position: static;
-}
-
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: calc(100vh - 140px);
-    justify-content: center;
-    align-content: center;
-}
-
-form {
+/*form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -33,6 +9,22 @@ form {
     max-width: 80%;
     padding: 20px;
     gap: 1rem;
+}*/
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-header {
+    justify-content: center;
+    position: relative;
+}
+
+.modal-header .btn-close {
+    position: absolute;
+    right: 1rem;
 }
 
 .contenedor-input {
@@ -40,7 +32,7 @@ form {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    
+    margin-bottom: 1rem;
 }
 
 .error {
@@ -58,6 +50,13 @@ input {
     max-width: 12rem;
 }
 
-#btn-crear {
-    margin-block: 2rem;
+.btn-autenticar {
+    margin-block: 1rem;
+    background-color: black;
+    color: white;
+}
+
+.btn-autenticar:hover {
+    background-color: rgba(0, 0, 0, 0.863);
+    transition: ease-in-out;
 }

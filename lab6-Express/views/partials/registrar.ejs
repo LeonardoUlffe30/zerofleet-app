@@ -1,0 +1,40 @@
+<div class="modal fade" id="modalRegistrar" tabindex="-1" aria-labelledby="modalRegistrarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalRegistrarLabel">Registrarse</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form aria-label="Formulario de registro a ZeroFleet" id="formulario-registro" action = "/autenticar/registrar" method="POST">
+          <div class="contenedor-input">
+            <input type="text" id="nombre-registro" name="nombre" placeholder="Nombre">
+          </div>
+        
+          <div class="contenedor-input">
+            <input type="text" id="apellido-registro" name="apellido" placeholder="Apellido">
+          </div>
+        
+          <div class="contenedor-input">
+            <input type="email" id="correo-registro" name="correo" placeholder="Correo electrónico" required>
+          </div>
+        
+          <div class="contenedor-input">
+            <input type="tel" id="telefono-registro" name="telefono" placeholder="Teléfono" pattern="[0-9]{9}" required>
+          </div>
+        
+          <div class="contenedor-input">
+            <input type="password" id="contrasenia-registro" placeholder="Contraseña" required>
+          </div>
+        
+          <div class="contenedor-input">
+            <input type="password" id="repetir-contrasenia-registro" placeholder="Repetir contraseña" required>
+          </div>
+        
+          <input type="submit" class="btn-autenticar" value="Crear cuenta">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
