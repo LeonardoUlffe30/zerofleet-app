@@ -6,6 +6,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
+        <% if(error){ %>
+          <div class = "alert alert-danger" role = "alert">
+            <%= error %>
+          </div>
+          <% } %>
         <form aria-label="Formulario de registro a ZeroFleet" id="formulario-registro" action = "/autenticar/registrar" method="POST">
           <div class="contenedor-input">
             <input type="text" id="nombre-registro" name="nombre" placeholder="Nombre">
@@ -24,7 +29,7 @@
           </div>
         
           <div class="contenedor-input">
-            <input type="password" id="contrasenia-registro" placeholder="Contraseña" required>
+            <input type="password" id="contrasenia-registro" name ="contrasenia" placeholder="Contraseña" required>
           </div>
         
           <div class="contenedor-input">

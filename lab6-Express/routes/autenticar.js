@@ -10,7 +10,8 @@ router.get("/registrar", function (request, response) {
         titulo: "Registrar usuario",
         estilo: "autenticar.css",
         script: "registrar.js",
-        abrirModalRegistrar: true
+        abrirModalRegistrar: true,
+        error: null
     });
 });
 
@@ -21,19 +22,37 @@ router.post("/registrar", function (request, response) {
     const contrasenia = request.body["contrasenia"];
     const telefono = request.body["telefono"];
 
+    if(!nombre || !apellido || !correo || !contrasenia || !telefono){
+         return response.render("partials/registrar", {
+            titulo: "Registrar usuario",
+            estilo: "autenticar.css",
+            script: "registrar.js",
+            abrirModalRegistrar: true,
+            error: "Faltan datos en el formulario de registro"
+         });
+    }
+
+    const existe = usuarios.find(u => u.correo === request.body.correo);
+    if(existe){
+         return response.render("partials/registrar", {
+            titulo: "Registrar usuario",
+            estilo: "autenticar.css",
+            script: "registrar.js",
+            abrirModalRegistrar: true,
+            error: "El correo ya está registrado"
+         });
+    }
+
     const nuevoUsuario = {
         nombre, apellido, correo, contrasenia, telefono
     };
 
     usuarios.push(nuevoUsuario);
+    
     console.log("USUARIO REGISTRADO CORRECTAMENTE");
-    response.send(`
-        <h2>Usuario registrado correctamente:</h2>
-        <p><strong>Nombre:</strong> ${nombre}</p>
-        <p><strong>Apellido:</strong> ${apellido}</p>
-        <p><strong>Correo:</strong> ${correo}</p>
-        <p><strong>Teléfono:</strong> ${telefono}</p>
-    `);
+    console.log(request.body);
+
+    response.redirect("/");
 })
 
 router.get("/iniciarSesion", function (request, response) {
