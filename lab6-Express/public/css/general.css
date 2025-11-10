@@ -109,7 +109,7 @@ nav a:hover {
     font-weight: bolder;
 }
 
-#iniciar-sesion {
+#iniciar-sesion, #cerrar-sesion {
     text-decoration: none;
     padding: 10px 20px;
     background-color: black;
@@ -126,7 +126,10 @@ nav a:hover {
     display: none;
 }
 
-body.alto-contraste #iniciar-sesion {
+body.alto-contraste #iniciar-sesion, 
+body.alto-contraste #cerrar-sesion,
+body.alto-contraste .menu-dropdown #iniciar-sesion-menu,
+body.alto-contraste .menu-dropdown #cerrar-sesion-menu {
     background-color: rgba(255, 255, 255, 0.842);
     color: black;
 }
@@ -141,7 +144,8 @@ body.alto-contraste #iniciar-sesion {
     cursor: pointer;
 }
 
-body.alto-contraste #registrar {
+body.alto-contraste #registrar,
+body.alto-contraste .menu-dropdown #registrar-menu {
     border: 2px solid white;
     color: white;
 }
@@ -188,6 +192,11 @@ table, th, td {
     transition: height 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+body.alto-contraste .menu-dropdown {
+    background-color: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+}
+
 .menu-dropdown.open {
     display: flex;
     flex-direction: column;
@@ -217,7 +226,7 @@ table, th, td {
 
 /* Diseño responsivo */
 @media (max-width: 1110px) {
-    nav .links, #iniciar-sesion, #registrar {
+    nav .links, #iniciar-sesion, #registrar, #cerrar-sesion, #MensajeUsuarioNombre {
         display: none;
     }
 
@@ -225,7 +234,7 @@ table, th, td {
         display: block;
     }
     
-    .acciones a:first-child {
+    #iniciar-sesion-menu, #cerrar-sesion-menu {
         text-decoration: none;
         padding: 10px 20px;
         background-color: black;
@@ -235,7 +244,7 @@ table, th, td {
         cursor: pointer;
     }
 
-    .acciones a:nth-child(2) {
+    #registrar-menu {
         text-decoration: none;
         color: black;
         padding: 10px 20px;

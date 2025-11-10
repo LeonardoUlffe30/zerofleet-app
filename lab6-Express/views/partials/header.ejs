@@ -25,12 +25,18 @@
     </nav>
 
     <div class="acciones">
-      <!-- Iniciar sesión -->
-      <a id="iniciar-sesion" href="/autenticar/iniciarSesion">Iniciar sesión</a>
+      <% if(session && session.usuario){ %>
+        <!--- Usuario autentificado-->
+        <span id="MensajeUsuarioNombre" aria-label = "MensajeUsuarioNombre"> <%= session.usuario.nombre %></span>
+        <a id ="cerrar-sesion" href = "/cerrarSesion"> Cerrar Sesión</a>
+      <% }else{ %>
+        <!-- Iniciar sesión -->
+        <a id="iniciar-sesion" href="/autenticar/iniciarSesion">Iniciar sesión</a>
 
-      <!-- Registro -->
-      <a id="registrar" href="/autenticar/registrar">Registrarse</a>
-  
+        <!-- Registro -->
+        <a id="registrar" href="/autenticar/registrar">Registrarse</a>
+      <% } %>
+
       <!-- Selector de Idioma y Boton de contraste -->
       <div class="utilidades">
         <select id="idioma" name="idioma" onchange="cambiarIdioma()" aria-label="Cambiar idioma">
@@ -63,12 +69,17 @@
     </nav>
 
     <div class="acciones">
-      <!-- Iniciar sesión -->
-      <a href="/autenticar/iniciarSesion">Iniciar sesión</a>
-
-      <!-- Registro -->
-      <a href="/autenticar/registrar">Registrarse</a>
+       <% if(session && session.usuario){ %>
+        <!--- Usuario autentificado-->
+        <span id="MensajeBienvenida" aria-label = "MensajeBienvenida"> Bienvenido <%= session.usuario.nombre %></span>
+        <a id ="cerrar-sesion-menu" href = "/cerrarSesion"> Cerrar Sesión</a>
+      <% }else{ %>
+        <!-- Iniciar sesión -->
+        <a id="iniciar-sesion-menu" href="/autenticar/iniciarSesion">Iniciar sesión</a>
+        <!-- Registro -->
+        <a id="registrar-menu" href="/autenticar/registrar">Registrarse</a>
+      <% } %>
+    </div>
   </div>
-
  
 </header>

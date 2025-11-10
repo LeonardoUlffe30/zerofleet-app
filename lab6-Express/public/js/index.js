@@ -77,3 +77,13 @@ function desplegarBar() {
     }
 
 }
+
+window.addEventListener('resize', () => {
+      const menu = document.querySelector('.menu-dropdown');
+      const btnToggleIcon = document.querySelector('.btn-toggle img');
+
+      if (window.innerWidth > 1110) {  
+          menu.classList.remove('open'); // cierra el menú si está abierto
+          btnToggleIcon.src = '/assets/icons/darkBars.svg'
+      }
+  });

@@ -1,7 +1,7 @@
 
-<% if (usuario) { %>
+<% if (session && session.usuario) { %>
   <div class="alert alert-success text-center mt-3" role="alert">
-    ¡Bienvenido, <%= usuario.nombre %>! 👋
+    ¡Bienvenido, <%= session.usuario.nombre %>! 👋
   </div>
 <% } %>
 

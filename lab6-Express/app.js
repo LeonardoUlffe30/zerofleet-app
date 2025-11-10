@@ -15,6 +15,11 @@ const middlewareSesion = session({
 });
 app.use(middlewareSesion);
 
+app.use(function (request, response, next){
+    response.locals.session = request.session || {};
+    next();
+})
+
 //Para servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true })); // Para parsear el body de las peticiones POST
@@ -34,18 +39,19 @@ app.use("/vehiculos", vehiculosRouter);
 app.use("/reservas", reservasRouter);
 app.use("/autenticar", router);
 
-
-
 //Ruta principal
 app.get("/", function (request, response) {
-    const usuario = request.session.usuario || null;
     response.render("index", {
         titulo: "Gestión de Flota de Vehículos Eléctricos",
         estilo: "index.css",
-        script: "",
-        usuario: usuario
+        script: ""
     });
 });
+
+app.get("/cerrarSesion", function (request, response){
+    request.session.destroy();
+    response.redirect("/");
+})
 
 //Gestión de errores
 app.use(function (request, response, next) {
