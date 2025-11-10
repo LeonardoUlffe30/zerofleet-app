@@ -1,8 +1,134 @@
 .video-responsive {
   width: 100%;
-  max-width: 40rem; /* limita el tamaño máximo */
-  height: auto;
-  border-radius: 10px; /* opcional, estética */
+  max-width: 700px;
   display: block;
-  margin: 0; /* centrado */
+  margin: 20px auto;
+  border-radius: 10px; /* bordes suaves */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
+
+
+/* Clase fondoInicial */
+
+.fondoInicial {
+  position: relative;
+  width: 100%;
+  height: 600px; /* ajusta la altura */
+  background-image: url('/img/inicioFondo.png'); /* tu imagen transparente */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+}
+
+.fondoInicial::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4); /* overlay para mejorar contraste */
+  z-index: 1;
+}
+
+.fondoInicial-texto {
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  position: relative;
+  z-index: 2;
+}
+
+.fondoInicial-texto h1 {
+  font-size: 6rem;
+  margin-bottom: 10px;
+}
+
+.fondoInicial-texto p {
+  font-size: 1.5rem;
+}
+
+/* Estilos de la clase contenido */
+
+.contenido {
+  max-width: 60rem;      
+  margin: 3rem auto;     
+  padding: 1.25rem 1.25rem; 
+}
+
+.contenido h2 {
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+body.alto-contraste .contenido h2{
+  color: #ffffff;
+}
+
+.intro p {
+  margin-bottom: 15px;
+}
+
+ol, ul {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+.intro, .tareas, .tecnologias {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(44, 44, 45, 0.1);
+  margin: 20px 0;
+}
+
+body.alto-contraste .intro, body.alto-contraste .tareas, body.alto-contraste .tecnologias{
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.tareasImg {
+  display: block;
+  width: 50%;           
+  max-width: 15rem;    
+  height: auto;
+  margin: 1rem auto 1rem auto; 
+}
+
+.tecnologias {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.tecnologiasContenido{
+  flex: 1 1 60%;
+  min-width: 16px;
+}
+
+.tecnologiasImagen {
+  flex: 1 1 30%;
+  justify-content: center;
+  align-items: center;
+  min-width: 150px;
+  margin-left: 0.5rem;
+}
+
+.tecnologiasImagen img{
+  max-width: 15rem;
+  height: auto;
+}
+
+body.alto-contraste .tecnologiasImagen, 
+body.alto-contraste .tareasImg{
+  background-color: #ffffff; 
+  padding: 1rem;             
+  border-radius: 0.5rem; 
+}
+

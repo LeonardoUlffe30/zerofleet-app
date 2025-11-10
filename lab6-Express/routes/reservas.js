@@ -7,13 +7,18 @@ const reservas = [
     { nombre: 'Juan', apellido: 'Pérez', correo: 'asdf@gmail.com', telefono: '123456789', fechaIni: '2024-07-01', horaIni: '10:00', fechaFin: '2024-07-01', horaFin: '12:00', duracion: '2 horas', tipo: 'coche' },
     { nombre: 'María', apellido: 'Gómez', correo: 'mariaG@gmail.com', telefono: '987654321', fechaIni: '2024-07-02', horaIni: '14:00', fechaFin: '2024-07-02', horaFin: '16:00', duracion: '2 horas', tipo: 'moto' },
 ];
-
+/*
 router.use(function (request, response, next) {
     verificarUsuario(request, response, next);
-});
+});*/
 
 router.get("/", function (request, response) {
-    response.sendFile(path.join(__dirname, "..", "public", "reservas.html"))
+    response.status(200);
+    response.render("reservas", {
+        titulo: "Reservas",
+        estilo: "reservas.css",
+        script: null
+    });
 });
 
 router.post("/", function (request, response, next) {
