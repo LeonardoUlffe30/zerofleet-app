@@ -1,0 +1,248 @@
+/* Estilos del header y la clase navbar */
+header {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+body.alto-contraste header {
+    background-color: rgba(0, 0, 0, 0);
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.25);
+}
+
+header.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+body.alto-contraste header.scrolled-contraste {
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 3px 8px rgba(255,255,255,0.15);
+}
+
+.navbar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+/* Etilos de nav y logo */
+nav .links {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    position: relative;
+    text-decoration: none;
+    color: #222;
+    font-weight: bolder;
+    font-size: large;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+body.alto-contraste .logo a,
+body.alto-contraste nav a {
+    color: white;
+}
+
+nav a:hover {
+    background-color: #dbdbdb;
+    color: #000;
+}
+
+body.alto-contraste nav a:hover {
+    color: black;
+}
+
+.logo img {
+    border-radius: 8px;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: black
+}
+
+.logo a h2 {
+    padding: 0;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Boton de hamburguesa y utilidades */
+.btn-toggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: none;
+}
+
+.body.alto-contraste .btn-toggle{
+    stroke: white;
+}
+
+.utilidades {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+#idioma {
+    border-radius: 5px;
+}
+
+#contraste {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Menú desplegable */
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    right: 2rem;
+    top: 95px;
+    z-index: 1000;
+    height: 0px;
+    width: 300px;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: height 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+body.alto-contraste .menu-dropdown {
+    background-color: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+}
+
+.menu-dropdown.open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 380px;
+}
+
+.menu-dropdown nav {
+    margin-block: 1.5rem;
+}
+
+.menu-dropdown nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    gap: 1.2rem;
+}
+
+.menu-dropdown .acciones {
+    display: flex;
+    flex-direction: column;
+    padding-block: 0.5rem;
+}
+
+/* Estilos de la clase acciones */
+.acciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-weight: bolder;
+}
+
+#iniciar-sesion, #cerrar-sesion, .menu-dropdown #iniciar-sesion-menu, .menu-dropdown #cerrar-sesion-menu {
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    font-size: large;
+    cursor: pointer;
+}
+
+#registrar, .menu-dropdown #registrar-menu {
+    text-decoration: none;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 2px solid black;
+    font-size: large;
+    cursor: pointer;
+}
+
+body.alto-contraste #iniciar-sesion, 
+body.alto-contraste #cerrar-sesion,
+body.alto-contraste .menu-dropdown #iniciar-sesion-menu,
+body.alto-contraste .menu-dropdown #cerrar-sesion-menu {
+    background-color: rgba(255, 255, 255, 0.842);
+    color: black;
+}
+
+body.alto-contraste #registrar,
+body.alto-contraste .menu-dropdown #registrar-menu {
+    border: 2px solid white;
+    color: white;
+}
+
+/* Diseño responsivo */
+@media (max-width: 1110px) {
+    nav .links, #iniciar-sesion, #registrar, #cerrar-sesion, #MensajeUsuarioNombre {
+        display: none;
+    }
+
+    .btn-toggle, .menu-dropdown {
+        display: block;
+    }
+    
+    /*
+    #iniciar-sesion-menu, #cerrar-sesion-menu {
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: black;
+        color: white;
+        border-radius: 20px;
+        font-size: large;
+        cursor: pointer;
+    }
+
+    #registrar-menu {
+        text-decoration: none;
+        color: black;
+        padding: 10px 20px;
+        border-radius: 20px;
+        border: 2px solid black;
+        font-size: large;
+        cursor: pointer;
+    }
+    */
+}
+
+@media (max-width: 576px) {
+    .menu-dropdown {
+        left: 2rem;
+        width: unset;
+    }
+}
