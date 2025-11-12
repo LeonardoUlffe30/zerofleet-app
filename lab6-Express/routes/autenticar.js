@@ -2,7 +2,9 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 
-const usuarios = [{nombre: "qwerty", apellido: "qwerty", correo:"qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555"}];
+const usuarios = [{nombre: "qwerty", apellido: "qwerty", correo:"qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "usuario"},
+                  {nombre: "admin", apellido: "qwerty", correo:"admin@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "admin"}
+];
 
 router.get("/registrar", function (request, response) {
     response.status(200);
@@ -44,7 +46,7 @@ router.post("/registrar", function (request, response) {
     }
 
     const nuevoUsuario = {
-        nombre, apellido, correo, contrasenia, telefono
+        nombre, apellido, correo, contrasenia, telefono, rol: "usuario"
     };
 
     usuarios.push(nuevoUsuario);
@@ -53,7 +55,7 @@ router.post("/registrar", function (request, response) {
     console.log(request.body);
 
     response.redirect("/");
-})
+});
 
 router.get("/iniciarSesion", function (request, response) {
     response.status(200);
@@ -93,6 +95,16 @@ function verificarUsuario(request, response, next) {
     }
 }
 
+function verificarAdmin(request, response, next) {
+    if(request.session && request.session.usuario &&request.session.usuario.tipo === "admin"){
+        return next();
+    }else{
+        const error = new Error("Acceso denegado, se necesitan permisos de administrador");
+        error.status = 403;
+        return next(error);
+    }
+}
+
 module.exports = {
-    router, verificarUsuario
+    router, verificarUsuario, verificarAdmin
 }
