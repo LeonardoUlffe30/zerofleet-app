@@ -84,7 +84,7 @@ router.post("/iniciarSesion", function (request, response){
 })
 
 function verificarUsuario(request, response, next) {
-    if (request.session && request.session.correo) {
+    if (request.session && request.session.usuario) {
         return next();
     } else {
         const error = new Error("Usuario no se ha registrado o iniciado sesión");
