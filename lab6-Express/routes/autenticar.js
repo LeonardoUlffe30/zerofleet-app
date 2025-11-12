@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 
 const usuarios = [{nombre: "qwerty", apellido: "qwerty", correo:"qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "usuario"},
                   {nombre: "admin", apellido: "qwerty", correo:"admin@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "admin"}
@@ -23,7 +24,7 @@ router.post("/registrar", function (request, response) {
     const correo = request.body["correo"];
     const contrasenia = request.body["contrasenia"];
     const telefono = request.body["telefono"];
-
+    
     if(!nombre || !apellido || !correo || !contrasenia || !telefono){
          return response.render("partials/registrar", {
             titulo: "Registrar usuario",
@@ -45,8 +46,11 @@ router.post("/registrar", function (request, response) {
          });
     }
 
+    const vueltas = 10;
+    const contraEncript = bcrypt.hash(contrasenia, vueltas);
+
     const nuevoUsuario = {
-        nombre, apellido, correo, contrasenia, telefono, rol: "usuario"
+        nombre, apellido, correo, contrasenia: contraEncript, telefono, rol: "usuario"
     };
 
     usuarios.push(nuevoUsuario);
@@ -69,20 +73,23 @@ router.get("/iniciarSesion", function (request, response) {
 });
 
 router.post("/iniciarSesion", function (request, response){
-    const u = usuarios.find(u => u.correo === request.body.correo && u.contrasenia === request.body.contrasenia);
+    const contrasenia = request.body["contrasenia"];
+    const u = usuarios.find(u => u.correo === request.body.correo);
     if(u){
-        request.session.usuario = u;
-        response.redirect("/");
+        const matchContra=bcrypt.compare(u.contrasenia, contrasenia);
+        if(matchContra){
+            request.session.usuario = u;
+            return response.redirect("/");
+        }
     }
-    else{
-        response.render("partials/iniciarSesion",{
+
+    response.render("partials/iniciarSesion",{
         titulo: "Iniciar sesión",
             estilo: "autenticar.css",
             script: "iniciarSesion.js",
             abrirModalIniciarSesion: true,
             error: "Correo o contraseña incorrectos"
         });
-    }
 })
 
 function verificarUsuario(request, response, next) {
