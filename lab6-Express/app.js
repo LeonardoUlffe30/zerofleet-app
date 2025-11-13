@@ -3,15 +3,22 @@ const express = require("express");     // importamos el módulo de express
 const path = require("path");
 const session = require("express-session");
 const expressLayouts = require("express-ejs-layouts");
+const cookieParser = require("cookie-parser");
 
 const app = express();      // creamos la aplicación de express
 const PORT = 3000;
+
+app.use(cookieParser());
 
 //Configuración de la sesión
 const middlewareSesion = session({
     saveUninitialized: false,
     secret: "claveSecreta",
-    resave: false
+    resave: false,
+    cookie: {
+        secure: false,
+        maxAge: null
+    }
 });
 app.use(middlewareSesion);
 

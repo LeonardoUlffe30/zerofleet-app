@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 
 const usuarios = [{nombre: "qwerty", apellido: "qwerty", correo:"qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "usuario"},
                   {nombre: "admin", apellido: "qwerty", correo:"admin@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "admin"}
@@ -74,11 +75,18 @@ router.get("/iniciarSesion", function (request, response) {
 
 router.post("/iniciarSesion", function (request, response){
     const contrasenia = request.body["contrasenia"];
+    const recordar = request.body["recordar"];
     const u = usuarios.find(u => u.correo === request.body.correo);
+    //Esto hay q hacerlo con middleware
     if(u){
         const matchContra=bcrypt.compare(u.contrasenia, contrasenia);
         if(matchContra){
             request.session.usuario = u;
+            if(recordar){
+                request.session.cookie.maxAge = 24*60*60*1000;
+            }else{
+                request.session.cookie.expires = false;
+            }
             return response.redirect("/");
         }
     }

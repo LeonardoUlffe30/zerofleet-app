@@ -1,23 +1,37 @@
+
 <section id="vehiculos">
-  <table>
-    <caption><h2>Vehiculos disponibles</h2></caption>
-    <thead>
-      <tr>
-        <th scope="col">Matricula</th>
-        <th scope="col">Marca</th>
-        <th scope="col">Autonomía (km)</th>
-        <th scope="col">Tipo</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% vehiculos.forEach(function(v) { %>
-        <tr>
-          <td><%= v.matricula %></td>
-          <td><%= v.marca %></td>
-          <td><%= v.autonomia %></td>
-          <td><%= v.tipo %></td>
-        </tr>
-      <% }); %>
-    </tbody>
-  </table>
+    <h2>Vehiculos</h2>
+    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="/vehiculos/nuevo" method="POST">
+        <div id="contenedor-progreso">
+            <label for="progreso">Progreso</label>
+            <progress id="progreso" max="100" min="0" value=""></progress><br> 
+        </div>
+            
+        <fieldset> 
+            <legend>Información del vehiculo</legend>
+
+            <label for="id"><br>Placa:<%= vehiculo.id || {} %> </label>
+            <input type="text" id="id" name="id" required>
+
+            <label for="marca">Marca:<%= vehiculo.marca || {} %> </label>
+            <input type="text" id="marca" name="marca" required>
+
+            <label for="modelo"><br>Modelo:<%= vehiculo.modelo || {} %> </label>
+            <input type="text" id="modelo" name="modelo" required>
+
+            <label for="tipo">Seleciona el tipo: </label>
+              <select id="tipo" name="tipo" required>
+                <option value="" disabled selected>Seleccione un tipo</option>
+                <option value="coche">Coche</option>
+                <option value="moto">Moto</option>
+                <option value="patinete electrico">Patinete Electrico</option>
+              </select><br>
+
+            <label for="precioHora"><br>Precio/Hora: <%= vehiculo.precioHora || {} %></label>
+            <input type="text" id="precioHora" name="precioHora" required>
+        </fieldset>
+
+        <input type="submit" value="Enviar">
+        <input type="reset" value="Borrar">
+    </form>
 </section>

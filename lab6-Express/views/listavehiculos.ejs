@@ -1,0 +1,23 @@
+<section id="listaVehiculos">
+  <table>
+    <caption><h2>Vehiculos disponibles</h2></caption>
+    <thead>
+      <tr>
+        <th scope="col">Matricula</th>
+        <th scope="col">Marca</th>
+        <th scope="col">Autonomía (km)</th>
+        <th scope="col">Tipo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% vehiculos.forEach(function(v) { %>
+        <tr>
+          <td><%= v.matricula %></td>
+          <td><%= v.marca %></td>
+          <td><%= v.autonomia %></td>
+          <td><%= v.tipo %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</section>
