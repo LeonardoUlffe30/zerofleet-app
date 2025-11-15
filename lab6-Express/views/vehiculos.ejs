@@ -1,7 +1,7 @@
 
 <section id="vehiculos">
     <h2>Vehiculos</h2>
-    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="/vehiculos/nuevo" method="POST">
+    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="<%= vehiculo ? '/vehiculos/' + vehiculo.matricula + '/editar' : '/vehiculos/nuevo' %>" method="POST">
         <div id="contenedor-progreso">
             <label for="progreso">Progreso</label>
             <progress id="progreso" max="100" min="0" value=""></progress><br> 
@@ -27,8 +27,8 @@
                 <option value="patinete electrico" <%= vehiculo.tipo === 'patinete electrico' ? 'selected' : '' %>>Patinete Electrico</option>
               </select><br>
 
-            <label for="precioHora"><br>Precio/Hora: <%= vehiculo.precioHora || {} %></label>
-            <input type="text" id="precioHora" name="precioHora" required>
+            <label for="precioHora"><br>Precio/Hora:</label>
+            <input type="text" id="precioHora" name="precioHora" value = " <%= vehiculo.precioHora || {} %>" required>
         </fieldset>
 
         <input type="submit" value="Enviar">
