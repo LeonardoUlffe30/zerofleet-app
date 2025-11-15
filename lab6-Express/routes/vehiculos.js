@@ -15,11 +15,12 @@ router.get("/nuevo", function (request, response) {
         titulo: "Vehículos",
         estilo: "vehiculos.css",
         script: "",
+        vehiculo: "",
     });
 });
 
-router.post("/nuevo", function (request, response){
-    const {id, marca, modelo, tipo, precioHora} = request.body;
+router.post("/nuevo", function (request, response) {
+    const { id, marca, modelo, tipo, precioHora } = request.body;
     const nVehiculo = [id, marca, modelo, tipo, precioHora];
     vehiculos.push(nVehiculo);
     console.log("VEHICULO AÑADIDO CORRECTAMENTE");
@@ -46,8 +47,10 @@ router.get("/:id", function (request, response) {
     });
 });
 
-router.get("/:id/editar", function (requst, response){
-    const v = vehiculos.filter(v => v.matricula === request.params.id);
+router.get("/:id/editar", function (request, response) {
+    const v = vehiculos.filter(v => v.matricula === request.params.id)[0];
+
+    console.log(v);
     response.status(200);
     response.render("vehiculos", {
         titulo: "Vehículos",
@@ -57,13 +60,13 @@ router.get("/:id/editar", function (requst, response){
     });
 });
 
-router.get("/:id/eliminar", function (request, response){
+router.get("/:id/eliminar", function (request, response) {
     //Hay q eliminar de la base de datos
     response.render("listavehiculos", {
         titulo: "Lista Vehículos",
         estilo: "listavehiculos.css",
         script: "",
-        
+
     });
 });
 

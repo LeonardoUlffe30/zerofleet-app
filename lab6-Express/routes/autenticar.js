@@ -4,8 +4,8 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 
-const usuarios = [{nombre: "qwerty", apellido: "qwerty", correo:"qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "usuario"},
-                  {nombre: "admin", apellido: "qwerty", correo:"admin@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "admin"}
+const usuarios = [{ nombre: "qwerty", apellido: "qwerty", correo: "qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "usuario" },
+{ nombre: "admin", apellido: "qwerty", correo: "admin@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "admin" }
 ];
 
 router.get("/registrar", function (request, response) {
@@ -25,26 +25,26 @@ router.post("/registrar", function (request, response) {
     const correo = request.body["correo"];
     const contrasenia = request.body["contrasenia"];
     const telefono = request.body["telefono"];
-    
-    if(!nombre || !apellido || !correo || !contrasenia || !telefono){
-         return response.render("partials/registrar", {
+
+    if (!nombre || !apellido || !correo || !contrasenia || !telefono) {
+        return response.render("partials/registrar", {
             titulo: "Registrar usuario",
             estilo: "autenticar.css",
             script: "registrar.js",
             abrirModalRegistrar: true,
             error: "Faltan datos en el formulario de registro"
-         });
+        });
     }
 
     const existe = usuarios.find(u => u.correo === request.body.correo);
-    if(existe){
-         return response.render("partials/registrar", {
+    if (existe) {
+        return response.render("partials/registrar", {
             titulo: "Registrar usuario",
             estilo: "autenticar.css",
             script: "registrar.js",
             abrirModalRegistrar: true,
             error: "El correo ya está registrado"
-         });
+        });
     }
 
     const vueltas = 10;
@@ -55,7 +55,7 @@ router.post("/registrar", function (request, response) {
     };
 
     usuarios.push(nuevoUsuario);
-    
+
     console.log("USUARIO REGISTRADO CORRECTAMENTE");
     console.log(request.body);
 
@@ -73,31 +73,31 @@ router.get("/iniciarSesion", function (request, response) {
     });
 });
 
-router.post("/iniciarSesion", function (request, response){
+router.post("/iniciarSesion", function (request, response) {
     const contrasenia = request.body["contrasenia"];
     const recordar = request.body["recordar"];
     const u = usuarios.find(u => u.correo === request.body.correo);
     //Esto hay q hacerlo con middleware
-    if(u){
-        const matchContra=bcrypt.compare(u.contrasenia, contrasenia);
-        if(matchContra){
+    if (u) {
+        const matchContra = bcrypt.compare(u.contrasenia, contrasenia);
+        if (matchContra) {
             request.session.usuario = u;
-            if(recordar){
-                request.session.cookie.maxAge = 24*60*60*1000;
-            }else{
+            if (recordar) {
+                request.session.cookie.maxAge = 24 * 60 * 60 * 1000;
+            } else {
                 request.session.cookie.expires = false;
             }
             return response.redirect("/");
         }
     }
 
-    response.render("partials/iniciarSesion",{
+    response.render("partials/iniciarSesion", {
         titulo: "Iniciar sesión",
-            estilo: "autenticar.css",
-            script: "iniciarSesion.js",
-            abrirModalIniciarSesion: true,
-            error: "Correo o contraseña incorrectos"
-        });
+        estilo: "autenticar.css",
+        script: "iniciarSesion.js",
+        abrirModalIniciarSesion: true,
+        error: "Correo o contraseña incorrectos"
+    });
 })
 
 function verificarUsuario(request, response, next) {
@@ -111,9 +111,9 @@ function verificarUsuario(request, response, next) {
 }
 
 function verificarAdmin(request, response, next) {
-    if(request.session && request.session.usuario &&request.session.usuario.tipo === "admin"){
+    if (request.session && request.session.usuario && request.session.usuario.tipo === "admin") {
         return next();
-    }else{
+    } else {
         const error = new Error("Acceso denegado, se necesitan permisos de administrador");
         error.status = 403;
         return next(error);
@@ -121,5 +121,5 @@ function verificarAdmin(request, response, next) {
 }
 
 module.exports = {
-    router, verificarUsuario, verificarAdmin
+    autenticarRouter: router, verificarUsuario, verificarAdmin
 }

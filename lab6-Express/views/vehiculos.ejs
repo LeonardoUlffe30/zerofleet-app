@@ -10,21 +10,21 @@
         <fieldset> 
             <legend>Información del vehiculo</legend>
 
-            <label for="id"><br>Placa:<%= vehiculo.id || {} %> </label>
-            <input type="text" id="id" name="id" required>
+            <label for="id"><br>Placa:</label>
+            <input type="text" id="id" name="id" value="<%= vehiculo && vehiculo.matricula ? vehiculo.matricula : '' %>" required>
 
-            <label for="marca">Marca:<%= vehiculo.marca || {} %> </label>
-            <input type="text" id="marca" name="marca" required>
+            <label for="marca">Marca:</label>
+            <input type="text" id="marca" name="marca" value="<%= vehiculo && vehiculo.marca ? vehiculo.marca : '' %>" required>
 
-            <label for="modelo"><br>Modelo:<%= vehiculo.modelo || {} %> </label>
-            <input type="text" id="modelo" name="modelo" required>
+            <label for="modelo"><br>Modelo:</label>
+            <input type="text" id="modelo" name="modelo" value="<%= vehiculo && vehiculo.modelo ? vehiculo.modelo : '' %>" required>
 
             <label for="tipo">Seleciona el tipo: </label>
               <select id="tipo" name="tipo" required>
                 <option value="" disabled selected>Seleccione un tipo</option>
-                <option value="coche">Coche</option>
-                <option value="moto">Moto</option>
-                <option value="patinete electrico">Patinete Electrico</option>
+                <option value="coche" <%= vehiculo.tipo === 'coche' ? 'selected' : '' %>>Coche</option>
+                <option value="moto" <%= vehiculo.tipo === 'moto' ? 'selected' : '' %>>Moto</option>
+                <option value="patinete electrico" <%= vehiculo.tipo === 'patinete electrico' ? 'selected' : '' %>>Patinete Electrico</option>
               </select><br>
 
             <label for="precioHora"><br>Precio/Hora: <%= vehiculo.precioHora || {} %></label>

@@ -22,7 +22,7 @@ const middlewareSesion = session({
 });
 app.use(middlewareSesion);
 
-app.use(function (request, response, next){
+app.use(function (request, response, next) {
     response.locals.session = request.session || {};
     next();
 })
@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true })); // Para parsear el body de las 
 //Impotar rutas
 const vehiculosRouter = require("./routes/vehiculos");
 const reservasRouter = require("./routes/reservas");
-const { router } = require("./routes/autenticar");
+const { autenticarRouter } = require("./routes/autenticar");
 const adminRouter = require("./routes/admin")
 
 //Motor de views
@@ -45,7 +45,7 @@ app.set("layout", "layout");
 
 app.use("/vehiculos", vehiculosRouter);
 app.use("/reservas", reservasRouter);
-app.use("/autenticar", router);
+app.use("/autenticar", autenticarRouter);
 app.use("/admin", adminRouter);
 
 //Ruta principal
@@ -57,7 +57,7 @@ app.get("/", function (request, response) {
     });
 });
 
-app.get("/cerrarSesion", function (request, response){
+app.get("/cerrarSesion", function (request, response) {
     request.session.destroy();
     response.redirect("/");
 })
