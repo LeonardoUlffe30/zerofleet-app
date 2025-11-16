@@ -1,7 +1,8 @@
 
 <section id="vehiculos">
     <h2>Vehiculos</h2>
-    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="<%= vehiculo && vehiculo.id ? '/vehiculos/' + vehiculo.id + '/editar' : '/vehiculos/nuevo' %>" method="POST">
+    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="<%= vehiculo && vehiculo.id ? '/vehiculos/' + vehiculo.id + '/editar' : '/vehiculos/nuevo' %>" 
+      method="POST" enctype="multipart/form-data">
         <div id="contenedor-progreso">
             <label for="progreso">Progreso</label>
             <progress id="progreso" max="100" min="0" value=""></progress><br> 
@@ -24,6 +25,9 @@
             <label for="marca">Marca:</label>
             <input type="text" id="marca" name="marca" value="<%= vehiculo && vehiculo.marca ? vehiculo.marca : '' %>" required>
 
+            <label for="autonomia">Autonomía:</label>
+            <input type="text" id="autonomia" name="autonomia" value="<%= vehiculo && vehiculo.autonomia ? vehiculo.autonomia : '' %>" required>
+
             <label for="modelo"><br>Modelo:</label>
             <input type="text" id="modelo" name="modelo" value="<%= vehiculo && vehiculo.modelo ? vehiculo.modelo : '' %>" required>
 
@@ -35,9 +39,12 @@
                 <option value="patinete electrico" <%= vehiculo.tipo === 'patinete electrico' ? 'selected' : '' %>>Patinete Electrico</option>
               </select><br>
 
-            <label for="precioHora"><br>Precio/Hora:</label>
-            <input type="text" id="precioHora" name="precioHora" value = "<%= vehiculo && vehiculo.precioHora ? vehiculo.precioHora : '' %>" required>
-        </fieldset>
+            <label for="precioHora">Precio/Hora:</label>
+            <input type="text" id="precioHora" name="precioHora" value = "<%= vehiculo && vehiculo.precioHora ? vehiculo.precioHora : '' %>" <required><br></required>
+              
+            <label for="imagen">Imagen del vehiculo</label>
+            <input type="file" name="imagen" required>
+          </fieldset>
 
         <input type="submit" value="Enviar">
         <input type="reset" value="Borrar">

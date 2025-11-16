@@ -3,23 +3,23 @@ const { check, validationResult } = require("express-validator");
 const router = express.Router();
 const { verificarUsuario, verificarAdmin } = require("./autenticar");
 
-const vehiculos = [
-    { id: '1234ABC', marca: 'Tesla', modelo: 'A', autonomia: '100km', tipo: 'coche', precioHora: '2' },
-    { id: '5678DEF', marca: 'BMW', modelo: 'A',autonomia: '450km', tipo: 'coche', precioHora: '2' },
-    { id: '9012GHI', marca: 'Yamaha', modelo: 'A',autonomia: '600km', tipo: 'moto', precioHora: '2' },
-    { id: '3456JKL', marca: 'Audi', modelo: 'A',autonomia: '120km', tipo: 'coche', precioHora: '2' },
-    { id: '7890MNO', marca: 'Ducati', modelo: 'A',autonomia: '100km', tipo: 'moto', precioHora: '2' }
-]
+const path = require("path");
+const multer = require("multer");
+const multerFactory = multer({ dest: path.join(__dirname, "../public/img/imgVehiculos")});
 
-router.use(function (request, response, next) {
-    verificarUsuario(request, response, next);
-});
+const vehiculos = [
+    { id: '1234ABC', marca: 'Tesla', modelo: 'A', autonomia: '100km', tipo: 'coche', precioHora: '2', imagen: "vehiculo1.png" },
+    { id: '5678DEF', marca: 'BMW', modelo: 'A',autonomia: '450km', tipo: 'coche', precioHora: '2', imagen: "vehiculo2.png" },
+    { id: '9012GHI', marca: 'Yamaha', modelo: 'A',autonomia: '600km', tipo: 'moto', precioHora: '2', imagen: "vehiculo3.png" },
+    { id: '3456JKL', marca: 'Audi', modelo: 'A',autonomia: '120km', tipo: 'coche', precioHora: '2', imagen: "vehiculo4.png" },
+    { id: '7890MNO', marca: 'Ducati', modelo: 'A',autonomia: '100km', tipo: 'moto', precioHora: '2', imagen: "vehiculo5.png" }
+]
 
 router.get("/", function (request, response) {
     const query = (request.query.buscar || "").toLowerCase();
     const filtrar = vehiculos.filter(v=>
-        v.marca.toLowerCase().includes(query) ||
-        v.modelo.toLowerCase().includes(query)
+        v.marca ? v.marca.toLowerCase().includes(query): "" ||
+        v.modelo ? v.modelo.toLowerCase().includes(query): ""
     );
     response.status(200);
     response.render("listavehiculos", {
@@ -30,6 +30,10 @@ router.get("/", function (request, response) {
         buscar: request.query.buscar || "",
         filtro: ""
     });
+});
+
+router.use(function (request, response, next) {
+    verificarUsuario(request, response, next);
 });
 
 router.use(function (request, response, next) {
@@ -47,7 +51,8 @@ router.get("/nuevo", function (request, response) {
     });
 });
 
-router.post("/nuevo", check("precioHora", "El campo de Precio/Hora debe ser un valor numérico").isNumeric(),
+router.post("/nuevo", multerFactory.single('imagen'),
+    check("precioHora", "El campo de Precio/Hora debe ser un valor numérico").isNumeric(),
     function (request, response) {
     const error = validationResult(request);
     if(!error.isEmpty()) {
@@ -59,10 +64,18 @@ router.post("/nuevo", check("precioHora", "El campo de Precio/Hora debe ser un v
                 error: error.array()
     });
     }
-    const { id, marca, modelo, tipo, precioHora } = request.body;
-    const nVehiculo = [id, marca, modelo, tipo, precioHora];
-    vehiculos.push(nVehiculo);
+    const { id, marca, modelo, autonomia, tipo, precioHora } = request.body;
+    const imagen = request.file ? request.file.filename : "";
+    vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora, imagen });
     console.log("VEHICULO AÑADIDO CORRECTAMENTE");
+    response.render("listavehiculos", {
+        titulo: "Lista Vehículos",
+        estilo: "listavehiculos.css",
+        script: "",
+        vehiculos: vehiculos,
+        buscar: request.query.buscar || "",
+        filtro: request.query.filtro || ""
+    });
 });
 
 router.get("/:id", function (request, response) {
@@ -73,7 +86,7 @@ router.get("/:id", function (request, response) {
         script: "",
         vehiculos: vehiculos.filter(v => v.id === request.params.id),
         buscar: request.query.buscar || "",
-        filtro: ""
+        filtro: request.query.filtro || ""
     });
 });
 
@@ -91,22 +104,31 @@ router.get("/:id/editar", function (request, response) {
 });
 
 router.post("/:id/editar", function (request, response, next) {
-    const { id, marca, modelo, tipo, precioHora } = request.body;
+    const { id, marca, modelo, autonomia, tipo, precioHora } = request.body;
 
-    const v = vehiculos.find(v => v.id === id)
+    const v = vehiculos.find(v => v.id === id);
     if(!v){
-        const nVehiculo = [id, marca, modelo, tipo, precioHora];
-        vehiculos.push(nVehiculo);
+        const index = vehiculos.findIndex(v => v.id === id);
+        vehiculos.splice(index, 1);
+        vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora });
     }else{
         v.id = id;
         v.marca = marca;
         v.modelo = modelo;
+        v.autonomia = autonomia;
         v.tipo = tipo;
         v.precioHora = precioHora;
     }
 
     response.status(200);
-    response.json(vehiculos);
+    response.render("listavehiculos", {
+        titulo: "Lista Vehículos",
+        estilo: "listavehiculos.css",
+        script: "",
+        vehiculos: vehiculos,
+        buscar: request.query.buscar || "",
+        filtro: request.query.filtro || ""
+    });
 });
 
 router.get("/:id/eliminar", function (request, response, next) {
@@ -117,9 +139,8 @@ router.get("/:id/eliminar", function (request, response, next) {
         estilo: "listavehiculos.css",
         script: "",
         vehiculos: vehiculos,
-        //Se borra cuando se haya creado los botones
         buscar: request.query.buscar || "",
-        filtro: ""
+        filtro: request.query.filtro || ""
     });
 });
 

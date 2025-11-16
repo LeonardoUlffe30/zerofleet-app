@@ -4,7 +4,6 @@ const path = require("path");
 const session = require("express-session");
 const expressLayouts = require("express-ejs-layouts");
 const cookieParser = require("cookie-parser");
-const { check, validationResult } = require("express-validator");
 
 const app = express();      // creamos la aplicación de express
 const PORT = 3000;
@@ -25,6 +24,7 @@ app.use(middlewareSesion);
 
 app.use(function (request, response, next) {
     response.locals.session = request.session || {};
+    response.locals.usuario = request.session.usuario || {};
     next();
 })
 
