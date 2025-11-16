@@ -1,7 +1,7 @@
 
 <section id="vehiculos">
     <h2>Vehiculos</h2>
-    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="<%= vehiculo ? '/vehiculos/' + vehiculo.matricula + '/editar' : '/vehiculos/nuevo' %>" method="POST">
+    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="<%= vehiculo && vehiculo.id ? '/vehiculos/' + vehiculo.id + '/editar' : '/vehiculos/nuevo' %>" method="POST">
         <div id="contenedor-progreso">
             <label for="progreso">Progreso</label>
             <progress id="progreso" max="100" min="0" value=""></progress><br> 
@@ -10,8 +10,16 @@
         <fieldset> 
             <legend>Información del vehiculo</legend>
 
-            <label for="id"><br>Placa:</label>
-            <input type="text" id="id" name="id" value="<%= vehiculo && vehiculo.matricula ? vehiculo.matricula : '' %>" required>
+            <% if(error){ %>
+              <div class = "alert alert-danger" role = "alert">
+                <% error.forEach(e => { %>
+                  <p><%=  e.msg %></p>
+                  <% }) %>
+              </div>
+            <% } %>
+
+            <label for="id"><br>Matricula:</label>
+            <input type="text" id="id" name="id" value="<%= vehiculo && vehiculo.id  ? vehiculo.id : '' %>" required>
 
             <label for="marca">Marca:</label>
             <input type="text" id="marca" name="marca" value="<%= vehiculo && vehiculo.marca ? vehiculo.marca : '' %>" required>
@@ -28,7 +36,7 @@
               </select><br>
 
             <label for="precioHora"><br>Precio/Hora:</label>
-            <input type="text" id="precioHora" name="precioHora" value = " <%= vehiculo.precioHora || {} %>" required>
+            <input type="text" id="precioHora" name="precioHora" value = "<%= vehiculo && vehiculo.precioHora ? vehiculo.precioHora : '' %>" required>
         </fieldset>
 
         <input type="submit" value="Enviar">
