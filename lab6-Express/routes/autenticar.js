@@ -105,9 +105,12 @@ function verificarUsuario(request, response, next) {
     if (request.session && request.session.usuario) {
         return next();
     } else {
-        const error = new Error("Usuario no se ha registrado o iniciado sesión");
-        error.status = 401;
-        return next(error);
+        return response.render("index", {
+            titulo: "Gestión de Flota de Vehículos Eléctricos",
+            estilo: "index.css",
+            script: "",
+            error: "Usuario no se ha registrado o iniciado sesión"
+        })
     }
 }
 
@@ -115,9 +118,12 @@ function verificarAdmin(request, response, next) {
     if (request.session && request.session.usuario && request.session.usuario.tipo === "admin") {
         return next();
     } else {
-        const error = new Error("Acceso denegado, se necesitan permisos de administrador");
-        error.status = 403;
-        return next(error);
+        return response.render("index", {
+            titulo: "Gestión de Flota de Vehículos Eléctricos",
+            estilo: "index.css",
+            script: "",
+            error: "Acceso denegado, se necesitan permisos de administrador"
+        })
     }
 }
 

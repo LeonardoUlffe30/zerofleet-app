@@ -1,7 +1,7 @@
 const express = require("express");
 const { check, validationResult } = require("express-validator");
 const router = express.Router();
-const { verificarUsuario } = require("./autenticar");
+const { verificarUsuario, verificarAdmin } = require("./autenticar");
 
 const vehiculos = [
     { id: '1234ABC', marca: 'Tesla', modelo: 'A', autonomia: '100km', tipo: 'coche', precioHora: '2' },
@@ -11,18 +11,29 @@ const vehiculos = [
     { id: '7890MNO', marca: 'Ducati', modelo: 'A',autonomia: '100km', tipo: 'moto', precioHora: '2' }
 ]
 
+router.use(function (request, response, next) {
+    verificarUsuario(request, response, next);
+});
+
 router.get("/", function (request, response) {
+    const query = (request.query.buscar || "").toLowerCase();
+    const filtrar = vehiculos.filter(v=>
+        v.marca.toLowerCase().includes(query) ||
+        v.modelo.toLowerCase().includes(query)
+    );
     response.status(200);
     response.render("listavehiculos", {
         titulo: "Vehículos",
         estilo: "listavehiculos.css",
         script: "",
-        vehiculos: vehiculos
+        vehiculos: filtrar,
+        buscar: request.query.buscar || "",
+        filtro: ""
     });
 });
 
 router.use(function (request, response, next) {
-    verificarUsuario(request, response, next);
+    verificarAdmin(request, response, next);
 });
 
 router.get("/nuevo", function (request, response) {
@@ -57,10 +68,12 @@ router.post("/nuevo", check("precioHora", "El campo de Precio/Hora debe ser un v
 router.get("/:id", function (request, response) {
     response.status(200);
     response.render("listavehiculos", {
-        titulo: "Vehículos",
+        titulo: "Vehículo",
         estilo: "listavehiculos.css",
         script: "",
-        vehiculos: vehiculos.filter(v => v.id === request.params.id)
+        vehiculos: vehiculos.filter(v => v.id === request.params.id),
+        buscar: request.query.buscar || "",
+        filtro: ""
     });
 });
 
@@ -103,7 +116,10 @@ router.get("/:id/eliminar", function (request, response, next) {
         titulo: "Lista Vehículos",
         estilo: "listavehiculos.css",
         script: "",
-        vehiculos: vehiculos
+        vehiculos: vehiculos,
+        //Se borra cuando se haya creado los botones
+        buscar: request.query.buscar || "",
+        filtro: ""
     });
 });
 

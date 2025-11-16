@@ -54,7 +54,8 @@ app.get("/", function (request, response) {
     response.render("index", {
         titulo: "Gestión de Flota de Vehículos Eléctricos",
         estilo: "index.css",
-        script: ""
+        script: "",
+        error: ""
     });
 });
 
