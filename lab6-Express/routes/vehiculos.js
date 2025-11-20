@@ -2,24 +2,37 @@ const express = require("express");
 const { check, validationResult } = require("express-validator");
 const router = express.Router();
 const { verificarUsuario, verificarAdmin } = require("./autenticar");
+const moment = require("moment");
 
 const path = require("path");
 const multer = require("multer");
-const multerFactory = multer({ dest: path.join(__dirname, "../public/img/imgVehiculos")});
+
+const storage = multer.diskStorage({ // configuración del almacenamiento
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, "../public/img/imgVehiculos"));
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname);
+        const basename = path.basename(file.originalname, ext);
+        const nombre = basename + moment(Date.now()).format("LLLL") + ext;
+        cb(null, nombre);
+    }
+})
+const multerFactory = multer({ storage: storage });
 
 const vehiculos = [
     { id: '1234ABC', marca: 'Tesla', modelo: 'A', autonomia: '100km', tipo: 'coche', precioHora: '2', imagen: "vehiculo1.png" },
-    { id: '5678DEF', marca: 'BMW', modelo: 'A',autonomia: '450km', tipo: 'coche', precioHora: '2', imagen: "vehiculo2.png" },
-    { id: '9012GHI', marca: 'Yamaha', modelo: 'A',autonomia: '600km', tipo: 'moto', precioHora: '2', imagen: "vehiculo3.png" },
-    { id: '3456JKL', marca: 'Audi', modelo: 'A',autonomia: '120km', tipo: 'coche', precioHora: '2', imagen: "vehiculo4.png" },
-    { id: '7890MNO', marca: 'Ducati', modelo: 'A',autonomia: '100km', tipo: 'moto', precioHora: '2', imagen: "vehiculo5.png" }
+    { id: '5678DEF', marca: 'BMW', modelo: 'A', autonomia: '450km', tipo: 'coche', precioHora: '2', imagen: "vehiculo2.png" },
+    { id: '9012GHI', marca: 'Yamaha', modelo: 'A', autonomia: '600km', tipo: 'moto', precioHora: '2', imagen: "vehiculo3.png" },
+    { id: '3456JKL', marca: 'Audi', modelo: 'A', autonomia: '120km', tipo: 'coche', precioHora: '2', imagen: "vehiculo4.png" },
+    { id: '7890MNO', marca: 'Ducati', modelo: 'A', autonomia: '100km', tipo: 'moto', precioHora: '2', imagen: "vehiculo5.png" }
 ]
 
 router.get("/", function (request, response) {
     const query = (request.query.buscar || "").toLowerCase();
-    const filtrar = vehiculos.filter(v=>
-        v.marca ? v.marca.toLowerCase().includes(query): "" ||
-        v.modelo ? v.modelo.toLowerCase().includes(query): ""
+    const filtrar = vehiculos.filter(v =>
+        v.marca ? v.marca.toLowerCase().includes(query) : "" ||
+            v.modelo ? v.modelo.toLowerCase().includes(query) : ""
     );
     response.status(200);
     response.render("listavehiculos", {
@@ -28,7 +41,7 @@ router.get("/", function (request, response) {
         script: "",
         vehiculos: filtrar,
         buscar: request.query.buscar || "",
-        filtro: ""
+        filtro: request.query.filtro || ""
     });
 });
 
@@ -54,29 +67,29 @@ router.get("/nuevo", function (request, response) {
 router.post("/nuevo", multerFactory.single('imagen'),
     check("precioHora", "El campo de Precio/Hora debe ser un valor numérico").isNumeric(),
     function (request, response) {
-    const error = validationResult(request);
-    if(!error.isEmpty()) {
-        return response.render("vehiculos", {
+        const error = validationResult(request);
+        if (!error.isEmpty()) {
+            return response.render("vehiculos", {
                 titulo: "Vehículos",
                 estilo: "vehiculos.css",
                 script: "",
                 vehiculo: request.body,
                 error: error.array()
+            });
+        }
+        const { id, marca, modelo, autonomia, tipo, precioHora } = request.body;
+        const imagen = request.file ? request.file.filename : "";
+        vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora, imagen });
+        console.log("VEHICULO AÑADIDO CORRECTAMENTE");
+        response.render("listavehiculos", {
+            titulo: "Lista Vehículos",
+            estilo: "listavehiculos.css",
+            script: "",
+            vehiculos: vehiculos,
+            buscar: request.query.buscar || "",
+            filtro: request.query.filtro || ""
+        });
     });
-    }
-    const { id, marca, modelo, autonomia, tipo, precioHora } = request.body;
-    const imagen = request.file ? request.file.filename : "";
-    vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora, imagen });
-    console.log("VEHICULO AÑADIDO CORRECTAMENTE");
-    response.render("listavehiculos", {
-        titulo: "Lista Vehículos",
-        estilo: "listavehiculos.css",
-        script: "",
-        vehiculos: vehiculos,
-        buscar: request.query.buscar || "",
-        filtro: request.query.filtro || ""
-    });
-});
 
 router.get("/:id", function (request, response) {
     response.status(200);
@@ -98,7 +111,7 @@ router.get("/:id/editar", function (request, response) {
         titulo: "Vehículos",
         estilo: "vehiculos.css",
         script: "",
-        vehiculo: v, 
+        vehiculo: v,
         error: ""
     });
 });
@@ -107,11 +120,11 @@ router.post("/:id/editar", function (request, response, next) {
     const { id, marca, modelo, autonomia, tipo, precioHora } = request.body;
 
     const v = vehiculos.find(v => v.id === id);
-    if(!v){
+    if (!v) {
         const index = vehiculos.findIndex(v => v.id === id);
         vehiculos.splice(index, 1);
         vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora });
-    }else{
+    } else {
         v.id = id;
         v.marca = marca;
         v.modelo = modelo;
