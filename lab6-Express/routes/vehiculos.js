@@ -14,7 +14,7 @@ const storage = multer.diskStorage({ // configuración del almacenamiento
     filename: function (req, file, cb) {
         const ext = path.extname(file.originalname);
         const basename = path.basename(file.originalname, ext);
-        const nombre = basename + moment(Date.now()).format("LLLL") + ext;
+        const nombre = basename + '-' + Date.now() + ext;
         cb(null, nombre);
     }
 })
@@ -41,7 +41,9 @@ router.get("/", function (request, response) {
         script: "",
         vehiculos: filtrar,
         buscar: request.query.buscar || "",
-        filtro: request.query.filtro || ""
+        filtro: request.query.filtro || "",
+        error: "",
+        mensaje: ""
     });
 });
 
@@ -87,7 +89,9 @@ router.post("/nuevo", multerFactory.single('imagen'),
             script: "",
             vehiculos: vehiculos,
             buscar: request.query.buscar || "",
-            filtro: request.query.filtro || ""
+            filtro: request.query.filtro || "",
+            error: "",
+            mensaje: "Vehículo añadido correctamente"
         });
     });
 
@@ -116,14 +120,17 @@ router.get("/:id/editar", function (request, response) {
     });
 });
 
-router.post("/:id/editar", function (request, response, next) {
-    const { id, marca, modelo, autonomia, tipo, precioHora } = request.body;
-
+router.post("/:id/editar", multerFactory.single('imagen'), function (request, response, next) {
+    const { id, marca, modelo, autonomia, tipo, precioHora, } = request.body;
+    const imagen = request.file ? request.file.filename : "";
     const v = vehiculos.find(v => v.id === id);
+
     if (!v) {
-        const index = vehiculos.findIndex(v => v.id === id);
+        vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora, imagen });
+
+        // Eliminar el anterior vehiculo porque se ha cambiado la matricula
+        const index = vehiculos.findIndex(v => v.id === request.params.id)
         vehiculos.splice(index, 1);
-        vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora });
     } else {
         v.id = id;
         v.marca = marca;
@@ -131,6 +138,7 @@ router.post("/:id/editar", function (request, response, next) {
         v.autonomia = autonomia;
         v.tipo = tipo;
         v.precioHora = precioHora;
+        v.imagen = imagen;
     }
 
     response.status(200);
@@ -140,7 +148,9 @@ router.post("/:id/editar", function (request, response, next) {
         script: "",
         vehiculos: vehiculos,
         buscar: request.query.buscar || "",
-        filtro: request.query.filtro || ""
+        filtro: request.query.filtro || "",
+        error: "",
+        mensaje: "Vehículo editado correctamente"
     });
 });
 
@@ -153,7 +163,9 @@ router.get("/:id/eliminar", function (request, response, next) {
         script: "",
         vehiculos: vehiculos,
         buscar: request.query.buscar || "",
-        filtro: request.query.filtro || ""
+        filtro: request.query.filtro || "",
+        error: "",
+        mensaje: "Vehículo eliminado correctamente"
     });
 });
 

@@ -10,6 +10,16 @@
       <label for="buscar"> </label>
       <input type="text" id="buscar" name="buscar" value="<%= buscar %>" placeholder="Introduce aqui la marca/modelo que quieras buscar">
     </form>
+    <% if(error){ %>
+          <div class = "alert alert-danger" role = "alert">
+            <%= error %>
+          </div>
+          <% } %>
+    <% if(mensaje){ %>
+          <div class = "alert alert-success" role = "alert">
+            <%= mensaje %>
+          </div>
+          <% } %>
     <% if(usuario && usuario.tipo === "admin") {%>
       <a href ="/vehiculos/nuevo" class="btnAniadir">Añadir vehiculo</a>
     <% } %>

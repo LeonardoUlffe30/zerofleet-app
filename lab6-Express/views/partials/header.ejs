@@ -27,7 +27,7 @@
     <div class="acciones">
       <% if(session && session.usuario){ %>
         <!--- Usuario autentificado-->
-        <span id="MensajeUsuarioNombre" aria-label = "MensajeUsuarioNombre"> <%= session.usuario.nombre %></span>
+        <span id="MensajeUsuarioNombre" aria-label = "MensajeUsuarioNombre">Bienvenido, <%= session.usuario.nombre %></span>
         <a id ="cerrar-sesion" href = "/cerrarSesion"> Cerrar Sesión</a>
       <% }else{ %>
         <!-- Iniciar sesión -->
