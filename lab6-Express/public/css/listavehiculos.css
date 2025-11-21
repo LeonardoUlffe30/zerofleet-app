@@ -2,3 +2,9 @@ caption {
     caption-side: top;
     font-weight: bold;
 }
+
+#filtro, input {
+  width: 100%;
+  min-width: 180px;
+  max-width: 300px;
+}
