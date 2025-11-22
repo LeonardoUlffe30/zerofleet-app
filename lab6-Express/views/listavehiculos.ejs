@@ -10,10 +10,6 @@
       <%= mensaje %>
     </div>
   <% } %>
-  
-  <% if(usuario && usuario.tipo === "admin") {%>
-    <a href ="/vehiculos/nuevo" class="btnAniadir">Añadir vehiculo</a>
-  <% } %>
 </div>
 
 <div class="container-fluid">
@@ -33,9 +29,15 @@
 
     <div class="col-12 col-xl-10">
       <section id="listaVehiculos">
-        <div class="table-responsive">
-          <table class="table table-sm table-hover align-middle">
-            <caption><h2>Vehiculos disponibles</h2></caption>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 id="tituloTabla" class="m-0">Vehículos disponibles</h2>
+
+          <% if(usuario && usuario.tipo === "admin") { %>
+          <a href="/vehiculos/nuevo" class="btn btn-dark">+ Añadir</a>
+          <% } %>
+        </div>
+        <div class="table-responsive text-center">
+          <table aria-labelledby="tituloTabla" class="table table-sm table-hover align-middle">
             <thead class="table-dark text-center">
               <tr>
                 <th scope="col">Imagen</th>
@@ -44,6 +46,9 @@
                 <th scope="col">Autonomía (km)</th>
                 <th scope="col">Tipo</th>
                 <th scope="col">Modelo</th>
+                <% if(usuario && usuario.tipo === "admin") {%>
+                    <th scope="col">Acciones</th>
+                  <% } %>
               </tr>
             </thead>
             <tbody class="text-center">
@@ -56,9 +61,9 @@
                   <td><%= v.tipo %></td>
                   <td><%= v.modelo %></td>
                   <% if(usuario && usuario.tipo === "admin") {%>
-                    <td>
-                       <a href ="/vehiculos/<%= v.id %>/editar" class="btnEditar"> Editar</a>
-                        <a href ="/vehiculos/<%= v.id %>/eliminar" class="btnEliminar"> Eliminar</a>
+                    <td class="fit">
+                       <a href ="/vehiculos/<%= v.id %>/editar" class="btn btn-light">Editar</a>
+                        <a href ="/vehiculos/<%= v.id %>/eliminar" class="btn btn-danger"> Eliminar</a>
                     </td>
                   <% } %>
                 </tr>

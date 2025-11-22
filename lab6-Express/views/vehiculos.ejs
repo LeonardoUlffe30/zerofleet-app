@@ -1,52 +1,71 @@
-
 <section id="vehiculos">
-    <h2>Vehiculos</h2>
+    <h2>Vehículos</h2>
+
+    <div id="contenedor-progreso">
+        <label for="progreso">Progreso</label>
+        <progress id="progreso" max="100" min="0" value=""></progress>
+    </div>
+
     <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="<%= vehiculo && vehiculo.id ? '/vehiculos/' + vehiculo.id + '/editar' : '/vehiculos/nuevo' %>" 
       method="POST" enctype="multipart/form-data">
-        <div id="contenedor-progreso">
-            <label for="progreso">Progreso</label>
-            <progress id="progreso" max="100" min="0" value=""></progress><br> 
-        </div>
             
         <fieldset> 
-            <legend>Información del vehiculo</legend>
+          <legend>Información del vehiculo</legend>
 
-            <% if(error){ %>
-              <div class = "alert alert-danger" role = "alert">
-                <% error.forEach(e => { %>
-                  <p><%=  e.msg %></p>
-                  <% }) %>
-              </div>
-            <% } %>
+          <% if(error){ %>
+            <div class = "alert alert-danger" role = "alert">
+              <% error.forEach(e => { %>
+                <p><%=  e.msg %></p>
+                <% }) %>
+            </div>
+          <% } %>
 
-            <label for="id"><br>Matricula:</label>
-            <input type="text" id="id" name="id" value="<%= vehiculo && vehiculo.id  ? vehiculo.id : '' %>" required>
+          <div class="container text-left">
+            <div>
+              <label for="id">Matricula:</label>
+              <input type="text" id="id" name="id" value="<%= vehiculo && vehiculo.id  ? vehiculo.id : '' %>" required>
+            </div>
 
-            <label for="marca">Marca:</label>
-            <input type="text" id="marca" name="marca" value="<%= vehiculo && vehiculo.marca ? vehiculo.marca : '' %>" required>
-
-            <label for="autonomia">Autonomía:</label>
-            <input type="text" id="autonomia" name="autonomia" value="<%= vehiculo && vehiculo.autonomia ? vehiculo.autonomia : '' %>" required>
-
-            <label for="modelo"><br>Modelo:</label>
-            <input type="text" id="modelo" name="modelo" value="<%= vehiculo && vehiculo.modelo ? vehiculo.modelo : '' %>" required>
-
-            <label for="tipo">Seleciona el tipo: </label>
+            <div>
+              <label for="marca">Marca:</label>
+              <input type="text" id="marca" name="marca" value="<%= vehiculo && vehiculo.marca ? vehiculo.marca : '' %>" required>
+            </div>
+  
+            <div>
+              <label for="autonomia">Autonomía:</label>
+              <input type="text" id="autonomia" name="autonomia" value="<%= vehiculo && vehiculo.autonomia ? vehiculo.autonomia : '' %>" required>
+            </div>
+  
+            <div>
+              <label for="modelo">Modelo:</label>
+              <input type="text" id="modelo" name="modelo" value="<%= vehiculo && vehiculo.modelo ? vehiculo.modelo : '' %>" required>
+            </div>
+  
+            <div>
+              <label for="tipo">Seleciona el tipo: </label>
               <select id="tipo" name="tipo" required>
                 <option value="" disabled selected>Seleccione un tipo</option>
                 <option value="coche" <%= vehiculo.tipo === 'coche' ? 'selected' : '' %>>Coche</option>
                 <option value="moto" <%= vehiculo.tipo === 'moto' ? 'selected' : '' %>>Moto</option>
                 <option value="patinete electrico" <%= vehiculo.tipo === 'patinete electrico' ? 'selected' : '' %>>Patinete Electrico</option>
-              </select><br>
+              </select>
+            </div>
+  
+            <div>
+              <label for="precioHora">Precio/Hora:</label>
+              <input type="text" id="precioHora" name="precioHora" value = "<%= vehiculo && vehiculo.precioHora ? vehiculo.precioHora : '' %>" required>
+            </div>
+                
+            <div class="file-wrapper">
+              <label for="imagen">Imagen del vehiculo</label>
+              <input class="input-file" type="file" name="imagen" required>
+            </div>
+          </div>
+        </fieldset>
 
-            <label for="precioHora">Precio/Hora:</label>
-            <input type="text" id="precioHora" name="precioHora" value = "<%= vehiculo && vehiculo.precioHora ? vehiculo.precioHora : '' %>" <required><br></required>
-              
-            <label for="imagen">Imagen del vehiculo</label>
-            <input type="file" name="imagen" required>
-          </fieldset>
-
-        <input type="submit" value="Enviar">
-        <input type="reset" value="Borrar">
+        <div class="form-acciones">
+            <button type="submit" class="btn btn-dark">Enviar</button>
+            <button type="reset" class="btn btn-light">Borrar</button>
+        </div>
     </form>
 </section>

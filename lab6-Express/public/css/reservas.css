@@ -31,6 +31,15 @@ fieldset {
     margin: 10px 1rem;
 }
 
+legend {
+    text-align: left;
+    float: none;
+    width: auto;
+    padding: 0 10px;
+    margin: 0;
+    font-weight: bold;
+}
+
 .container {
     display: flex;
     flex-wrap: wrap;
@@ -54,12 +63,6 @@ form label {
     text-align: right;
 }
 
-#idioma {
-    margin: 0;
-    padding: 0;
-    font-size: 13px;
-}
-
 input, select {
     font-size: 16px;
     padding: 4px;
@@ -67,23 +70,35 @@ input, select {
     border-radius: 4px;
 }
 
-select {
+#reserva select {
     border-radius: 6px;
-}
-
-legend {
-    text-align: left;
-    float: none;
-    width: auto;
-    padding: 0 10px;
-    margin: 0;
-    font-weight: bold;
+    height: 33.6px;
+    width: 204px;
 }
 
 .form-acciones {
     margin-top: 3rem;
     display: inline-flex;
     gap: 1rem;
+}
+
+.contenedor-condiciones {
+    display: flex;
+    flex-wrap: wrap;
+    width: auto;
+    text-align: left;
+    margin: 10px 16px;
+}
+
+.contenedor-condiciones div {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.contenedor-condiciones div label {
+    width: fit-content;
 }
 
 @media (max-width: 578px) {
@@ -96,6 +111,7 @@ legend {
     }
 
     .container div {
+        flex-direction: column;
         width: 100%;
     }
     
@@ -107,5 +123,9 @@ legend {
 
     legend {
         text-align: center;
+    }
+
+    .contenedor-condiciones {
+        justify-content: center;
     }
 }

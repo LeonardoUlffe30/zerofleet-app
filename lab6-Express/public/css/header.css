@@ -107,6 +107,9 @@ body.alto-contraste nav a:hover {
 
 #idioma {
     border-radius: 5px;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
 }
 
 #contraste {

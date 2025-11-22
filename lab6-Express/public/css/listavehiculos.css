@@ -8,3 +8,13 @@ caption {
   min-width: 180px;
   max-width: 300px;
 }
+
+.fit {
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+}
+
+.fit a {
+  margin: 0.25rem;
+}
