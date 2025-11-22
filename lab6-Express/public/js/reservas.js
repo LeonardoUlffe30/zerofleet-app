@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fechaFin: document.getElementById("fecha-fin"),
         horaIni: document.getElementById("hora-ini"),
         horaFin: document.getElementById("hora-fin"),
-        listaVehiculos: document.getElementById("lista-vehiculos"),
+        listaVehiculos: document.getElementById("tipo"),
         duracion: document.getElementById("duracion"),
     }
 
@@ -190,6 +190,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (campos.duracion.value && validarDuracion()) validos++;
 
         progreso.value = (validos / total) * 100;
+
+        console.log(validos);
     }
 
     // Actualizar progreso

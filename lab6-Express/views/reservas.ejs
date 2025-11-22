@@ -1,63 +1,109 @@
-
 <section id="reserva">
     <h2>Reserva</h2>
+    
+    <div id="contenedor-progreso">
+        <label for="progreso">Progreso</label>
+        <progress id="progreso" max="100" min="0" value=""></progress><br> 
+    </div>
+
     <form aria-label="Formulario de reserva de vehiculos" id="formulario-reserva" action="/reservas" method="POST">
-        <div id="contenedor-progreso">
-            <label for="progreso">Progreso</label>
-            <progress id="progreso" max="100" min="0" value=""></progress><br> 
-        </div>
             
         <fieldset> 
             <legend>Información personal</legend>
 
-            <label for="nombre">Nombre: </label>
-            <input type="text" id="nombre" name="nombre" required>
-
-            <label for="apellido"><br>Apellido: </label>
-            <input type="text" id="apellido" name="apellido" required>
-
-            <label for="correo"><br>Correo electrónico: </label>
-            <input type="email" id="correo" name="correo" required>
-
-            <label for="telefono"><br>Teléfono: </label>
-            <input type="tel" id="telefono" name="telefono" pattern="[0-9]{9}">
+            <div class="container text-left">
+                <div>
+                    <label for="nombre">Nombre: </label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div>
+                    <label for="apellido">Apellido: </label>
+                    <input type="text" id="apellido" name="apellido" required>
+                </div>
+                
+                <div>
+                    <label for="correo">Email: </label>
+                    <input type="email" id="correo" name="correo" required>
+                </div>
+                <div>
+                    <label for="telefono">Teléfono: </label>
+                    <input type="tel" id="telefono" name="telefono" pattern="[0-9]{9}">
+                </div>
+                
+            </div>
         </fieldset>
 
-        <label for="tipo">Seleciona el vehiculo: </label>
-        <select id="tipo" name="tipo" required>
-            <option value="" disabled selected>Seleccione un vehículo</option>
-            <option value="coche">Coche</option>
-            <option value="moto">Moto</option>
-            <option value="patinete electrico">Patinete Electrico</option>
-        </select><br>
+        <fieldset>
+            <legend>Vehículo</legend>
+
+            <div class="container text-left">
+                <div>
+                    <label for="tipo">Vehículo: </label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="" disabled selected>Seleccione un vehículo</option>
+                        <option value="coche">Coche</option>
+                        <option value="moto">Moto</option>
+                        <option value="patinete electrico">Patinete Electrico</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
 
         <fieldset>
             <legend>Fecha de Inicio</legend>
 
-            <label for="fecha-ini">Fecha: </label>
-            <input type="date" id="fecha-ini" name="fecha-ini" required>
+            <div class="container">
+                <div>
+                    <label for="fecha-ini">Fecha: </label>
+                    <input type="date" id="fecha-ini" name="fecha-ini" required>
+                </div>
 
-            <label for="hora-ini">Hora: </label>
-            <input type="time" id="hora-ini" name="hora-ini" required>
+                <div>
+                    <label for="hora-ini">Hora: </label>
+                    <input type="time" id="hora-ini" name="hora-ini" required>
+                </div>
+            </div>
         </fieldset>
 
         <fieldset>
             <legend>Fecha de Fin</legend>
 
-            <label for="fecha-fin">Fecha: </label>
-            <input type="date" id="fecha-fin" name="fecha-fin" required>
-            
-            <label for="hora-fin">Hora: </label>
-            <input type="time" id="hora-fin" name="hora-fin" required>
+            <div class="container">
+                <div>
+                    <label for="fecha-fin">Fecha: </label>
+                    <input type="date" id="fecha-fin" name="fecha-fin" required>
+                </div>
+
+                <div>
+                    <label for="hora-fin">Hora: </label>
+                    <input type="time" id="hora-fin" name="hora-fin" required>
+                </div>
+            </div>
         </fieldset>
 
-        <label for="duracion">Horas de reserva: </label>
-        <input type="number" id="duracion" name="duracion" min="1"><br>
+        <fieldset>
+            <legend>Duración</legend>
 
-        <label for="condiciones">Condiciones</label>
-        <input type="checkbox" id="condiciones" name="condiciones" required><br>
+            <div class="container">
+                <div>
+                    <label for="duracion">Horas de reserva: </label>
+                    <input type="number" id="duracion" name="duracion" min="1">
+                </div>
+            </div>
 
-        <input type="submit" value="Enviar">
-        <input type="reset" value="Borrar">
+        </fieldset>
+
+        <div class="container">
+            <div>
+                <label for="condiciones">Condiciones</label>
+                <input type="checkbox" id="condiciones" name="condiciones" required>
+            </div>
+        </div>
+
+        <div class="form-acciones">
+            <button type="submit" class="btn btn-dark">Enviar</button>
+            <button type="reset" class="btn btn-light">Borrar</button>
+        </div>
     </form>
 </section>

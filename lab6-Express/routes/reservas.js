@@ -13,7 +13,7 @@ router.get("/", function (request, response) {
     response.render("reservas", {
         titulo: "Reservas",
         estilo: "reservas.css",
-        script: null
+        script: "reservas.js"
     });
 });
 
