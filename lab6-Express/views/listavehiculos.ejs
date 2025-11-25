@@ -37,7 +37,7 @@
           <% } %>
         </div>
         <div class="table-responsive text-center">
-          <table aria-labelledby="tituloTabla" class="table table-sm table-hover align-middle">
+          <table aria-labelledby="tituloTabla" class="table table-sm table-hover align-middle" id="tablavehiculos">
             <thead class="table-dark text-center">
               <tr>
                 <th scope="col">Imagen</th>
@@ -51,25 +51,10 @@
                   <% } %>
               </tr>
             </thead>
-            <tbody class="text-center">
-              <% vehiculos.forEach(function(v) { %>
-                <tr>
-                  <td><img src="/img/imgVehiculos/<%= v.imagen %>" alt="Imagen del vehiculo" width="100"></td>
-                  <td><%= v.id %></td>
-                  <td><%= v.marca %></td>
-                  <td><%= v.autonomia %></td>
-                  <td><%= v.tipo %></td>
-                  <td><%= v.modelo %></td>
-                  <% if(usuario && usuario.tipo === "admin") {%>
-                    <td class="fit">
-                       <a href ="/vehiculos/<%= v.id %>/editar" class="btn btn-light">Editar</a>
-                        <a href ="/vehiculos/<%= v.id %>/eliminar" class="btn btn-danger"> Eliminar</a>
-                    </td>
-                  <% } %>
-                </tr>
-              <% }); %>
-            </tbody>
+            <tbody></tbody>
           </table>
+           <script>const usuario = <%- JSON.stringify(usuario || null) %>;</script>
+          <script src = "/js/listavehiculos.js"></script>
         </div>
       </section>
     </div>
