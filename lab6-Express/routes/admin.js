@@ -22,4 +22,4 @@ router.get("/listareservas", function (request, response) {
      });
 });
 
-module.exports = router;
+module.exports = {router, reservas};

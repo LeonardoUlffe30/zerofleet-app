@@ -10,12 +10,13 @@ const { inicializarBD } = require("./config/initDB");
 const vehiculosRouter = require("./routes/vehiculos");
 const reservasRouter = require("./routes/reservas");
 const { autenticarRouter } = require("./routes/autenticar");
-const adminRouter = require("./routes/admin")
+const {router: adminRouter} = require("./routes/admin")
 
 const app = express(); // creamos la aplicación de express
 const PORT = 3000;
 
 app.use(cookieParser());
+app.use(express.json()); 
 
 // Configuración de la sesión
 const middlewareSesion = session({

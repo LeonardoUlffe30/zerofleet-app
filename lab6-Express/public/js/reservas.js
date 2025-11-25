@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+     console.log("Formulario enviado"); // <--- Esto debería salir
     const formulario = document.getElementById("formulario-reserva");
     const campos = {
         nombre: document.getElementById("nombre"),
@@ -9,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fechaFin: document.getElementById("fecha-fin"),
         horaIni: document.getElementById("hora-ini"),
         horaFin: document.getElementById("hora-fin"),
-        listaVehiculos: document.getElementById("tipo"),
+        tipo: document.getElementById("tipo"),
         duracion: document.getElementById("duracion"),
     }
 
@@ -17,13 +18,51 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function validarFormulario(event) {
         const validarFecha = validarFechaIni() && validarFechaFin() && validarHoraIni() && validarHoraFin();
-
-        if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarFecha || !validarVehiculo() || !validarTelefono() || !validarDuracion() || !validarHoraIni() || !validarHoraFin()) {
+        console.log("Formulario enviado2")
+        if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarFecha || !validarVehiculo() || !validarTelefono() || !validarDuracion()) {
             event.preventDefault(); // detiene el envío del formulario
             alert("Por favor, corrige los errores antes de enviar el formulario.");
             return false;
         }
-        // Si todo está bien, el formulario se envía
+        console.log("Formulario enviado3")
+        // Si todo está bien, el formulario se envía con fetch
+        const datosReserva = {
+            nombre: campos.nombre.value,
+            apellido: campos.apellido.value,
+            correo: campos.correo.value,
+            telefono: campos.telefono.value,
+            tipo: campos.tipo.value,
+            fechaIni: campos.fechaIni.value,
+            horaIni: campos.horaIni.value,
+            fechaFin: campos.fechaFin.value,
+            horaFin: campos.horaFin.value,
+            duracion: campos.duracion.value,
+            condiciones: document.getElementById("condiciones").checked
+        };
+
+        console.log("Enviando datos...", datosReserva);
+
+        fetch("/reservas/api/reservas", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(datosReserva)
+        })
+        .then(
+            response => {
+                if (!response.ok) {
+                    throw new Error("Error en la respuesta del servidor: " + response.status);
+                }
+                return response.json();
+        })
+        .then(reserva => {
+            alert("Reserva enviada correctamente");
+            formulario.reset();
+            progreso.value=0;
+        })
+        .catch(error => {
+            alert("Error: " + error.message);
+        })
+
         return true;
     }
 
@@ -94,8 +133,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function validarVehiculo() {
         return validarCampo(
-            campos.listaVehiculos,
-            campos.listaVehiculos.value.trim() !== "",
+            campos.tipo,
+            campos.tipo.value.trim() !== "",
             "Debe seleccionar un vehículo"
         );
     }
@@ -182,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (campos.apellido.value.trim() && validarApellido()) validos++;
         if (campos.telefono.value.trim() && validarTelefono()) validos++;
         if (campos.correo.value.trim() && validarCorreo()) validos++;
-        if (campos.listaVehiculos.value && validarVehiculo()) validos++;
+        if (campos.tipo.value && validarVehiculo()) validos++;
         if (campos.fechaIni.value && validarFechaIni()) validos++;
         if (campos.horaIni.value && validarHoraIni()) validos++;
         if (campos.fechaFin.value && validarFechaFin()) validos++;
@@ -206,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
     campos.horaIni.addEventListener("input", validarHoraIni);
     campos.fechaFin.addEventListener("input", validarFechaFin);
     campos.horaFin.addEventListener("input", validarHoraFin);
-    campos.listaVehiculos.addEventListener("change", validarVehiculo);
+    campos.tipo.addEventListener("change", validarVehiculo);
     campos.duracion.addEventListener("input", validarDuracion);
 
     // Vaidar al enviar el formulario
