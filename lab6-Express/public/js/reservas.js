@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-     console.log("Formulario enviado"); // <--- Esto debería salir
     const formulario = document.getElementById("formulario-reserva");
     const campos = {
         nombre: document.getElementById("nombre"),
@@ -18,13 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function validarFormulario(event) {
         const validarFecha = validarFechaIni() && validarFechaFin() && validarHoraIni() && validarHoraFin();
-        console.log("Formulario enviado2")
         if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarFecha || !validarVehiculo() || !validarTelefono() || !validarDuracion()) {
             event.preventDefault(); // detiene el envío del formulario
             alert("Por favor, corrige los errores antes de enviar el formulario.");
             return false;
         }
-        console.log("Formulario enviado3")
+
         // Si todo está bien, el formulario se envía con fetch
         const datosReserva = {
             nombre: campos.nombre.value,
@@ -39,8 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
             duracion: campos.duracion.value,
             condiciones: document.getElementById("condiciones").checked
         };
-
-        console.log("Enviando datos...", datosReserva);
 
         fetch("/reservas/api/reservas", {
             method: "POST",

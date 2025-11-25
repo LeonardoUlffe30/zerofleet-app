@@ -17,9 +17,13 @@ router.get("/", function (request, response) {
     });
 });
 
+router.get("/api/reservas", function (request, response){
+    response.json(reservas);
+})
+
 router.post("/api/reservas", function (request, response, next) {
     const { nombre, apellido, correo, telefono, tipo, fechaIni, horaIni, fechaFin, horaFin, duracion } = request.body;
-    console.log(request.body);
+    
     if (!nombre || !apellido || !correo || !telefono || !fechaIni || !horaIni || !fechaFin || !horaFin || !duracion || !tipo) {
         const error = new Error("Faltan datos en el formulario de reservas");
         error.status = 400;
