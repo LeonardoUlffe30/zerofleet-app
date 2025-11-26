@@ -3,6 +3,7 @@ const path = require("path");
 const router = express.Router();
 const { verificarUsuario } = require("./autenticar");
 const {reservas} = require("./admin");
+const { check, validationResult } = require("express-validator");
 
 router.use(function (request, response, next) {
     verificarUsuario(request, response, next);
@@ -21,7 +22,35 @@ router.get("/api/reservas", function (request, response){
     response.json(reservas);
 })
 
-router.post("/api/reservas", function (request, response, next) {
+router.post("/api/reservas",
+    check("nombre", "El nombre debe tener mínimo 3 carácteres").isLength({min: 3}),
+    check("apellido", "El apellido debe tener mínimo 3 carácteres").isLength({min: 3}),
+    check("telefono", "El teléfono debe tener  9 números").isLength({min: 9, max: 9}).isNumeric(),
+    check("correo", "El correo debe ser uno váido").isEmail(),
+    check("tipo", "El campo tipo es obligatorio").notEmpty().isIn(['Coche', 'Moto', 'Patinete Eléctrico']),
+    check("fechaIni").custom((fechaIni) =>{
+        const fechaIngresada = new Date(fechaIni);
+        const ahora = new Date();
+        if(ahora >= fechaIngresada){
+            throw new Error("La fecha de inicio debe ser posterior a la fecha actual");
+        }
+        return true;
+    }),
+    check("fechaFin").custom((fechaFin, {req}) =>{
+        const fechaIni = req.body.fechaIni;
+        const fechaIngresada = new Date(fechaFin);
+        if(fechaIni >= fechaIngresada){
+            throw new Error("La fecha de fin debe ser posterior a la fecha de inicio");
+        }
+
+    }),
+    function (request, response, next) {
+    
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+        return response.status(400).json({ errors: errors.array()})
+    }
+
     const { nombre, apellido, correo, telefono, tipo, fechaIni, horaIni, fechaFin, horaFin, duracion } = request.body;
     
     if (!nombre || !apellido || !correo || !telefono || !fechaIni || !horaIni || !fechaFin || !horaFin || !duracion || !tipo) {

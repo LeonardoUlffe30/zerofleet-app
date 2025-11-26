@@ -5,10 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
         apellido: document.getElementById("apellido"),
         correo: document.getElementById("correo"),
         telefono: document.getElementById("telefono"),
-        fechaIni: document.getElementById("fecha-ini"),
-        fechaFin: document.getElementById("fecha-fin"),
-        horaIni: document.getElementById("hora-ini"),
-        horaFin: document.getElementById("hora-fin"),
+        fechaIni: document.getElementById("fechaIni"),
+        fechaFin: document.getElementById("fechaFin"),
+        horaIni: document.getElementById("horaIni"),
+        horaFin: document.getElementById("horaFin"),
         tipo: document.getElementById("tipo"),
         duracion: document.getElementById("duracion"),
     }
@@ -44,11 +44,21 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify(datosReserva)
         })
         .then(
-            response => {
+            async response => {  //Espera el json
+                const data = await response.json();
+                const errores = document.getElementById("errores");
+
                 if (!response.ok) {
-                    throw new Error("Error en la respuesta del servidor: " + response.status);
+                    errores.innerHTML = data.errors.map(e => `
+                        <div class="alert alert-danger" role="alert">
+                        <p>${errores.msg}</p>
+                        </div>`);
+                    throw new Error("Errores de validación en el formulario de reservas");
                 }
-                return response.json();
+
+                errores.innerHTML = "";
+                return data;
+                
         })
         .then(reserva => {
             alert("Reserva enviada correctamente");
@@ -56,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             progreso.value=0;
         })
         .catch(error => {
-            alert("Error: " + error.message);
+            console.error("Error: " + error.message);
         })
 
         return true;
