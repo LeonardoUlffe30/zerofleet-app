@@ -1,7 +1,15 @@
-document.addEventListener("DOMContentLoaded", cargarVehiculos);
+document.addEventListener("DOMContentLoaded", () => {
+    const filtro = document.getElementById("filtroVehiculo");
+    cargarVehiculos();
 
-function cargarVehiculos() {
-    fetch('/vehiculos/api/vehiculos')
+    filtro.addEventListener("change", () => {
+        cargarVehiculos(filtro.value);
+    })
+});
+
+function cargarVehiculos(tipo = "") {
+    const url = tipo ? '/vehiculos/api/vehiculos?tipo=${tipo}' : '/vehiculos/api/vehiculos';
+    fetch(url)
         .then(response => response.json())
         .then(vehiculos => {
             const tbody = document.querySelector('#tablavehiculos tbody');

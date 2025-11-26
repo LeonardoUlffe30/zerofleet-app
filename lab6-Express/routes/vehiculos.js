@@ -173,4 +173,10 @@ router.get("/api/vehiculos", function (request, response) {
     response.json(vehiculos);
 });
 
+router.get("/api/vehiculos", function (request, response) {
+    const {tipo} = request.query;
+    const vehiculosFiltrados = tipo ? vehiculos.filter(v => v.tipo === tipo) : vehiculos;
+    response.json(vehiculosFiltrados);
+});
+
 module.exports = router;
