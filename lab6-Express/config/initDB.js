@@ -1,77 +1,64 @@
-const mysql = require("mysql2/promise");
 const fs = require("fs");
 const path = require("path");
 const pool = require("./db");
+const mysql = require("mysql");
 
-async function ejecutarSQLDesdeArchivo(ruta) {
-    const sql = fs.readFileSync(ruta, "utf8");
-    const comandos = sql.split(";").filter(c => c.trim());
-    for (const comando of comandos) {
-        await pool.query(comando);
-    }
+const schemaPath = path.join(__dirname, "../data/schema.sql");
+
+// Conexion temporal sin base de datos
+function crearConexionTemporal() {
+    return mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "",
+        multipleStatements: true
+    });
 }
 
-async function baseDatosVacia() {
-    try {
-        const [filas] = await pool.query("SELECT COUNT(*) AS total FROM vehiculos");
-        return filas[0].total === 0;
-    } catch (error) {
-        return true; // Si falla, se asume que BD vacía
-    }
+// Ejecutar schema.sql (crear BD + tablas)
+function ejecutarSchema(conn, callback) {
+    const schema = fs.readFileSync(schemaPath, "utf8");
+    console.log("Creando BD y tablas...");
+
+    conn.query(schema, (err) => {
+        if (err) return callback(err);
+        console.log("BD y tablas creadas.");
+        callback(null);
+    });
 }
 
-async function cargarDatosIniciales() {
-    const rutaJSON = path.join(__dirname, "../data/datos-iniciales.json");
-    const datos = JSON.parse(fs.readFileSync(rutaJSON, "utf8"));
+// Revisar si la BD está vacia
+function verificarBaseDatosVacia(pool, callback) {
+    pool.query("SELECT COUNT(*) AS total FROM vehiculos", (err, vehiculos) => {
+        if (err) return callback(err);
 
-    // Insertar concesionarios
-    for (const c of datos.concesionarios) {
-        await pool.query(
-            `INSERT INTO concesionarios (nombre, ciudad, direccion, telefono_contacto)
-            VALUES (?, ?, ?, ?)`,
-            [c.nombre, c.ciudad, c.direccion, c.telefono_contacto]
-        );
-    }
+        pool.query("SELECT COUNT(*) AS total FROM concesionarios", (err, concesionarios) => {
+            if (err) return callback(err);
 
-    // Insertar vehiculos
-    for (const v of datos.vehiculos) {
-        await pool.query(
-            `INSERT INTO vehiculos (matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km,
-            color, imagen, estado, id_concesionario, tipo, precio_hora)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-                v.matricula, v.marca, v.modelo, v.año_matriculacion, v.numero_plazas, v.autonomia_km,
-                v.color, v.imagen, v.estado, v.id_concesionario, v.tipo, v.precio_hora
-            ]
-        );
-    }
+            const vacia = (vehiculos[0].total === 0) && (concesionarios[0].total === 0);
+            callback(null, vacia);
+        })
+    })
 }
 
-async function inicializarBD() {
-    // Conexión temporal para crear la base de datos si no existe antes de usar el pool de conexiones
+// Funcion principal (orquestador)
+function inicializarBD(callback) {
     console.log("Verificando si existe base de datos zerofleet...");
-    const conn = await mysql.createConnection({ host: "localhost", user: "root", password: "" });
-    await conn.query("CREATE DATABASE IF NOT EXISTS zerofleet DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci");
-    await conn.end();
+    const connTemp = crearConexionTemporal();
 
-    console.log("BD creada, verificando si base de datos esta vacia...");
+    connTemp.connect(err => {
+        if (err) return callback(err);
 
-    const vacia = await baseDatosVacia();
+        ejecutarSchema(connTemp, (err) => {
+            if (err) return callback(err);
 
-    if (!vacia) {
-        console.log("La base de datos ya contiene datos.");
-        return;
-    }
+            verificarBaseDatosVacia(pool, (err, vacia) => {
+                if (err) return callback(err);
 
-    console.log("BD vacía, creando tablas...");
-
-    const rutaSQL = path.join(__dirname, "schema.sql");
-    await ejecutarSQLDesdeArchivo(rutaSQL);
-
-    console.log("Tablas creadas. Insertando datos iniciales...");
-    await cargarDatosIniciales();
-
-    console.log("Datos iniciales cargados.");
+                callback(null, { vacia });
+            })
+        })
+    })
 }
 
 module.exports = { inicializarBD };

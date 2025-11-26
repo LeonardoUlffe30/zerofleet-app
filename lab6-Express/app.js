@@ -10,13 +10,16 @@ const { inicializarBD } = require("./config/initDB");
 const vehiculosRouter = require("./routes/vehiculos");
 const reservasRouter = require("./routes/reservas");
 const { autenticarRouter } = require("./routes/autenticar");
-const {router: adminRouter} = require("./routes/admin")
+const { router: adminRouter } = require("./routes/admin");
+const cargarJSONRouter = require("./routes/cargarJSON");
+
+let bdVacia = false;
 
 const app = express(); // creamos la aplicación de express
 const PORT = 3000;
 
 app.use(cookieParser());
-app.use(express.json()); 
+app.use(express.json());
 
 // Configuración de la sesión
 const middlewareSesion = session({
@@ -51,9 +54,14 @@ app.use("/vehiculos", vehiculosRouter);
 app.use("/reservas", reservasRouter);
 app.use("/autenticar", autenticarRouter);
 app.use("/admin", adminRouter);
+app.use("/cargar-json", cargarJSONRouter);
 
 // Ruta principal
 app.get("/", function (request, response) {
+    if (bdVacia) {
+        return response.redirect("/cargar-json");
+    }
+
     response.render("index", {
         titulo: "Gestión de Flota de Vehículos Eléctricos",
         estilo: "index.css",
@@ -70,7 +78,12 @@ app.get("/cerrarSesion", function (request, response) {
 // Gestión de errores
 app.use(function (request, response, next) {
     response.status(404);
-    response.render("error", { url: request.originalUrl });
+    response.render("error", {
+        url: request.originalUrl,
+        titulo: "Error 404",
+        estilo: "",
+        script: ""
+    });
 });
 
 app.use(function (error, request, response, next) {
@@ -78,8 +91,13 @@ app.use(function (error, request, response, next) {
     response.send(error.message || "Error interno del servidor");
 });
 
-inicializarBD().then(() => {
-    console.log("Base de datos lista.");
+inicializarBD((err, info) => {
+    if (err) {
+        console.log("Error inicializando BD:", err);
+        process.exit(1);
+    }
+
+    bdVacia = info.vacia;
 
     app.listen(PORT, function (err) {
         if (err) {
@@ -88,7 +106,4 @@ inicializarBD().then(() => {
             console.log(`Servidor escuchando en http://localhost:${PORT}`);
         }
     });
-
-}).catch(err => {
-    console.error("ERROR inicializando la BD: ", err);
-})
+});
