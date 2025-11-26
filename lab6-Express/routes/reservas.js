@@ -27,28 +27,29 @@ router.post("/api/reservas",
     check("apellido", "El apellido debe tener mínimo 3 carácteres").isLength({min: 3}),
     check("telefono", "El teléfono debe tener  9 números").isLength({min: 9, max: 9}).isNumeric(),
     check("correo", "El correo debe ser uno váido").isEmail(),
-    check("tipo", "El campo tipo es obligatorio").notEmpty().isIn(['Coche', 'Moto', 'Patinete Eléctrico']),
+    check("tipo", "El campo tipo es obligatorio").notEmpty().isIn(['coche', 'moto', 'patinete electrico']),
     check("fechaIni").custom((fechaIni) =>{
         const fechaIngresada = new Date(fechaIni);
         const ahora = new Date();
-        if(ahora >= fechaIngresada){
+        if(ahora < fechaIngresada){
             throw new Error("La fecha de inicio debe ser posterior a la fecha actual");
         }
         return true;
     }),
     check("fechaFin").custom((fechaFin, {req}) =>{
-        const fechaIni = req.body.fechaIni;
+        const fechaIni = new Date(req.body.fechaIni);
         const fechaIngresada = new Date(fechaFin);
         if(fechaIni >= fechaIngresada){
             throw new Error("La fecha de fin debe ser posterior a la fecha de inicio");
         }
-
+        return true;
     }),
     function (request, response, next) {
     
-    const errors = validationResult(request);
-    if (!errors.isEmpty()) {
-        return response.status(400).json({ errors: errors.array()})
+    const errores = validationResult(request);
+    if (!errores.isEmpty()) {
+        console.log("Errores de validación:", errores.array());
+        return response.status(400).json({ errores: errores.array()})
     }
 
     const { nombre, apellido, correo, telefono, tipo, fechaIni, horaIni, fechaFin, horaFin, duracion } = request.body;

@@ -16,13 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const progreso = document.getElementById("progreso");
 
     function validarFormulario(event) {
+        event.preventDefault();
         const validarFecha = validarFechaIni() && validarFechaFin() && validarHoraIni() && validarHoraFin();
         if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarFecha || !validarVehiculo() || !validarTelefono() || !validarDuracion()) {
-            event.preventDefault(); // detiene el envío del formulario
             alert("Por favor, corrige los errores antes de enviar el formulario.");
             return false;
         }
-
+        
         // Si todo está bien, el formulario se envía con fetch
         const datosReserva = {
             nombre: campos.nombre.value,
@@ -46,13 +46,13 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(
             async response => {  //Espera el json
                 const data = await response.json();
-                const errores = document.getElementById("errores");
+                const errores = document.getElementById("mensajes");
 
                 if (!response.ok) {
-                    errores.innerHTML = data.errors.map(e => `
+                    errores.innerHTML = data.errores.map(e => `
                         <div class="alert alert-danger" role="alert">
-                        <p>${errores.msg}</p>
-                        </div>`);
+                        <p>${e.msg}</p>
+                        </div>`).join("");
                     throw new Error("Errores de validación en el formulario de reservas");
                 }
 
@@ -61,15 +61,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 
         })
         .then(reserva => {
-            alert("Reserva enviada correctamente");
+            window.location.href = "/admin/listareservas";
             formulario.reset();
             progreso.value=0;
         })
         .catch(error => {
             console.error("Error: " + error.message);
         })
-
-        return true;
     }
 
     function validarCampo(campo, condicion, mensaje) {

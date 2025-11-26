@@ -101,7 +101,6 @@ router.post("/iniciarSesion", function (request, response) {
 })
 
 function verificarUsuario(request, response, next) {
-    console.log(request.session.usuario);
     if (request.session && request.session.usuario) {
         return next();
     } else {
