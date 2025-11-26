@@ -47,6 +47,12 @@ router.get("/", function (request, response) {
     });
 });
 
+router.get("/api/vehiculos", function (request, response) {
+    const {tipo} = request.query;
+    const vehiculosFiltrados = tipo ? vehiculos.filter(v => v.tipo === tipo) : vehiculos;
+    response.json(vehiculosFiltrados);
+});
+
 router.use(function (request, response, next) {
     verificarUsuario(request, response, next);
 });
@@ -167,16 +173,6 @@ router.get("/:id/eliminar", function (request, response, next) {
         error: "",
         mensaje: "Vehículo eliminado correctamente"
     });
-});
-
-router.get("/api/vehiculos", function (request, response) {
-    response.json(vehiculos);
-});
-
-router.get("/api/vehiculos", function (request, response) {
-    const {tipo} = request.query;
-    const vehiculosFiltrados = tipo ? vehiculos.filter(v => v.tipo === tipo) : vehiculos;
-    response.json(vehiculosFiltrados);
 });
 
 module.exports = router;

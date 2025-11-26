@@ -7,11 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 });
 
-function cargarVehiculos(tipo = "") {
-    const url = tipo ? '/vehiculos/api/vehiculos?tipo=${tipo}' : '/vehiculos/api/vehiculos';
+function cargarVehiculos(tipo) {
+    let url = `vehiculos/api/vehiculos`;
+    if (tipo) {
+        url += `?tipo=${tipo}`;
+    }
     fetch(url)
         .then(response => response.json())
         .then(vehiculos => {
+            console.log("hola");
             const tbody = document.querySelector('#tablavehiculos tbody');
             tbody.innerHTML = '';
             vehiculos.forEach(v => {
