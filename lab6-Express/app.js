@@ -19,7 +19,7 @@ const app = express(); // creamos la aplicación de express
 const PORT = 3000;
 
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json()); // reconocer objeto JSON de la petición y lo parse a objeto Javascript
 
 // Configuración de la sesión
 const middlewareSesion = session({
