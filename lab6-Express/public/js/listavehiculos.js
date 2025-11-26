@@ -8,21 +8,20 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function cargarVehiculos(tipo) {
-    let url = `vehiculos/api/vehiculos`;
+    let url = `/vehiculos/api/vehiculos`;
     if (tipo) {
         url += `?tipo=${tipo}`;
     }
     fetch(url)
         .then(response => response.json())
         .then(vehiculos => {
-            console.log("hola");
             const tbody = document.querySelector('#tablavehiculos tbody');
             tbody.innerHTML = '';
             vehiculos.forEach(v => {
                 const accciones = (usuario && usuario.tipo === "admin") ? `
                     <td class = "fit">
                         <a href ="/vehiculos/${v.id}/editar" class="btn btn-light">Editar</a>
-                        <a href ="/vehiculos/${v.id}/eliminar" class="btn btn-danger"> Eliminar</a>
+                        <button class="btn btn-danger" onclick="eliminarVehiculo(${v.id})">Eliminar</button>
                     </td>`: '';
                 const fila =`
                 <tr>
@@ -38,4 +37,16 @@ function cargarVehiculos(tipo) {
                 tbody.innerHTML += fila;
             });
         }).catch(error => console.error("Error al cargar los vehiculos:", error));
+}
+
+function eliminarVehiculo(id) {
+    fetch("/vehiculos/api/vehiculos/${id}", {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            cargarVehiculos();
+        } 
+    })
+    .catch(error => console.error("Error al eliminar:", error));
 }

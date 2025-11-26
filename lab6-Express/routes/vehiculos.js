@@ -160,19 +160,17 @@ router.post("/:id/editar", multerFactory.single('imagen'), function (request, re
     });
 });
 
-router.get("/:id/eliminar", function (request, response, next) {
+router.delete("/api/vehiculos/:id", function (request, response, next) {
+    console.log("eliminar")
     const index = vehiculos.findIndex(v => v.id === request.params.id)
-    vehiculos.splice(index, 1);
-    response.render("listavehiculos", {
-        titulo: "Lista Vehículos",
-        estilo: "listavehiculos.css",
-        script: "",
-        vehiculos: vehiculos,
-        buscar: request.query.buscar || "",
-        filtro: request.query.filtro || "",
-        error: "",
-        mensaje: "Vehículo eliminado correctamente"
-    });
+    if(index !== -1){
+        console.log("11111")
+        vehiculos.splice(index, 1);
+        response.status(200).json({});
+    }else{
+        console.log("22222")
+        response.status(404).json({error: "Vehiculo no encontrado"});
+    }
 });
 
 module.exports = router;
