@@ -5,19 +5,56 @@ document.addEventListener("DOMContentLoaded", function () {
         apellido: document.getElementById("apellido-registro"),
         correo: document.getElementById("correo-registro"),
         telefono: document.getElementById("telefono-registro"),
-        contraseña: document.getElementById("contrasenia-registro"),
-        repetirContraseña: document.getElementById("repetir-contrasenia-registro"),
+        contrasenya: document.getElementById("contrasenia-registro"),
+        repetirContrasenya: document.getElementById("repetir-contrasenia-registro"),
     }
 
     function validarFormulario(event) {
-        if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarTelefono() || !validarContrasenia() || !validarRepetirContrasenia()) {
+        if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarContrasenia() || !validarRepetirContrasenia()) {
+            if(campos.telefono.value !==  ""){
+                !validarTelefono();
+            }
             event.preventDefault();
             alert("Por favor, corrige los errores antes de enviar el formulario.");
             return false;
         }
 
-        // Si todo está bien, el formulario se envía
-        return true;
+        // Si todo está bien, el formulario se envía con fetch
+        const datosRegistro = {
+            nombre: campos.nombre.value,
+            apellido: campos.apellido.value,
+            correo: campos.correo.value,
+            telefono: campos.telefono.value || null,
+            contrasenia: campos.contrasenya.value
+        };
+        
+        fetch("/autenticar/registrar", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(datosRegistro)
+        })
+        .then(
+            async response => {  //Espera el json
+                const data = await response.json();
+                const mensajeError = document.getElementById("mensajes");
+
+                if (!response.ok) {
+                    mensajeError.innerHTML = data.errores.map(e => `
+                        <div class="alert alert-danger" role="alert">
+                        <p>${e.msg}</p>
+                        </div>`).join("");
+                    throw new Error("Errores de validación en el formulario de reservas");
+                }
+
+                mensajeError.innerHTML = "";
+        })
+        .then(() => {
+            formulario.reset();
+            window.location.href = "/";
+        })
+        .catch(error => {
+            console.error("Error: " + error.message);
+        })
     }
 
     function validarCampo(campo, condicion, mensaje) {

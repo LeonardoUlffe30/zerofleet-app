@@ -3,10 +3,13 @@ const path = require("path");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
+const { check, validationResult } = require("express-validator");
 
 const usuarios = [{ nombre: "qwerty", apellido: "qwerty", correo: "qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "usuario" },
-{ nombre: "admin", apellido: "qwerty", correo: "admin@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "admin" }
+                  { nombre: "admin", apellido: "qwerty", correo: "admin@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "admin" }
 ];
+
+//REGISTRAR USUARIO
 
 router.get("/registrar", function (request, response) {
     response.status(200);
@@ -19,48 +22,55 @@ router.get("/registrar", function (request, response) {
     });
 });
 
-router.post("/registrar", function (request, response) {
+router.post("/registrar", 
+    check("nombre", "El nombre debe tener mínimo 3 carácteres").isLength({min: 3}),
+    check("apellido", "El apellido debe tener mínimo 3 carácteres").isLength({min: 3}),
+    check("correo", "El correo debe ser uno váido").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
+    check("contrasenia", "La contraseña debe contener al menos 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 caracter especial")
+    .isLength({min: 8}).matches(/[A-Z]/).matches(/[a-z]/).matches(/\d/).matches(/[!@#$%^&*(),.?":{}|<>]/),
+    check("telefono", "El teléfono debe tener  9 números").optional({checkFalsy: true}).isLength({min: 9, max: 9}).isNumeric(),
+    check("repetir-contrasenia")
+        .custom((value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error('Las contraseñas no coinciden');
+        }
+        return true;
+        }),
+    function (request, response) {
+
+        const err = validationResult(request);
+        if (!err.isEmpty()) {
+            console.log("Errores de validación:", err.array());
+            return response.status(400).json({ errores: err.array()})
+        }
+
+    
     const nombre = request.body["nombre"];
     const apellido = request.body["apellido"];
     const correo = request.body["correo"];
     const contrasenia = request.body["contrasenia"];
-    const telefono = request.body["telefono"];
-
-    if (!nombre || !apellido || !correo || !contrasenia || !telefono) {
-        return response.render("partials/registrar", {
-            titulo: "Registrar usuario",
-            estilo: "autenticar.css",
-            script: "registrar.js",
-            abrirModalRegistrar: true,
-            error: "Faltan datos en el formulario de registro"
-        });
-    }
+    const telefono = request.body["telefono"] || null;
 
     const existe = usuarios.find(u => u.correo === request.body.correo);
     if (existe) {
-        return response.render("partials/registrar", {
-            titulo: "Registrar usuario",
-            estilo: "autenticar.css",
-            script: "registrar.js",
-            abrirModalRegistrar: true,
-            error: "El correo ya está registrado"
-        });
+        return response.status(400).json({ error: "El correo ya está registrado"});
     }
 
     const vueltas = 10;
     const contraEncript = bcrypt.hash(contrasenia, vueltas);
 
     const nuevoUsuario = {
-        nombre, apellido, correo, contrasenia: contraEncript, telefono, rol: "usuario"
+        nombre, apellido, correo, contrasenia: contraEncript, telefono, rol: "empleado"
     };
 
     usuarios.push(nuevoUsuario);
-
     console.log("USUARIO REGISTRADO CORRECTAMENTE");
-    console.log(request.body);
+    console.log(nuevoUsuario);
 
-    response.redirect("/");
+    return response.status(201).json({ mensaje: "Usuario registrado correctamente"});
 });
+
+//INICIAR SESION
 
 router.get("/iniciarSesion", function (request, response) {
     response.status(200);
@@ -72,6 +82,8 @@ router.get("/iniciarSesion", function (request, response) {
         error: null
     });
 });
+
+// INICIAR SESION
 
 router.post("/iniciarSesion", function (request, response) {
     const contrasenia = request.body["contrasenia"];
