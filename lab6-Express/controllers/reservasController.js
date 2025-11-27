@@ -1,23 +1,21 @@
 const pool = require("../config/db");
 
+// Cargar el listado de reservas inicial
 function listarReservas(request, response) {
     const usuario = request.session.usuario;
 
-    let sql = `
-        SELECT r.*, u.nombre AS usuario, v.matricula
-        FROM reservsa AS r
-        JOIN usuarios AS u ON r.id_usuario = u.id_usuario
-        JOIN vehiculos AS v ON r.id_vehiculo = v.id_vehiculo`;
+    let sql = `SELECT * FROM reservas`;
 
     let params = [];
 
+    /*
     if (usuario.rol === "empleado") {
-        query += ` WHERE r.id_usuario = ?`;
+        sql += ` WHERE r.id_usuario = ?`;
         params.push(usuario.id);
-    }
+    }*/
 
     pool.query(sql, params, function (error, filas) {
-        if (error) return response.status(500).send("Error obteniendo reservas");
+        if (error) return response.status(500).send("Error obteniendo las reservas");
 
         response.render("listaReservas", {
             titulo: "Listado de Reservas",

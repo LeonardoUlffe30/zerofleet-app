@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", cargarReservas);
 
 function cargarReservas() {
-    fetch('/reservas/api/reservas')
+    fetch('/admin/api/reservas')
         .then(response => response.json())
         .then(reservas => {
             const tbody = document.querySelector('#tablareservas tbody');
@@ -35,7 +35,7 @@ function cargarReservas() {
 function eliminarReserva(id) {
     console.log("eliminarReserva");
     console.log(id);
-    fetch(`/reservas/api/reservas/${id}`, {
+    fetch(`/admin/api/reservas/${id}`, {
         method: 'DELETE'
     })
     .then(response => {

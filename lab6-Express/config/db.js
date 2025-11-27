@@ -1,4 +1,4 @@
-const mysql = require("mysql"); // Usamos mysql2 en lugar de mysql para soporte de promesas en async/await
+const mysql = require("mysql"); 
 
 // Configuración de la conexión a la base de datos
 const pool = mysql.createPool({
