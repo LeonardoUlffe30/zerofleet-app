@@ -3,21 +3,24 @@
   <div class="row text-left align-items-start">
     <div class="col-2 col-xl-2">
       <form class = "buscador" action = "/vehiculos" method = "GET" >
-        <label for="tipo">Filtrar: </label>
-          <select id="filtro" name="filtro">
+
+        <label for="campo">Filtrar: </label>
+          <select id="filtroCampo" name="filtroCampo">
               <option value="" disabled selected>Seleccione el filtro</option>
               <option value="marca" <%= filtro === "marca" ? "selected" : "" %> >Marca</option>
               <option value="modelo" <%= filtro === "modelo" ? "selected" : "" %> >Modelo</option>
           </select>
-          <label for="tipoVehiculo"> Tipo vehiculo: </label>
-          <select id="filtroVehiculo" name="filtroVehiculo">
+          
+          <label for="buscar"> </label>
+          <input type="text" id="buscar" name="buscar" value="<%= buscar %>" placeholder="Introduce aqui la marca/modelo que quieras buscar">
+
+          <label for="tipo"> Tipo vehiculo: </label>
+          <select id="filtroTipo" name="filtroTipo">
               <option value="">Todos</option>
               <option value="coche">Coche</option>
               <option value="moto">Moto</option>
               <option value="patinete electrico">Patinete eléctrico</option>
           </select>
-        <label for="buscar"> </label>
-        <input type="text" id="buscar" name="buscar" value="<%= buscar %>" placeholder="Introduce aqui la marca/modelo que quieras buscar">
       </form>
     </div>
 

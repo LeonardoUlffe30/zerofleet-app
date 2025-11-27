@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const filtro = document.getElementById("filtroVehiculo");
+    const filtro = document.getElementById("filtroTipo");
     cargarVehiculos();
 
     filtro.addEventListener("change", () => {

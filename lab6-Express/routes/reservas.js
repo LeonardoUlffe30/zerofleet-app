@@ -9,6 +9,8 @@ router.use(function (request, response, next) {
     verificarUsuario(request, response, next);
 });
 
+// ----------------- DE RESERVAS ------------------
+
 router.get("/", function (request, response) {
     response.status(200);
     response.render("reservas", {
@@ -17,10 +19,6 @@ router.get("/", function (request, response) {
         script: "reservas.js"
     });
 });
-
-router.get("/api/reservas", function (request, response){
-    response.json(reservas);
-})
 
 router.post("/api/reservas",
     check("nombre", "El nombre debe tener mínimo 3 carácteres").isLength({min: 3}),
@@ -81,4 +79,24 @@ router.post("/api/reservas",
 
 })
 
+// ----------------- DE LISTAR RESERVAS ------------------
+router.get("/api/reservas", function (request, response){
+    response.json(reservas);
+})
+
+router.delete("/api/reservas/:id", function (request, response) {
+    console.log(request.params.id);
+    try{
+        const index = reservas.findIndex(r => r.id_reserva === request.params.id)
+        if (index !== -1) {
+            reservas.splice(index, 1);
+            response.status(200).json({mensaje: "Reserva eliminado correctamente"});
+        } else {
+            response.status(404).json({ error: "Reserva no encontrado" });
+        }
+    }catch (err){
+        console.error("Error en DELETE:", err);
+        return res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
 module.exports = router;
