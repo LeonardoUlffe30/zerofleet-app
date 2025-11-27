@@ -1,13 +1,17 @@
 const express = require("express");
-const { check, validationResult } = require("express-validator");
 const router = express.Router();
-const { verificarUsuario, verificarAdmin } = require("./autenticar");
-const moment = require("moment");
-
+const { check, validationResult } = require("express-validator");
 const path = require("path");
 const multer = require("multer");
 
-const storage = multer.diskStorage({ // configuración del almacenamiento
+// Middlewares de autenticacion
+const { verificarUsuario, verificarAdmin } = require("./autenticar");
+
+// Controller
+const vehiculosController = require("../controllers/vehiculosController");
+
+// Configuracion de multer para subida de imagenes
+const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.join(__dirname, "../public/img/imgVehiculos"));
     },
@@ -18,7 +22,10 @@ const storage = multer.diskStorage({ // configuración del almacenamiento
         cb(null, nombre);
     }
 })
+
 const multerFactory = multer({ storage: storage });
+
+// ----------------- RUTAS PÚBLICAS ------------------
 
 const vehiculos = [
     { id: '1234ABC', marca: 'Tesla', modelo: 'A', autonomia: '100km', tipo: 'coche', precioHora: '2', imagen: "vehiculo1.png" },
@@ -28,51 +35,27 @@ const vehiculos = [
     { id: '7890MNO', marca: 'Ducati', modelo: 'A', autonomia: '100km', tipo: 'moto', precioHora: '2', imagen: "vehiculo5.png" }
 ]
 
-router.get("/", function (request, response) {
-    const query = (request.query.buscar || "").toLowerCase();
-    const filtrar = vehiculos.filter(v =>
-        v.marca ? v.marca.toLowerCase().includes(query) : "" ||
-            v.modelo ? v.modelo.toLowerCase().includes(query) : ""
-    );
-    response.status(200);
-    response.render("listavehiculos", {
-        titulo: "Vehículos",
-        estilo: "listavehiculos.css",
-        script: "",
-        vehiculos: filtrar,
-        buscar: request.query.buscar || "",
-        filtro: request.query.filtro || "",
-        error: "",
-        mensaje: ""
-    });
-});
+router.get("/", vehiculosController.listarVehiculos);
 
-router.get("/api/vehiculos", function (request, response) {
-    const {tipo} = request.query;
-    const vehiculosFiltrados = tipo ? vehiculos.filter(v => v.tipo === tipo) : vehiculos;
-    response.json(vehiculosFiltrados);
-});
+router.get("/api/vehiculos", vehiculosController.listarVehiculosApi);
 
-router.use(function (request, response, next) {
-    verificarUsuario(request, response, next);
-});
+// ----------------- MIDDLEWARES DE SEGURIDAD ------------------
 
-router.use(function (request, response, next) {
-    verificarAdmin(request, response, next);
-});
+// Todo lo que está debajo requiere usuario
+router.use(verificarUsuario);
 
-router.get("/nuevo", function (request, response) {
-    response.status(200);
-    response.render("vehiculos", {
-        titulo: "Vehículos",
-        estilo: "vehiculos.css",
-        script: "",
-        vehiculo: "",
-        error: ""
-    });
-});
+// Todo lo que esta debajo requiere admin
+router.use(verificarAdmin);
 
-router.post("/nuevo", multerFactory.single('imagen'),
+// ----------------- RUTAS ADMIN ------------------
+
+// Formulario crear nuevo vehiculo - GET
+router.get("/nuevo", vehiculosController.formularioVehiculo);
+
+// Formulario crear nuevo vehiculo - POST
+router.post(
+    "/nuevo",
+    multerFactory.single('imagen'),
     check("precioHora", "El campo de Precio/Hora debe ser un valor numérico").isNumeric(),
     function (request, response) {
         const error = validationResult(request);
@@ -163,13 +146,13 @@ router.post("/:id/editar", multerFactory.single('imagen'), function (request, re
 router.delete("/api/vehiculos/:id", function (request, response, next) {
     console.log("eliminar")
     const index = vehiculos.findIndex(v => v.id === request.params.id)
-    if(index !== -1){
+    if (index !== -1) {
         console.log("11111")
         vehiculos.splice(index, 1);
         response.status(200).json({});
-    }else{
+    } else {
         console.log("22222")
-        response.status(404).json({error: "Vehiculo no encontrado"});
+        response.status(404).json({ error: "Vehiculo no encontrado" });
     }
 });
 

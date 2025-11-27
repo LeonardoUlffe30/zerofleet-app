@@ -32,13 +32,28 @@
             </div>
   
             <div>
-              <label for="autonomia">Autonomía:</label>
-              <input type="text" id="autonomia" name="autonomia" value="<%= vehiculo && vehiculo.autonomia ? vehiculo.autonomia : '' %>" required>
-            </div>
-  
-            <div>
               <label for="modelo">Modelo:</label>
               <input type="text" id="modelo" name="modelo" value="<%= vehiculo && vehiculo.modelo ? vehiculo.modelo : '' %>" required>
+            </div>
+
+            <div>
+              <label for="añoMatriculacion">Año de matriculación:</label>
+              <input type="text" id="añoMatriculacion" name="añoMatriculacion" value="<%= vehiculo && vehiculo.añoMatriculacion ? vehiculo.añoMatriculacion : '' %>" required>
+            </div>
+
+            <div>
+              <label for="numeroPlazas">Número de plazas:</label>
+              <input type="text" id="numeroPlazas" name="numeroPlazas" value="<%= vehiculo && vehiculo.numeroPlazas ? vehiculo.numeroPlazas : '' %>" required>
+            </div>
+
+            <div>
+              <label for="autonomia">Autonomía (km):</label>
+              <input type="text" id="autonomia" name="autonomia" value="<%= vehiculo && vehiculo.autonomia ? vehiculo.autonomia : '' %>" required>
+            </div>
+
+            <div>
+              <label for="color">Color:</label>
+              <input type="text" id="color" name="color" value="<%= vehiculo && vehiculo.color ? vehiculo.color : '' %>" required>
             </div>
   
             <div>
@@ -48,6 +63,16 @@
                 <option value="coche" <%= vehiculo.tipo === 'coche' ? 'selected' : '' %>>Coche</option>
                 <option value="moto" <%= vehiculo.tipo === 'moto' ? 'selected' : '' %>>Moto</option>
                 <option value="patinete electrico" <%= vehiculo.tipo === 'patinete electrico' ? 'selected' : '' %>>Patinete Electrico</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="estado">Seleciona el estado: </label>
+              <select id="estado" name="estado" required>
+                <option value="" disabled selected>Seleccione un estado</option>
+                <option value="disponible" <%= vehiculo.estado === 'disponible' ? 'selected' : '' %>>Disponible</option>
+                <option value="reservado" <%= vehiculo.estado === 'reservado' ? 'selected' : '' %>>Reservado</option>
+                <option value="mantenimiento" <%= vehiculo.estado === 'mantenimiento' ? 'selected' : '' %>>Mantenimiento</option>
               </select>
             </div>
   

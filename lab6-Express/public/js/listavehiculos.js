@@ -21,16 +21,22 @@ function cargarVehiculos(tipo) {
                 const accciones = (usuario && usuario.tipo === "admin") ? `
                     <td class = "fit">
                         <a href ="/vehiculos/${v.id}/editar" class="btn btn-light">Editar</a>
-                        <button class="btn btn-danger" onclick="eliminarVehiculo(${v.id})">Eliminar</button>
+                        <button class="btn btn-danger" onclick="eliminarVehiculo('${v.id}')">Eliminar</button>
                     </td>`: '';
-                const fila =`
+                const fila = `
                 <tr>
                   <td><img src="/img/imgVehiculos/${v.imagen}" alt="Imagen del vehiculo" width="100"></td>
-                  <td>${v.id}</td>
+                  <td>${v.matricula}</td>
                   <td>${v.marca}</td>
-                  <td>${v.autonomia}</td>
-                  <td>${v.tipo}</td>
                   <td>${v.modelo}</td>
+                  <td>${v.año_matriculacion}</td>
+                  <td>${v.numero_plazas}</td>
+                  <td>${v.autonomia_km}</td>
+                  <td>${v.color}</td>
+                  <td>${v.id_concesionario}</td>
+                  <td>${v.estado}</td>
+                  <td>${v.tipo}</td>
+                  <td>${v.precio_hora}</td>
                   ${accciones}
                 </tr>`;
 
@@ -40,13 +46,13 @@ function cargarVehiculos(tipo) {
 }
 
 function eliminarVehiculo(id) {
-    fetch("/vehiculos/api/vehiculos/${id}", {
+    fetch(`/vehiculos/api/vehiculos/${id}`, {
         method: 'DELETE'
     })
-    .then(response => {
-        if (response.ok) {
-            cargarVehiculos();
-        } 
-    })
-    .catch(error => console.error("Error al eliminar:", error));
+        .then(response => {
+            if (response.ok) {
+                cargarVehiculos();
+            }
+        })
+        .catch(error => console.error("Error al eliminar:", error));
 }
