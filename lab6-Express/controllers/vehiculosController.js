@@ -11,14 +11,14 @@ function query(sql, params = []) {
     })
 }
 
-
 // ------------------- LISTADO VISTAS ---------------------
 async function listarVehiculos(request, response) {
     try {
         const buscar = (request.query.buscar || "").toLowerCase();
 
-        let sql = "SELECT * FROM vehiculos";
+        let sql = "SELECT * FROM vehiculos WHERE activo = true";
         let vehiculos = await query(sql);
+
 
         // Filtro local por marca/modelo
         if (buscar) {
@@ -47,29 +47,30 @@ async function listarVehiculos(request, response) {
 // ------------------- LISTAR VEHICULOS API CON FETCH ---------------------
 async function listarVehiculosApi(req, res) {
     try {
+        console.log("Request query: ", req.query);
         console.log("API listarVehiculosAPI");
-        const buscar = (req.query.buscar || "");           // Texto a buscar
-        const filtro = req.query.filtro || "";                           // "marca" o "modelo"
-        const tipoVehiculo = req.query.filtroVehiculo || "";             // "coche", "moto", etc.
+        const buscar = (req.query.buscar || "").toLowerCase();           // Texto a buscar
+        const filtroCampo = req.query.filtroCampo || "";                           // "marca" o "modelo"
+        const filtroTipo = req.query.filtroTipo || "";             // "coche", "moto", etc.
 
-        console.log(buscar, filtro, tipoVehiculo);
+        console.log(buscar, filtroCampo, filtroTipo);
 
-        let sql = "SELECT * FROM vehiculos";
+        let sql = "SELECT * FROM vehiculos WHERE activo = true";
         const params = [];
 
-        if (tipoVehiculo) {
-            sql += " WHERE tipo = ?";
-            params.push(tipoVehiculo);
+        if (filtroTipo) {
+            sql += " AND tipo = ?";
+            params.push(filtroTipo);
         }
 
         // Traer todos los vehículos filtrados por tipo
         let vehiculos = await query(sql, params);
 
         // Filtro por columna (marca o modelo) usando la búsqueda libre
-        if (buscar && filtro) {
-            console.log("Filtrando por ", filtro, " y buscando ", buscar);
+        if (buscar && filtroCampo) {
+            console.log("Filtrando por ", filtroCampo, " y buscando ", buscar);
             vehiculos = vehiculos.filter(v =>
-                v[filtro]?.toLowerCase().includes(buscar)
+                v[filtroCampo]?.toLowerCase().includes(buscar)
             );
         }
         res.json(vehiculos);

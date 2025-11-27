@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS concesionarios (
     nombre VARCHAR(100) NOT NULL,
     ciudad VARCHAR(255),
     direccion VARCHAR(255),
-    telefono_contacto VARCHAR(20)
+    telefono_contacto VARCHAR(20),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 -- =========================
@@ -29,6 +30,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     telefono VARCHAR(20),
     id_concesionario INT,
     preferencias_accesibilidad JSON,
+    activo BOOLEAN DEFAULT TRUE,
 
     FOREIGN KEY (id_concesionario) 
         REFERENCES concesionarios(id_concesionario) 
@@ -53,6 +55,7 @@ CREATE TABLE IF NOT EXISTS vehiculos (
     tipo ENUM('coche', 'camioneta', 'van', 'moto') DEFAULT 'coche',
     precio_hora DECIMAL(5,2) DEFAULT 0.00,
     id_concesionario INT,
+    activo BOOLEAN DEFAULT TRUE,
 
     FOREIGN KEY (id_concesionario)
         REFERENCES concesionarios(id_concesionario)
@@ -71,6 +74,7 @@ CREATE TABLE IF NOT EXISTS reservas (
     estado ENUM('activa', 'finalizada', 'cancelada') DEFAULT 'activa',
     kilometros_recorridos INT,
     incidencias_reportadas TEXT,
+    activo BOOLEAN DEFAULT TRUE,
 
     FOREIGN KEY (id_usuario)
         REFERENCES usuarios(id_usuario)

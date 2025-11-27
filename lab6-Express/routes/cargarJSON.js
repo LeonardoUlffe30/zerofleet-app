@@ -40,9 +40,9 @@ router.post("/", upload.single("archivo"), function (request, response) {
     // Insertar vehiculos
     vehiculos.forEach(v => {
         pool.query(
-            `INSERT INTO vehiculos (id_vehiculo, matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km, color, imagen, estado, id_concesionario)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [v.id_vehiculo, v.matricula, v.marca, v.modelo, v.año_matriculacion, v.numero_plazas, v.autonomia_km, v.color, v.imagen, v.estado, v.id_concesionario]
+            `INSERT INTO vehiculos (id_vehiculo, matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km, color, imagen, estado, tipo, precio_hora, id_concesionario)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [v.id_vehiculo, v.matricula, v.marca, v.modelo, v.año_matriculacion, v.numero_plazas, v.autonomia_km, v.color, v.imagen, v.estado, v.tipo, v.precio_hora, v.id_concesionario]
         );
     })
 
