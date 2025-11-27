@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const progreso = document.getElementById("progreso");
+    const confirmarBtn = document.getElementById("confirmarReserva");
 
     function validarFormulario(event) {
         event.preventDefault();
@@ -23,8 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
             return false;
         }
         
+        const modal = new bootstrap.Modal(document.getElementById("confirmacionModal"));
+        modal.show();
+        
         // Si todo está bien, el formulario se envía con fetch
-        const datosReserva = {
+        confirmarBtn.onclick = function () {
+            const datosReserva = {
             nombre: campos.nombre.value,
             apellido: campos.apellido.value,
             correo: campos.correo.value,
@@ -68,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => {
             console.error("Error: " + error.message);
         })
+        }
     }
 
     function validarCampo(campo, condicion, mensaje) {

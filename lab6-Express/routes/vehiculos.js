@@ -35,9 +35,32 @@ const vehiculos = [
     { id: '7890MNO', marca: 'Ducati', modelo: 'A', autonomia: '100km', tipo: 'moto', precioHora: '2', imagen: "vehiculo5.png" }
 ]
 
-router.get("/", vehiculosController.listarVehiculos);
+//router.get("/", vehiculosController.listarVehiculos);
+router.get("/", function (request, response) {
+    const query = (request.query.buscar || "").toLowerCase();
+    const filtrar = vehiculos.filter(v =>
+        v.marca ? v.marca.toLowerCase().includes(query) : "" ||
+            v.modelo ? v.modelo.toLowerCase().includes(query) : ""
+    );
+    response.status(200);
+    response.render("listavehiculos", {
+        titulo: "Vehículos",
+        estilo: "listavehiculos.css",
+        script: "",
+        vehiculos: filtrar,
+        buscar: request.query.buscar || "",
+        filtro: request.query.filtro || "",
+        error: "",
+        mensaje: ""
+    });
+});
+//router.get("/api/vehiculos", vehiculosController.listarVehiculosApi);
 
-router.get("/api/vehiculos", vehiculosController.listarVehiculosApi);
+router.get("/api/vehiculos", function (request, response) {
+    const {tipo} = request.query;
+    const vehiculosFiltrados = tipo ? vehiculos.filter(v => v.tipo === tipo) : vehiculos;
+    response.json(vehiculosFiltrados);
+});
 
 // ----------------- MIDDLEWARES DE SEGURIDAD ------------------
 
@@ -50,8 +73,17 @@ router.use(verificarAdmin);
 // ----------------- RUTAS ADMIN ------------------
 
 // Formulario crear nuevo vehiculo - GET
-router.get("/nuevo", vehiculosController.formularioVehiculo);
-
+//router.get("/nuevo", vehiculosController.formularioVehiculo);
+router.get("/nuevo", function (request, response) {
+    response.status(200);
+    response.render("vehiculos", {
+        titulo: "Vehículos",
+        estilo: "vehiculos.css",
+        script: "",
+        vehiculo: "",
+        error: ""
+    });
+});
 // Formulario crear nuevo vehiculo - POST
 router.post(
     "/nuevo",
@@ -82,7 +114,7 @@ router.post(
             error: "",
             mensaje: "Vehículo añadido correctamente"
         });
-    });
+});
 
 router.get("/:id", function (request, response) {
     response.status(200);
@@ -143,16 +175,18 @@ router.post("/:id/editar", multerFactory.single('imagen'), function (request, re
     });
 });
 
-router.delete("/api/vehiculos/:id", function (request, response, next) {
-    console.log("eliminar")
-    const index = vehiculos.findIndex(v => v.id === request.params.id)
-    if (index !== -1) {
-        console.log("11111")
-        vehiculos.splice(index, 1);
-        response.status(200).json({});
-    } else {
-        console.log("22222")
-        response.status(404).json({ error: "Vehiculo no encontrado" });
+router.delete("/api/vehiculos/:id", function (request, response) {
+    try{
+        const index = vehiculos.findIndex(v => v.id === request.params.id)
+        if (index !== -1) {
+            vehiculos.splice(index, 1);
+            response.status(200).json({mensaje: "Vehiculo eliminado correctamente"});
+        } else {
+            response.status(404).json({ error: "Vehiculo no encontrado" });
+        }
+    }catch (err){
+        console.error("Error en DELETE:", err);
+        return res.status(500).json({ error: "Error interno del servidor" });
     }
 });
 

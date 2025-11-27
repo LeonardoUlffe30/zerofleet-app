@@ -18,6 +18,7 @@ function cargarVehiculos(tipo) {
             const tbody = document.querySelector('#tablavehiculos tbody');
             tbody.innerHTML = '';
             vehiculos.forEach(v => {
+                console.log(v.matricula);
                 const accciones = (usuario && usuario.tipo === "admin") ? `
                     <td class = "fit">
                         <a href ="/vehiculos/${v.id}/editar" class="btn btn-light">Editar</a>
@@ -26,7 +27,7 @@ function cargarVehiculos(tipo) {
                 const fila = `
                 <tr>
                   <td><img src="/img/imgVehiculos/${v.imagen}" alt="Imagen del vehiculo" width="100"></td>
-                  <td>${v.matricula}</td>
+                  <td>${v.id}</td>
                   <td>${v.marca}</td>
                   <td>${v.modelo}</td>
                   <td>${v.año_matriculacion}</td>
@@ -42,7 +43,10 @@ function cargarVehiculos(tipo) {
 
                 tbody.innerHTML += fila;
             });
-        }).catch(error => console.error("Error al cargar los vehiculos:", error));
+        }).catch(error => {
+            console.error("Error al cargar los vehiculos:", error);
+            mostrarMensaje("Error al cargar los vehiculos", "danger");
+        });
 }
 
 function eliminarVehiculo(id) {
@@ -50,9 +54,22 @@ function eliminarVehiculo(id) {
         method: 'DELETE'
     })
         .then(response => {
-            if (response.ok) {
+            if(response.status === 200) {
+                response.json().then(data =>{
+                     mostrarMensaje(data.mensaje, "success");
+                })
                 cargarVehiculos();
+            }else {
+                response.json().then(data =>{
+                     mostrarMensaje(data.error, "warning");
+                })
             }
         })
         .catch(error => console.error("Error al eliminar:", error));
+}
+
+function mostrarMensaje(mensaje, tipo) {
+    const msg = document.getElementById("alertContainer");
+    msg.innerHTML =`<div class = "alert alert-${tipo}" role = "alert">
+      ${mensaje} </div>`;
 }
