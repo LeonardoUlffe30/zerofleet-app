@@ -1,4 +1,14 @@
+const e = require("express");
 const pool = require("../config/db");
+
+function query(sql, params = []) {
+    return new Promise(function (resolve, reject) {
+        pool.query(sql, params, function (error, filas) {
+            if (error) reject(error);
+            else resolve(filas);
+        })
+    })
+}
 
 function listarUsuarios(request, response) {
     const sql = `SELECT * FROM usuarios`;
@@ -31,24 +41,27 @@ function obtenerUsuario(request, response) {
     });
 }
 
-function crearUsuario(request, response) {
-    const { nombre, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad } = request.body;
-
-    const sql = `
+async function crearUsuario(datosRegistro) {
+    const { nombre, correo, contrasenia, rol, telefono, id_concesionario, preferencias_accesibilidad } = datosRegistro;
+    console.log("he llegafo aqui");
+    const filas = await query("SELECT * FROM usuarios WHERE correo = ?", [correo]);
+    if (filas.length > 0) {
+        throw new Error("El correo ya está registrado");
+    }
+console.log("he llegafo aqui2");
+    const sqlInsert = `
         INSERT INTO usuarios 
-        (nombre, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)`;
-
-    const params = [nombre, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad];
-
-    pool.query(sql, params, function (error) {
-        if (error) return response.status(500).send("Error creando usuario");
-        response.redirect("/admin/usuarios");
-    });
+        (nombre, apellido, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+console.log("he llegafo aqui3");
+    const valores = [nombre, correo, contrasenia, rol, telefono, id_concesionario, preferencias_accesibilidad];
+console.log("he llegafo aqui4");
+    await query(sqlInsert, valores);
 }
 
-function actualizarUsuario(request, response) {
-    const { nombre, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad } = request.body;
+function actualizarUsuario(datosRegistro) {
+    const { nombre, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad } = datosRegistro;
 
     const sql = `
         UPDATE usuarios SET

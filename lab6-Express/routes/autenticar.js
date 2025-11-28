@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const { check, validationResult } = require("express-validator");
+const usuariosController = require("../controllers/usuariosController");
 
 const usuarios = [{ nombre: "qwerty", apellido: "qwerty", correo: "qwerty@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "usuario" },
                   { nombre: "admin", apellido: "qwerty", correo: "admin@gmail.com", contrasenia: "12345", telefono: "555-555-555", tipo: "admin" }
@@ -26,18 +27,18 @@ router.get("/registrar", function (request, response) {
 router.post("/registrar", 
     check("nombre", "El nombre debe tener mínimo 3 carácteres").isLength({min: 3}),
     check("apellido", "El apellido debe tener mínimo 3 carácteres").isLength({min: 3}),
-    check("correo", "El correo debe ser uno váido: xxx@zfleet.com").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
+    check("correo", "El correo debe ser uno válido: xxx@zfleet.com").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
     check("contrasenia", "La contraseña debe contener al menos 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 caracter especial")
     .isLength({min: 8}).matches(/[A-Z]/).matches(/[a-z]/).matches(/\d/).matches(/[!@#$%^&*(),.?":{}|<>]/),
     check("telefono", "El teléfono debe tener  9 números").optional({checkFalsy: true}).isLength({min: 9, max: 9}).isNumeric(),
-    check("repetir-contrasenia")
+    check("repetirContrasenia")
         .custom((value, { req }) => {
-        if (value !== req.body.password) {
+        if (value !== req.body.contrasenia) {
             throw new Error('Las contraseñas no coinciden');
         }
         return true;
         }),
-    function (request, response) {
+    async function (request, response) {
 
         const err = validationResult(request);
         if (!err.isEmpty()) {
@@ -46,29 +47,34 @@ router.post("/registrar",
         }
 
     
-    const nombre = request.body["nombre"];
-    const apellido = request.body["apellido"];
-    const correo = request.body["correo"];
-    const contrasenia = request.body["contrasenia"];
-    const telefono = request.body["telefono"] || null;
+        try {
+            const nombre = request.body["nombre"];
+            const apellido = request.body["apellido"];
+            const correo = request.body["correo"];
+            const contrasenia = request.body["contrasenia"];
+            const telefono = request.body["telefono"] || null;
+            const id_concesionario = null;
 
-    const existe = usuarios.find(u => u.correo === request.body.correo);
-    if (existe) {
-        return response.status(400).json({ error: "El correo ya está registrado"});
-    }
+            //Encriptar contraseña
+            const vueltas = 10;
+            const contraEncript = await bcrypt.hash(contrasenia, vueltas);
 
-    const vueltas = 10;
-    const contraEncript = bcrypt.hash(contrasenia, vueltas);
+            await usuariosController.crearUsuario({
+                nombre,
+                apellido,
+                correo,
+                contrasenia: contraEncript,
+                telefono,
+                rol: "empleado",
+                id_concesionario: id_concesionario,
+                preferencias_accesibilidad: null
+            });
 
-    const nuevoUsuario = {
-        nombre, apellido, correo, contrasenia: contraEncript, telefono, rol: "empleado"
-    };
-
-    usuarios.push(nuevoUsuario);
-    console.log("USUARIO REGISTRADO CORRECTAMENTE");
-    console.log(nuevoUsuario);
-
-    return response.status(201).json({ mensaje: "Usuario registrado correctamente"});
+            return response.status(201).json({ mensaje: "Usuario registrado correctamente"});
+        } catch (err) {
+            console.error("Error al registrar usuario:", err.message);
+            return response.status(500).json({ error: err.message });
+        }
 });
 
 //INICIAR SESION

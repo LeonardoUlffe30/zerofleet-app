@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
         apellido: document.getElementById("apellido-registro"),
         correo: document.getElementById("correo-registro"),
         telefono: document.getElementById("telefono-registro"),
-        contrasenya: document.getElementById("contrasenia-registro"),
-        repetirContrasenya: document.getElementById("repetir-contrasenia-registro"),
+        contrasenia: document.getElementById("contrasenia-registro"),
+        repetirContrasenia: document.getElementById("repetir-contrasenia-registro"),
     }
 
     function validarFormulario(event) {
@@ -27,7 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
             apellido: campos.apellido.value,
             correo: campos.correo.value,
             telefono: campos.telefono.value || null,
-            contrasenia: campos.contrasenya.value
+            contrasenia: campos.contrasenia.value,
+            repetirContrasenia: campos.repetirContrasenia.value,
+            id_concesionario: null
         };
         
         fetch("/autenticar/registrar", {
@@ -41,12 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
                 const mensajeError = document.getElementById("mensajes");
                 console.log("data:", data);
-                if (!response.ok) {
+                if(response.status === 400) {
                     console.log("Error en el registro:", data);
                     mensajeError.innerHTML = data.errores.map(e => `
                         <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
                         </div>`).join("");
+                    return false;
+                }else if(response.status === 500) {
                     return false;
                 }
                 console.log("hollaaa");
@@ -133,16 +137,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function validarContrasenia() {
         const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         return validarCampo(
-            campos.contrasenya,
-            regex.test(campos.contrasenya.value),
+            campos.contrasenia,
+            regex.test(campos.contrasenia.value),
             "Debe contener al menos 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 caracter especial."
         );
     }
 
     function validarRepetirContrasenia() {
         return validarCampo(
-            campos.repetirContrasenya,
-            campos.repetirContrasenya.value === campos.contrasenya.value,
+            campos.repetirContrasenia,
+            campos.repetirContrasenia.value === campos.contrasenia.value,
             "Las contraseñas no coinciden."
         );
     }
@@ -152,8 +156,8 @@ document.addEventListener("DOMContentLoaded", function () {
     campos.apellido.addEventListener("input", validarApellido);
     campos.telefono.addEventListener("input", validarTelefono);
     campos.correo.addEventListener("input", validarCorreo);
-    campos.contrasenya.addEventListener("input", validarContrasenia);
-    campos.repetirContrasenya.addEventListener("input", validarRepetirContrasenia);
+    campos.contrasenia.addEventListener("input", validarContrasenia);
+    campos.repetirContrasenia.addEventListener("input", validarRepetirContrasenia);
 
     // Validar al enviar el formulario
     formulario.addEventListener("submit", validarFormulario);
