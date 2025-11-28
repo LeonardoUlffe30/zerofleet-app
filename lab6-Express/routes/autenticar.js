@@ -13,19 +13,20 @@ const usuarios = [{ nombre: "qwerty", apellido: "qwerty", correo: "qwerty@gmail.
 
 router.get("/registrar", function (request, response) {
     response.status(200);
-    response.render("partials/registrar", {
+    response.render("layout", {
         titulo: "Registrar usuario",
         estilo: "autenticar.css",
         script: "registrar.js",
         abrirModalRegistrar: true,
-        error: null
+        error: null,
+        body: ""
     });
 });
 
 router.post("/registrar", 
     check("nombre", "El nombre debe tener mínimo 3 carácteres").isLength({min: 3}),
     check("apellido", "El apellido debe tener mínimo 3 carácteres").isLength({min: 3}),
-    check("correo", "El correo debe ser uno váido").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
+    check("correo", "El correo debe ser uno váido: xxx@zfleet.com").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
     check("contrasenia", "La contraseña debe contener al menos 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 caracter especial")
     .isLength({min: 8}).matches(/[A-Z]/).matches(/[a-z]/).matches(/\d/).matches(/[!@#$%^&*(),.?":{}|<>]/),
     check("telefono", "El teléfono debe tener  9 números").optional({checkFalsy: true}).isLength({min: 9, max: 9}).isNumeric(),
@@ -74,12 +75,13 @@ router.post("/registrar",
 
 router.get("/iniciarSesion", function (request, response) {
     response.status(200);
-    response.render("partials/iniciarSesion", {
+    response.render("layout", {
         titulo: "Iniciar sesión",
         estilo: "autenticar.css",
         script: "iniciarSesion.js",
         abrirModalIniciarSesion: true,
-        error: null
+        error: null,
+        body: ""
     });
 });
 

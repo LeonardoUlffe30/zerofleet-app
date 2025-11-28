@@ -10,14 +10,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function validarFormulario(event) {
+        event.preventDefault();
         if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarContrasenia() || !validarRepetirContrasenia()) {
             if(campos.telefono.value !==  ""){
                 !validarTelefono();
             }
-            event.preventDefault();
             alert("Por favor, corrige los errores antes de enviar el formulario.");
             return false;
         }
+
+        console.log("Pasando la validacion iniical");
 
         // Si todo está bien, el formulario se envía con fetch
         const datosRegistro = {
@@ -35,22 +37,28 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(
             async response => {  //Espera el json
+                console.log("ha llegado el json");
                 const data = await response.json();
                 const mensajeError = document.getElementById("mensajes");
-
+                console.log("data:", data);
                 if (!response.ok) {
+                    console.log("Error en el registro:", data);
                     mensajeError.innerHTML = data.errores.map(e => `
                         <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
                         </div>`).join("");
-                    throw new Error("Errores de validación en el formulario de reservas");
+                    return false;
                 }
-
+                console.log("hollaaa");
                 mensajeError.innerHTML = "";
+                return true;
         })
-        .then(() => {
-            formulario.reset();
-            window.location.href = "/";
+        .then((sucess) => {
+            if(sucess){
+                console.log("aqiiiiiii");
+                formulario.reset();
+                window.location.href = "/";
+            }
         })
         .catch(error => {
             console.error("Error: " + error.message);
@@ -125,16 +133,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function validarContrasenia() {
         const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         return validarCampo(
-            campos.contraseña,
-            regex.test(campos.contraseña.value),
+            campos.contrasenya,
+            regex.test(campos.contrasenya.value),
             "Debe contener al menos 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 caracter especial."
         );
     }
 
     function validarRepetirContrasenia() {
         return validarCampo(
-            campos.repetirContraseña,
-            campos.repetirContraseña.value === campos.contraseña.value,
+            campos.repetirContrasenya,
+            campos.repetirContrasenya.value === campos.contrasenya.value,
             "Las contraseñas no coinciden."
         );
     }
@@ -144,8 +152,8 @@ document.addEventListener("DOMContentLoaded", function () {
     campos.apellido.addEventListener("input", validarApellido);
     campos.telefono.addEventListener("input", validarTelefono);
     campos.correo.addEventListener("input", validarCorreo);
-    campos.contraseña.addEventListener("input", validarContrasenia);
-    campos.repetirContraseña.addEventListener("input", validarRepetirContrasenia);
+    campos.contrasenya.addEventListener("input", validarContrasenia);
+    campos.repetirContrasenya.addEventListener("input", validarRepetirContrasenia);
 
     // Validar al enviar el formulario
     formulario.addEventListener("submit", validarFormulario);
