@@ -14,33 +14,22 @@ function query(sql, params = []) {
 // ------------------- LISTADO VISTAS ---------------------
 async function listarVehiculos(request, response) {
     try {
-        const buscar = (request.query.buscar || "").toLowerCase();
-
-        let sql = "SELECT * FROM vehiculos WHERE activo = true";
-        let vehiculos = await query(sql);
-
-
-        // Filtro local por marca/modelo
-        if (buscar) {
-            vehiculos = vehiculos.filter(v =>
-                v.marca.toLowerCase().includes(buscar) ||
-                v.modelo.toLowerCase().includes(buscar)
-            );
-        }
+        const sql = "SELECT * FROM vehiculos WHERE activo = true";
+        const vehiculos = await query(sql);
 
         response.status(200).render("listavehiculos", {
             titulo: "Vehículos",
             estilo: "listavehiculos.css",
             script: "",
             vehiculos: vehiculos,
-            buscar: buscar,
-            filtro: request.query.filtro || "",
+            buscar: "",
+            filtro: "",
             error: "",
             mensaje: ""
         });
     } catch (error) {
         console.error(error);
-        response.status(500).send("Error interno del servidor");
+        response.status(500).json({ mensaje: "Error interno del servidor" });
     }
 }
 
@@ -63,6 +52,12 @@ async function listarVehiculosApi(req, res) {
             params.push(filtroTipo);
         }
 
+        if (buscar && filtroCampo && (filtroCampo === "marca" || filtroCampo === "modelo")) {
+            console.log("Filtrando por ", filtroCampo, "y buscando ", buscar);
+            sql += ` AND LOWER(${filtroCampo}) LIKE ?`;
+            params.push(`%${buscar}%`);
+        }
+
         // Traer todos los vehículos filtrados por tipo
         let vehiculos = await query(sql, params);
 
@@ -82,17 +77,6 @@ async function listarVehiculosApi(req, res) {
 }
 
 // ------------------- ELIMINAR VEHICULO API CON FETCH ---------------------
-async function eliminarVehiculoApi(req, res) {
-    try {
-        const sql = "UPDATE vehiculos SET activo = false WHERE id_vehiculo = ?";
-        await query(sql, [req.params.id]);
-        res.status(200).json({});
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Error eliminando vehículo" });
-    }
-}
-
 function formularioVehiculo(request, response) {
     response.status(200).render("vehiculos", {
         titulo: "Vehículos",
@@ -187,24 +171,32 @@ function actualizarVehiculo(request, response) {
     });
 }
 
-function eliminarVehiculo(request, response) {
-    const sql = `
-        UPDATE vehiculos SET
-        activo = false
-        WHERE id_vehiculo = ?`;
+async function eliminarVehiculo(request, response) {
+    try {
+        const sql = `
+            UPDATE vehiculos SET
+            activo = false
+            WHERE id_vehiculo = ?`;
 
-    const params = [request.params.id];
+        const params = [request.params.id];
 
-    pool.query(sql, params, function (error) {
-        if (error) return response.status(500).sendd("Error eliminando vehiculo");
-        response.redirect("/admin/vehiculos");
-    })
+        const resultado = await query(sql, params);
+
+        if (resultado.affectedRows === 0) {
+            return response.status(404).json({ mensaje: "Vehiculo no encontrado" });
+        }
+
+        return response.status(200).json({ mensaje: "Vehiculo eliminado correctamente" });
+
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ mensaje: "Error eliminando vehiculo" });
+    }
 }
 
 module.exports = {
     listarVehiculos,
     listarVehiculosApi,
-    eliminarVehiculoApi,
     formularioVehiculo,
     obtenerVehiculo,
     crearVehiculo,

@@ -1,33 +1,39 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const filtro = document.getElementById("filtroTipo");
-    cargarVehiculos();
+    const filtroTipo = document.getElementById("filtroTipo");
+    const filtroCampo = document.getElementById("filtroCampo");
+    const buscarInput = document.getElementById("buscar");
 
-    filtro.addEventListener("change", () => {
-        cargarVehiculos(filtro.value);
-    })
+    // Si EJS ya mandó vehículos, mostrarlos SIN fetch
+    if (vehiculosIniciales && vehiculosIniciales.length > 0) {
+        mostrarVehiculos(vehiculosIniciales);
+    }
+
+    filtroTipo.addEventListener("change", actualizarVehiculos);
+    filtroCampo.addEventListener("change", actualizarVehiculos);
+    buscarInput.addEventListener("input", () => {
+        // Cancelamos el timer anterior si existe
+        clearTimeout(window.delayBuscador);
+
+        // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
+        window.delayBuscador = setTimeout(actualizarVehiculos, 300);
+    });
 });
 
-function cargarVehiculos(tipo) {
-    let url = `/vehiculos/api/vehiculos`;
-    if (tipo) {
-        url += `?tipo=${tipo}`;
-    }
-    fetch(url)
-        .then(response => response.json())
-        .then(vehiculos => {
-            const tbody = document.querySelector('#tablavehiculos tbody');
-            tbody.innerHTML = '';
-            vehiculos.forEach(v => {
-                console.log(v.matricula);
-                const accciones = (usuario && usuario.tipo === "admin") ? `
+// Inserta las etiquetas con los datos de los vehiculos en la tbody de la tabla
+function mostrarVehiculos(vehiculos) {
+    const tbody = document.querySelector('#tablavehiculos tbody');
+    tbody.innerHTML = '';
+    vehiculos.forEach(v => {
+        console.log(v.matricula);
+        const accciones = (usuario && usuario.tipo === "admin") ? `
                     <td class = "fit">
                         <a href ="/vehiculos/${v.id}/editar" class="btn btn-light">Editar</a>
-                        <button class="btn btn-danger" onclick="eliminarVehiculo('${v.id}')">Eliminar</button>
+                        <button class="btn btn-danger" onclick="eliminarVehiculo('${v.id_vehiculo}')">Eliminar</button>
                     </td>`: '';
-                const fila = `
+        const fila = `
                 <tr>
                   <td><img src="/img/imgVehiculos/${v.imagen}" alt="Imagen del vehiculo" width="100"></td>
-                  <td>${v.id}</td>
+                  <td>${v.matricula}</td>
                   <td>${v.marca}</td>
                   <td>${v.modelo}</td>
                   <td>${v.año_matriculacion}</td>
@@ -41,35 +47,61 @@ function cargarVehiculos(tipo) {
                   ${accciones}
                 </tr>`;
 
-                tbody.innerHTML += fila;
-            });
-        }).catch(error => {
-            console.error("Error al cargar los vehiculos:", error);
-            mostrarMensaje("Error al cargar los vehiculos", "danger");
-        });
+        tbody.innerHTML += fila;
+    });
 }
 
-function eliminarVehiculo(id) {
-    fetch(`/vehiculos/api/vehiculos/${id}`, {
-        method: 'DELETE'
-    })
-        .then(response => {
-            if(response.status === 200) {
-                response.json().then(data =>{
-                     mostrarMensaje(data.mensaje, "success");
-                })
-                cargarVehiculos();
-            }else {
-                response.json().then(data =>{
-                     mostrarMensaje(data.error, "warning");
-                })
-            }
-        })
-        .catch(error => console.error("Error al eliminar:", error));
+async function actualizarVehiculos() {
+    const filtroTipo = document.getElementById("filtroTipo").value;
+    const filtroCampo = document.getElementById("filtroCampo").value;
+    const buscarInput = document.getElementById("buscar").value.trim();
+
+    let url = `/vehiculos/api/vehiculos?`;
+
+    // Utilizamos encoding para convertir caracteres especiales(/=<>&" ") en SEGUROS para la URL
+    // y evitar ataques de inyección como XSS. Por ejemplo, buscar="<script>alert('xss')</script>"
+    // se convierte en buscar="%3Cscript%3Ealert('xss')%3C/script%3E"
+    if (filtroTipo)
+        url += `filtroTipo=${encodeURIComponent(filtroTipo)}&`;
+
+    if (filtroCampo && buscarInput)
+        url += `filtroCampo=${encodeURIComponent(filtroCampo)}&buscar=${encodeURIComponent(buscarInput)}`;
+
+    try {
+        const data = await fetch(url);
+
+        if (data.status === 200) {
+            const vehiculos = await data.json();
+            mostrarVehiculos(vehiculos);
+        } else throw new Error(`HTTP error! status: ${data.status}`);
+
+    } catch (error) {
+        console.error("Error al cargar los vehiculos:", error);
+        mostrarMensaje("Error al cargar los vehículos", "danger");
+    }
+}
+
+async function eliminarVehiculo(id) {
+    try {
+        console.log("Intentando eliminar ID:", id);
+        const data = await fetch(`/vehiculos/api/vehiculos/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (data.status === 200) {
+            const response = await data.json();
+            mostrarMensaje(response.mensaje, "success");
+            actualizarVehiculos();
+        } else throw new Error(`HTTP error! status: ${data.status}`);
+
+    } catch (error) {
+        console.error("Error al eliminar:", error);
+        mostrarMensaje("Error al eliminar el vehiculo", "danger");
+    }
 }
 
 function mostrarMensaje(mensaje, tipo) {
     const msg = document.getElementById("alertContainer");
-    msg.innerHTML =`<div class = "alert alert-${tipo}" role = "alert">
+    msg.innerHTML = `<div class = "alert alert-${tipo}" role = "alert">
       ${mensaje} </div>`;
 }

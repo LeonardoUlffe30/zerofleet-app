@@ -14,7 +14,7 @@
           <label for="buscar"> </label>
           <input type="text" id="buscar" name="buscar" value="<%= buscar %>" placeholder="Introduce aqui la marca/modelo que quieras buscar">
 
-          <label for="tipo"> Tipo vehiculo: </label>
+          <label for="filtroTipo"> Tipo vehiculo: </label>
           <select id="filtroTipo" name="filtroTipo">
               <option value="">Todos</option>
               <option value="coche">Coche</option>
@@ -56,12 +56,15 @@
             </thead>
             <tbody></tbody>
           </table>
-           <script>const usuario = <%- JSON.stringify(usuario || null) %>;</script>
-          <script src = "/js/listavehiculos.js"></script>
         </div>
       </section>
     </div>
   </div>
 </div>
+<script>
+  const vehiculosIniciales = <%- JSON.stringify(vehiculos || []) %>; 
+  const usuario = <%- JSON.stringify(usuario || null) %>;
+</script>
+<script src="/js/listavehiculos.js"></script>
 
 
