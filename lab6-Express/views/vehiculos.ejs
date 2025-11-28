@@ -80,6 +80,11 @@
               <label for="precioHora">Precio/Hora:</label>
               <input type="text" id="precioHora" name="precioHora" value = "<%= vehiculo && vehiculo.precioHora ? vehiculo.precioHora : '' %>" required>
             </div>
+
+            <div>
+              <label for="concesionario">Concesionario:</label>
+              <input type="text" id="concesionario" name="concesionario" value="<%= vehiculo && vehiculo.concesionario ? vehiculo.concesionario : '' %>" required>
+            </div>
                 
             <div class="file-wrapper">
               <label for="imagen">Imagen del vehiculo</label>
