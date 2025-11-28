@@ -82,7 +82,7 @@ router.get("/nuevo", vehiculosController.formularioVehiculo);
 router.post(
     "/nuevo",
     multerFactory.single('imagen'),
-    check("matricula").notEmpty().withMessage("La matrícula es obligatoria"),
+    [check("matricula").notEmpty().withMessage("La matrícula es obligatoria"),
     check("marca").notEmpty().withMessage("La marca es obligatoria"),
     check("modelo").notEmpty().withMessage("El modelo es obligatorio"),
     check("anyoMatriculacion").isNumeric().withMessage("Año inválido"),
@@ -92,7 +92,7 @@ router.post(
     check("tipo").notEmpty().withMessage("Tipo obligatorio"),
     check("estado").notEmpty().withMessage("Estado obligatorio"),
     check("precioHora").isNumeric().withMessage("Precio inválido"),
-    check("precioHora", "El campo de Precio/Hora debe ser un valor numérico").isNumeric(),
+    check("precioHora", "El campo de Precio/Hora debe ser un valor numérico").isNumeric()],
     vehiculosController.crearVehiculo
 );
 
