@@ -22,8 +22,8 @@
 
           <div class="container text-left">
             <div>
-              <label for="id">Matricula:</label>
-              <input type="text" id="id" name="id" value="<%= vehiculo && vehiculo.id  ? vehiculo.id : '' %>" required>
+              <label for="matricula">Matricula:</label>
+              <input type="text" id="matricula" name="matricula" value="<%= vehiculo && vehiculo.matricula ? vehiculo.matricula : '' %>" required>
             </div>
 
             <div>
@@ -93,4 +93,24 @@
             <button type="reset" class="btn btn-light">Borrar</button>
         </div>
     </form>
+
+    <div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="confirmacionLabel">Confirmar vehículo</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Desea confirmar el vehiculo?</p>
+            <!-- Aquí inyectar dinámicamente los datos del formulario -->
+            <div id="resumen-vehiculo"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="confirmarVehiculo">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </section>

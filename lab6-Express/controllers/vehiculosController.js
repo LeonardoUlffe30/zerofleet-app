@@ -76,12 +76,11 @@ async function listarVehiculosApi(req, res) {
     }
 }
 
-// ------------------- ELIMINAR VEHICULO API CON FETCH ---------------------
 function formularioVehiculo(request, response) {
     response.status(200).render("vehiculos", {
         titulo: "Vehículos",
         estilo: "vehiculos.css",
-        script: "",
+        script: "vehiculos.js",
         vehiculo: "",
         error: ""
     });
@@ -117,7 +116,7 @@ async function crearVehiculo(request, response) {
         }
 
         const imagen = request.file ? request.file.filename : "";
-        const { matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km,
+        const { matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia,
             color, estado, tipo, precioHora, id_concesionario
         } = request.body;
 
@@ -127,23 +126,14 @@ async function crearVehiculo(request, response) {
             color, imagen, estado, tipo, precioHora, id_concesionario) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-        const params = [matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km,
+        const params = [matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia,
             color, imagen, estado, tipo, precioHora, id_concesionario];
 
         await query(sql, params);
 
         const vehiculos = await query("SELECT * FROM vehiculos");
 
-        response.render("listavehiculos", {
-            titulo: "Lista Vehículos",
-            estilo: "listavehiculos.css",
-            script: "",
-            vehiculos: vehiculos,
-            buscar: request.query.buscar || "",
-            filtro: request.query.filtro || "",
-            error: "",
-            mensaje: "Vehículo añadido correctamente"
-        });
+        response.status(200).json(vehiculos);
 
     } catch (error) {
         console.error(error);

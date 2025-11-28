@@ -77,47 +77,24 @@ router.use(verificarAdmin);
 
 // Formulario crear nuevo vehiculo - GET
 //router.get("/nuevo", vehiculosController.formularioVehiculo);
-router.get("/nuevo", function (request, response) {
-    response.status(200);
-    response.render("vehiculos", {
-        titulo: "Vehículos",
-        estilo: "vehiculos.css",
-        script: "",
-        vehiculo: "",
-        error: ""
-    });
-});
+router.get("/nuevo", vehiculosController.formularioVehiculo);
 // Formulario crear nuevo vehiculo - POST
 router.post(
     "/nuevo",
     multerFactory.single('imagen'),
+    check("matricula").notEmpty().withMessage("La matrícula es obligatoria"),
+    check("marca").notEmpty().withMessage("La marca es obligatoria"),
+    check("modelo").notEmpty().withMessage("El modelo es obligatorio"),
+    check("anyoMatriculacion").isNumeric().withMessage("Año inválido"),
+    check("numeroPlazas").isNumeric().withMessage("Número inválido"),
+    check("autonomia").isNumeric().withMessage("Autonomía inválida"),
+    check("color").notEmpty().withMessage("Color obligatorio"),
+    check("tipo").notEmpty().withMessage("Tipo obligatorio"),
+    check("estado").notEmpty().withMessage("Estado obligatorio"),
+    check("precioHora").isNumeric().withMessage("Precio inválido"),
     check("precioHora", "El campo de Precio/Hora debe ser un valor numérico").isNumeric(),
-    function (request, response) {
-        const error = validationResult(request);
-        if (!error.isEmpty()) {
-            return response.render("vehiculos", {
-                titulo: "Vehículos",
-                estilo: "vehiculos.css",
-                script: "",
-                vehiculo: request.body,
-                error: error.array()
-            });
-        }
-        const { id, marca, modelo, autonomia, tipo, precioHora } = request.body;
-        const imagen = request.file ? request.file.filename : "";
-        vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora, imagen });
-        console.log("VEHICULO AÑADIDO CORRECTAMENTE");
-        response.render("listavehiculos", {
-            titulo: "Lista Vehículos",
-            estilo: "listavehiculos.css",
-            script: "",
-            vehiculos: vehiculos,
-            buscar: request.query.buscar || "",
-            filtro: request.query.filtro || "",
-            error: "",
-            mensaje: "Vehículo añadido correctamente"
-        });
-    });
+    vehiculosController.crearVehiculo
+);
 
 router.get("/:id", function (request, response) {
     response.status(200);
