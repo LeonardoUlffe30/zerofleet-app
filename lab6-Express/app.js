@@ -12,6 +12,7 @@ const reservasRouter = require("./routes/reservas");
 const { autenticarRouter } = require("./routes/autenticar");
 const { router: adminRouter } = require("./routes/admin");
 const cargarJSONRouter = require("./routes/cargarJSON");
+const concesionariosRouter = require("./routes/concesionarios");
 
 let bdVacia = false;
 
@@ -55,6 +56,7 @@ app.use("/reservas", reservasRouter);
 app.use("/autenticar", autenticarRouter);
 app.use("/admin", adminRouter);
 app.use("/cargar-json", cargarJSONRouter);
+app.use("/concesionarios", concesionariosRouter);
 
 // Ruta principal
 app.get("/", function (request, response) {
