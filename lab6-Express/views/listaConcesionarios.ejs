@@ -1,0 +1,53 @@
+<div class="container" id="alertContainer"></div>
+<div class="container-fluid">
+  <div class="row text-left align-items-start">
+    <div class="col-2 col-xl-2">
+      <form class = "buscador" action = "/concesionarios" method = "GET" >
+
+        <label for="campo">Filtrar: </label>
+          <select id="filtroCampo" name="filtroCampo">
+              <option value="" disabled selected>Seleccione el filtro</option>
+              <option value="nombre" <%= filtro === "nombre" ? "selected" : "" %> >Nombre</option>
+              <option value="ciudad" <%= filtro === "ciudad" ? "selected" : "" %> >Ciudad</option>
+          </select>
+          
+          <label for="buscar"> </label>
+          <input type="text" id="buscar" name="buscar" value="<%= buscar %>" placeholder="Introduce aqui el nombre/ciudad que quieras buscar">
+      </form>
+    </div>
+
+    <div class="col-12 col-xl-10">
+      <section id="listaConcesionarios">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 id="tituloTabla" class="m-0">Concesionarios disponibles</h2>
+
+          <% if(usuario && usuario.tipo === "admin") { %>
+          <a href="/concesionarios/nuevo" class="btn btn-dark">+ Añadir</a>
+          <% } %>
+        </div>
+        <div class="table-responsive text-center">
+          <table aria-labelledby="tituloTabla" class="table table-sm table-hover align-middle" id="tablaConcesionarios">
+            <thead class="table-dark text-center">
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Ciudad</th>
+                <th scope="col">Direccion</th>
+                <th scope="col">Telefono</th>
+                <% if(usuario && usuario.tipo === "admin") {%>
+                    <th scope="col">Acciones</th>
+                  <% } %>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<script>
+  const concesionariosIniciales = <%- JSON.stringify(concesionarios || []) %>; 
+  const usuario = <%- JSON.stringify(usuario || null) %>;
+</script>
+
+
