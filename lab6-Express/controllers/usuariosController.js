@@ -58,20 +58,17 @@ async function crearUsuario(datosRegistro) {
     await query(sql, valores);
 }
 
-function actualizarUsuario(datosRegistro) {
-    const { nombre, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad } = datosRegistro;
+async function actualizarUsuario(id_usuario, nuevoRol) {
+    console.log("Acceso al controlador de actualizar usuario");
 
     const sql = `
-        UPDATE usuarios SET
-        nombre = ?, apellido = ?, correo = ?, contraseña = ?, rol = ?, telefono = ?, id_concesionario = ?, preferencias_accesibilidad = ?
-        WHERE id_usuario = ?`;
+        UPDATE usuarios
+        SET rol = ?
+        WHERE id_usuario = ?
+    `;
 
-    const params = [nombre, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad, request.params.id];
-
-    pool.query(sql, params, function (error) {
-        if (error) return response.status(500).send("Error actualizando usuario");
-        response.redirect("/admin/usuarios");
-    });
+    const valores = [nuevoRol, id_usuario];
+    await query(sql, valores);
 }
 
 function eliminarUsuario(request, response) {

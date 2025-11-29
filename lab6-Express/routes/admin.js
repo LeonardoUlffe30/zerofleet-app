@@ -55,12 +55,26 @@ router.use(function (request, response, next) {
     verificarAdmin(request, response, next);
 });
 
+// Gestion de usuarios
+
 router.get("/listarusuarios", function (request, response){
     console.log("Acceso al backend");
     usuariosController.listarUsuarios(request, response);
 });
 
 router.get("/api/listarusuarios", usuariosController.listarUsuariosApi);
+
+router.put("/editar/:id", async function (request, response) {
+    try {
+        const {rol} = request.body;
+        await usuariosController.actualizarUsuario(request.params.id, rol);
+
+        return response.status(201).json({ mensaje: "Rol actualizado correctamente"});
+    } catch (err) {
+        console.error("Error al actualizar el rol:", err.message);
+        return response.status(500).json({ error: "Error al actualizar el rol" });
+    }
+});
 
 
 module.exports = {router, reservas};

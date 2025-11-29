@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
         .catch(error => {
-            console.error("Error: " + error.message);
+            console.error("Error en registrar: " + error.message);
         })
     }
 
