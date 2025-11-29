@@ -24,7 +24,6 @@ function mostrarVehiculos(vehiculos) {
     const tbody = document.querySelector('#tablavehiculos tbody');
     tbody.innerHTML = '';
     vehiculos.forEach(v => {
-        console.log(v.matricula);
         const accciones = (usuario && usuario.tipo === "admin") ? `
                     <td class = "fit">
                         <a href ="/vehiculos/${v.matricula}/editar" class="btn btn-light">Editar</a>
@@ -83,7 +82,6 @@ async function actualizarVehiculos() {
 
 async function eliminarVehiculo(id) {
     try {
-        console.log("Intentando eliminar ID:", id);
         const data = await fetch(`/vehiculos/api/vehiculos/${id}`, {
             method: 'DELETE'
         });

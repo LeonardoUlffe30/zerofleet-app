@@ -214,7 +214,7 @@ async function actualizarVehiculo(request, response) {
             UPDATE vehiculos SET
                 matricula = ?, marca = ?, modelo = ?, año_matriculacion = ?, 
                 numero_plazas = ?, autonomia_km = ?, color = ?, imagen = ?, 
-                estado = ?, tipo = ?, precio_hora = ?, id_concesionario = ?, 
+                estado = ?, tipo = ?, precio_hora = ?, id_concesionario = ?
                 WHERE matricula = ? AND activo = true `;
 
         params = [
