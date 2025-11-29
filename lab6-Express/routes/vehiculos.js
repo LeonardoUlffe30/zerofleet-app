@@ -77,7 +77,8 @@ router.use(verificarAdmin);
 
 // Formulario crear nuevo vehiculo - GET
 //router.get("/nuevo", vehiculosController.formularioVehiculo);
-router.get("/nuevo", vehiculosController.formularioVehiculo);
+router.get("/nuevo", vehiculosController.formularioCrearVehiculo);
+
 // Formulario crear nuevo vehiculo - POST
 router.post(
     "/nuevo",
@@ -96,30 +97,20 @@ router.post(
     vehiculosController.crearVehiculo
 );
 
-router.get("/:id", function (request, response) {
-    response.status(200);
-    response.render("listavehiculos", {
-        titulo: "Vehículo",
-        estilo: "listavehiculos.css",
-        script: "",
-        vehiculos: vehiculos.filter(v => v.id === request.params.id),
-        buscar: request.query.buscar || "",
-        filtro: request.query.filtro || ""
-    });
-});
+router.get("/:id", vehiculosController.obtenerVehiculo);
+// router.get("/:id", function (request, response) {
+//     response.status(200);
+//     response.render("listavehiculos", {
+//         titulo: "Vehículo",
+//         estilo: "listavehiculos.css",
+//         script: "",
+//         vehiculos: vehiculos.filter(v => v.id === request.params.id),
+//         buscar: request.query.buscar || "",
+//         filtro: request.query.filtro || ""
+//     });
+// });
 
-router.get("/:id/editar", function (request, response) {
-    const v = vehiculos.filter(v => v.id === request.params.id)[0];
-
-    response.status(200);
-    response.render("vehiculos", {
-        titulo: "Vehículos",
-        estilo: "vehiculos.css",
-        script: "",
-        vehiculo: v,
-        error: ""
-    });
-});
+router.get("/:id/editar", vehiculosController.formularioEditarVehiculo);
 
 router.post("/:id/editar", multerFactory.single('imagen'), function (request, response, next) {
     const { id, marca, modelo, autonomia, tipo, precioHora, } = request.body;

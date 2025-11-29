@@ -38,17 +38,17 @@
 
             <div>
               <label for="anyoMatriculacion">Año de matriculación:</label>
-              <input type="text" id="anyoMatriculacion" name="anyoMatriculacion" value="<%= vehiculo && vehiculo.anyoMatriculacion ? vehiculo.anyoMatriculacion : '' %>" required>
+              <input type="text" id="anyoMatriculacion" name="anyoMatriculacion" value="<%= vehiculo && vehiculo.año_matriculacion ? vehiculo.año_matriculacion : '' %>" required>
             </div>
 
             <div>
               <label for="numeroPlazas">Número de plazas:</label>
-              <input type="text" id="numeroPlazas" name="numeroPlazas" value="<%= vehiculo && vehiculo.numeroPlazas ? vehiculo.numeroPlazas : '' %>" required>
+              <input type="text" id="numeroPlazas" name="numeroPlazas" value="<%= vehiculo && vehiculo.numero_plazas ? vehiculo.numero_plazas : '' %>" required>
             </div>
 
             <div>
               <label for="autonomia">Autonomía (km):</label>
-              <input type="text" id="autonomia" name="autonomia" value="<%= vehiculo && vehiculo.autonomia ? vehiculo.autonomia : '' %>" required>
+              <input type="text" id="autonomia" name="autonomia" value="<%= vehiculo && vehiculo.autonomia_km ? vehiculo.autonomia_km : '' %>" required>
             </div>
 
             <div>
@@ -78,12 +78,12 @@
   
             <div>
               <label for="precioHora">Precio/Hora:</label>
-              <input type="text" id="precioHora" name="precioHora" value = "<%= vehiculo && vehiculo.precioHora ? vehiculo.precioHora : '' %>" required>
+              <input type="text" id="precioHora" name="precioHora" value = "<%= vehiculo && vehiculo.precio_hora ? vehiculo.precio_hora : '' %>" required>
             </div>
 
             <div>
               <label for="concesionario">Concesionario:</label>
-              <input type="text" id="concesionario" name="concesionario" value="<%= vehiculo && vehiculo.concesionario ? vehiculo.concesionario : '' %>" required>
+              <input type="text" id="concesionario" name="concesionario" value="<%= vehiculo && vehiculo.id_concesionario ? vehiculo.id_concesionario : '' %>" required>
             </div>
                 
             <div class="file-wrapper">

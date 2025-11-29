@@ -29,7 +29,7 @@ async function listarVehiculos(request, response) {
         });
     } catch (error) {
         console.error(error);
-        response.status(500).json({ mensaje: "Error interno del servidor" });
+        response.status(500).send("Error interno del servidor");
     }
 }
 
@@ -76,7 +76,7 @@ async function listarVehiculosApi(req, res) {
     }
 }
 
-function formularioVehiculo(request, response) {
+function formularioCrearVehiculo(request, response) {
     response.status(200).render("vehiculos", {
         titulo: "Vehículos",
         estilo: "vehiculos.css",
@@ -86,20 +86,53 @@ function formularioVehiculo(request, response) {
     });
 }
 
-function obtenerVehiculo(request, response) {
-    const sql = `SELECT * FROM vehiculos WHERE id_vehiculo = ?`;
-    const params = [request.params.id];
+async function formularioEditarVehiculo(request, response) {
+    try {
+        let sql = `SELECT * FROM vehiculos WHERE matricula = ? AND activo = true`;
+        let params = [request.params.id];
 
-    pool.query(sql, params, function (error, filas) {
-        if (error) return response.status(500).send("Error obteniendo vehiculo");
+        const vehiculo = await query(sql, params);
 
-        response.render("vehiculos", {
-            titulo: "Vehículos disponibles",
+        if (vehiculo.length === 0) {
+            return response.status(404).json({ mensaje: "Vehiculo no encontrado" });
+        }
+
+        sql = `SELECT nombre FROM concesionarios WHERE id_concesionario = ?`
+        params = [vehiculo[0].id_concesionario];
+
+        const concesionario = await query(sql, params);
+
+        vehiculo[0].id_concesionario = concesionario[0].nombre;
+
+        response.status(200).render("vehiculos", {
+            titulo: "Editar vehículo",
             estilo: "vehiculos.css",
-            script: "",
-            vehiculos: filas
+            script: "vehiculos.js",
+            vehiculo: vehiculo[0],
+            error: ""
         });
-    });
+    } catch (error) {
+        console.error(error);
+        response.status(500).send("Error interno del servidor");
+    }
+}
+
+async function obtenerVehiculo(request, response) {
+    try {
+        const sql = `SELECT * FROM vehiculos WHERE matricula = ? and activo = true`;
+        const params = [request.params.id];
+
+        const vehiculo = await query(sql, params);
+
+        if (vehiculo.length === 0) {
+            return response.status(404).json({ mensaje: "Vehiculo no encontrado" });
+        }
+
+        response.status(200).json(vehiculo[0]);
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ error: "Error al obtener vehículo" });
+    }
 }
 
 async function crearVehiculo(request, response) {
@@ -115,10 +148,6 @@ async function crearVehiculo(request, response) {
             numeroPlazas, autonomia, color,
             estado, tipo, precioHora, concesionario
         } = request.body;
-
-        console.log(matricula, marca, modelo, anyoMatriculacion,
-            numeroPlazas, autonomia, color,
-            estado, tipo, precioHora, concesionario);
 
         // Verificamos que el concesionario existe
         let sql = `SELECT id_concesionario FROM concesionarios WHERE nombre = ?`;
@@ -137,8 +166,11 @@ async function crearVehiculo(request, response) {
                 color, imagen, estado, tipo, precio_hora, id_concesionario)
             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-        params = [matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia,
-            color, imagen, estado, tipo, precioHora, id_concesionario];
+        params = [
+            matricula, marca, modelo, anyoMatriculacion,
+            numeroPlazas, autonomia, color, imagen,
+            estado, tipo, precioHora, id_concesionario
+        ];
 
         const resultado = await query(sql, params);
 
@@ -150,32 +182,67 @@ async function crearVehiculo(request, response) {
     }
 }
 
-function actualizarVehiculo(request, response) {
-    const { matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km,
-        imagen, estado, id_concesionario
-    } = request.body;
+async function actualizarVehiculo(request, response) {
+    try {
+        const errores = validationResult(request);
 
-    const sql = `
-        UPDATE vehiculos SET
-        matricula = ?, marca = ?, modelo = ?, año_matriculacion = ?, numero_plazas = ?,
-            autonomia_km = ?, color = ?, imagen = ?, estado = ?, id_concesionario = ?
-                WHERE id_vehiculo = ? `;
+        if (!errores.isEmpty()) {
+            return response.status(400).json({ errores: errores.array() });
+        }
 
-    const params = [matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km,
-        imagen, estado, id_concesionario, request.params.id];
+        const imagen = request.file ? request.file.filename : "";
+        const {
+            matricula, marca, modelo, anyoMatriculacion,
+            numeroPlazas, autonomia, color,
+            estado, tipo, precioHora, concesionario
+        } = request.body;
 
-    pool.query(sql, params, function (error) {
-        if (error) return response.status(500).send("Error actualizando vehículo");
-        response.redirect("/admin/vehiculos");
-    });
+        let sql = `SELECT id_concesionario FROM concesionarios WHERE nombre = ?`;
+        let params = [concesionario];
+
+        const concesionarioId = await query(sql, params);
+
+        if (concesionarioId.length === 0) {
+            return response.status(400).json({ mensaje: "Concesionario no existe" });
+        }
+
+        const id_concesionario = concesionarioId[0].id_concesionario;
+
+        // La matricula a filtrar del WHERE es la antigua (viene en la URL /id/editar)
+        // y la matricula a actualizar (en caso se cambie, viene en el request.body) 
+        sql = `
+            UPDATE vehiculos SET
+                matricula = ?, marca = ?, modelo = ?, año_matriculacion = ?, 
+                numero_plazas = ?, autonomia_km = ?, color = ?, imagen = ?, 
+                estado = ?, tipo = ?, precio_hora = ?, id_concesionario = ?, 
+                WHERE matricula = ? AND activo = true `;
+
+        params = [
+            matricula, marca, modelo, anyoMatriculacion,
+            numeroPlazas, autonomia, color, imagen,
+            estado, tipo, precioHora, id_concesionario, request.params.id
+        ];
+
+        const resultado = await query(sql, params);
+
+        if (resultado.affectedRows === 0) {
+            return response.status(404).json({ mensaje: "Vehiculo no encontrado" });
+        }
+
+        response.status(200).json({ mensaje: "Vehiculo actualizado correctamente" });
+
+    } catch (error) {
+        console.error(error);
+        response.status(500).json({ mensaje: "Error actualizando vehiculo" });
+    }
 }
 
 async function eliminarVehiculo(request, response) {
     try {
         const sql = `
             UPDATE vehiculos SET
-        activo = false
-            WHERE id_vehiculo = ? `;
+            activo = false
+            WHERE matricula = ?`;
 
         const params = [request.params.id];
 
@@ -196,7 +263,8 @@ async function eliminarVehiculo(request, response) {
 module.exports = {
     listarVehiculos,
     listarVehiculosApi,
-    formularioVehiculo,
+    formularioCrearVehiculo,
+    formularioEditarVehiculo,
     obtenerVehiculo,
     crearVehiculo,
     actualizarVehiculo,

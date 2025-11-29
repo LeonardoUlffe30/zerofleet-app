@@ -27,8 +27,8 @@ function mostrarVehiculos(vehiculos) {
         console.log(v.matricula);
         const accciones = (usuario && usuario.tipo === "admin") ? `
                     <td class = "fit">
-                        <a href ="/vehiculos/${v.id}/editar" class="btn btn-light">Editar</a>
-                        <button class="btn btn-danger" onclick="eliminarVehiculo('${v.id_vehiculo}')">Eliminar</button>
+                        <a href ="/vehiculos/${v.matricula}/editar" class="btn btn-light">Editar</a>
+                        <button class="btn btn-danger" onclick="eliminarVehiculo('${v.matricula}')">Eliminar</button>
                     </td>`: '';
         const fila = `
                 <tr>
