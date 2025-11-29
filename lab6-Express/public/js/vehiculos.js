@@ -38,8 +38,39 @@ document.addEventListener("DOMContentLoaded", () => {
         numeroPlazas, autonomia, color, tipo, estado, precioHora, concesionario, imagen));
 
     // Crear vehiculo
-    confirmarModal.addEventListener("click", () => crearVehiculo(formulario));
+    confirmarModal.addEventListener("click", () => {
+        const modo = formulario.dataset.modo;
+
+        if (modo == "editar") {
+            actualizarVehiculo(formulario);
+        } else {
+            crearVehiculo(formulario);
+        }
+    });
 });
+
+async function actualizarVehiculo(formulario) {
+    const matriculaAntigua = formulario.dataset.id;
+    const formData = new FormData(formulario);
+
+    try {
+        const data = await fetch(`/vehiculos/${matriculaAntigua}/editar`, {
+            method: "POST",
+            body: formData
+        });
+
+        if (data.status === 200) {
+            await data.json();
+            alert("Vehículo actualizado");
+            window.location.href = "/vehiculos/";
+        } else {
+            alert(data.errores.map(e => e.msg).join("\n"));
+            throw new Error(`HTTP error! status: ${data.status}`);
+        }
+    } catch (error) {
+        console.error("Error al actualizar el vehiculo:", error);
+    }
+}
 
 async function crearVehiculo(formulario) {
     const formData = new FormData(formulario);
@@ -118,7 +149,6 @@ function validarCampo(campo, condicion, mensaje) {
 }
 
 function validarMatricula(matricula) {
-    console.log("Matricula", matricula.value.trim());
     const regex = /^[0-9]{4}[A-Z]{3}$/i;
     return validarCampo(
         matricula,
@@ -253,6 +283,4 @@ function actualizarProgreso(progreso, matricula, marca, modelo, anyoMatriculacio
     if (imagen.value.trim() && validarImagen(imagen)) validos++;
 
     progreso.value = (validos / total) * 100;
-
-    console.log(validos);
 }

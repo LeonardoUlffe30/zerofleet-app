@@ -6,7 +6,10 @@
         <progress id="progreso" max="100" min="0" value=""></progress>
     </div>
 
-    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" action="<%= vehiculo && vehiculo.id ? '/vehiculos/' + vehiculo.id + '/editar' : '/vehiculos/nuevo' %>" 
+    <form aria-label="Formulario de vehiculos" id="formulario-vehiculos" 
+      data-modo = "<%= vehiculo ? 'editar' : 'crear' %>"
+      data-id = "<%= vehiculo ? vehiculo.matricula : '' %>"
+      action="<%= vehiculo && vehiculo.matricula ? '/vehiculos/' + vehiculo.matricula + '/editar' : '/vehiculos/nuevo' %>" 
       method="POST" enctype="multipart/form-data">
             
         <fieldset> 
