@@ -12,6 +12,15 @@ function query(sql, params = []) {
 
 async function listarUsuarios(request, response) {
     console.log("Acceso al controlador de listar usuarios");
+        response.status(200).render("listausuarios", {
+            titulo: "Usuarios",
+            estilo: "listavehiculos.css",
+            script: "",
+        });
+}
+
+async function listarUsuariosApi(request, response) {
+    console.log("Acceso al controladorAPI de listar usuarios");
     const sql = `SELECT * FROM usuarios`;
     let usuario = await query(sql);
     response.json(usuario);
@@ -82,6 +91,7 @@ function eliminarUsuario(request, response) {
 
 module.exports = {
     listarUsuarios,
+    listarUsuariosApi,
     obtenerUsuario,
     crearUsuario,
     actualizarUsuario,

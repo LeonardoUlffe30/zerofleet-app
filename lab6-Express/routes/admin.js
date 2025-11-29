@@ -55,7 +55,12 @@ router.use(function (request, response, next) {
     verificarAdmin(request, response, next);
 });
 
-router.get("/listarUsuarios", usuariosController.listarUsuarios);
+router.get("/listarusuarios", function (request, response){
+    console.log("Acceso al backend");
+    usuariosController.listarUsuarios(request, response);
+});
+
+router.get("/api/listarusuarios", usuariosController.listarUsuariosApi);
 
 
 module.exports = {router, reservas};
