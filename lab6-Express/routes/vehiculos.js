@@ -112,39 +112,21 @@ router.get("/:id", vehiculosController.obtenerVehiculo);
 
 router.get("/:id/editar", vehiculosController.formularioEditarVehiculo);
 
-router.post("/:id/editar", multerFactory.single('imagen'), function (request, response, next) {
-    const { id, marca, modelo, autonomia, tipo, precioHora, } = request.body;
-    const imagen = request.file ? request.file.filename : "";
-    const v = vehiculos.find(v => v.id === id);
-
-    if (!v) {
-        vehiculos.push({ id, marca, modelo, autonomia, tipo, precioHora, imagen });
-
-        // Eliminar el anterior vehiculo porque se ha cambiado la matricula
-        const index = vehiculos.findIndex(v => v.id === request.params.id)
-        vehiculos.splice(index, 1);
-    } else {
-        v.id = id;
-        v.marca = marca;
-        v.modelo = modelo;
-        v.autonomia = autonomia;
-        v.tipo = tipo;
-        v.precioHora = precioHora;
-        v.imagen = imagen;
-    }
-
-    response.status(200);
-    response.render("listavehiculos", {
-        titulo: "Lista Vehículos",
-        estilo: "listavehiculos.css",
-        script: "",
-        vehiculos: vehiculos,
-        buscar: request.query.buscar || "",
-        filtro: request.query.filtro || "",
-        error: "",
-        mensaje: "Vehículo editado correctamente"
-    });
-});
+router.post("/:id/editar",
+    multerFactory.single('imagen'),
+    [
+        check("marca").notEmpty().withMessage("La marca es obligatoria"),
+        check("modelo").notEmpty().withMessage("El modelo es obligatorio"),
+        check("anyoMatriculacion").isNumeric().withMessage("Año inválido"),
+        check("numeroPlazas").isNumeric().withMessage("Número inválido"),
+        check("autonomia").isNumeric().withMessage("Autonomía inválida"),
+        check("color").notEmpty().withMessage("Color obligatorio"),
+        check("estado").notEmpty().withMessage("Estado obligatorio"),
+        check("tipo").notEmpty().withMessage("Tipo obligatorio"),
+        check("precioHora").isNumeric().withMessage("Precio inválido")
+    ],
+    vehiculosController.actualizarVehiculo
+);
 
 router.delete("/api/vehiculos/:id", vehiculosController.eliminarVehiculo);
 
