@@ -10,20 +10,12 @@ function query(sql, params = []) {
     })
 }
 
-function listarUsuarios(request, response) {
+async function listarUsuarios(request, response) {
+    console.log("Acceso al controlador de listar usuarios");
     const sql = `SELECT * FROM usuarios`;
-
-    pool.query(sql, function (error, filas) {
-        if (error) return response.status(500).send("Error obteniendo usuarios");
-
-        response.render("admin/usuarios", {
-            titulo: "Usuarios registrados",
-            estilo: "",
-            script: "",
-            usuarios: filas
-        });
-    });
-}
+    let usuario = await query(sql);
+    response.json(usuario);
+}   
 
 function obtenerUsuario(request, response) {
     const sql = `SELECT * FROM usuarios WHERE id_usuario = ?`;
@@ -42,22 +34,19 @@ function obtenerUsuario(request, response) {
 }
 
 async function crearUsuario(datosRegistro) {
-    const { nombre, correo, contrasenia, rol, telefono, id_concesionario, preferencias_accesibilidad } = datosRegistro;
-    console.log("he llegafo aqui");
+    console.log("Acceso al controlador de crear usuario");
+    const { nombre, apellido, correo, contrasenia, rol, telefono, id_concesionario, preferencias_accesibilidad } = datosRegistro;
     const filas = await query("SELECT * FROM usuarios WHERE correo = ?", [correo]);
     if (filas.length > 0) {
         throw new Error("El correo ya está registrado");
     }
-console.log("he llegafo aqui2");
-    const sqlInsert = `
+    const sql = `
         INSERT INTO usuarios 
         (nombre, apellido, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
-console.log("he llegafo aqui3");
-    const valores = [nombre, correo, contrasenia, rol, telefono, id_concesionario, preferencias_accesibilidad];
-console.log("he llegafo aqui4");
-    await query(sqlInsert, valores);
+    const valores = [nombre, apellido, correo, contrasenia, rol, telefono, id_concesionario, preferencias_accesibilidad];
+    await query(sql, valores);
 }
 
 function actualizarUsuario(datosRegistro) {
@@ -65,7 +54,7 @@ function actualizarUsuario(datosRegistro) {
 
     const sql = `
         UPDATE usuarios SET
-        nombre = ?, correo = ?, contraseña = ?, rol = ?, telefono = ?, id_concesionario = ?, preferencias_accesibilidad = ?
+        nombre = ?, apellido = ?, correo = ?, contraseña = ?, rol = ?, telefono = ?, id_concesionario = ?, preferencias_accesibilidad = ?
         WHERE id_usuario = ?`;
 
     const params = [nombre, correo, contraseña, rol, telefono, id_concesionario, preferencias_accesibilidad, request.params.id];

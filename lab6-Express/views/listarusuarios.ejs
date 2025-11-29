@@ -1,0 +1,22 @@
+<section id="listausuarios">
+  <table border="1">
+    <caption><h2>Lista de usuarios</h2></caption>
+    <table id="tablausuarios">
+      <thead>
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Apellido</th>
+          <th scope="col">Correo</th>
+          <th scope="col">Contraseña</th>
+          <th scope="col">Rol</th>
+          <th scope="col">Telefono</th>
+          <th scope="col">Concesionario asignado</th>
+          <th scope="col">Preferencias de accesibilidad</th>
+        </tr>
+      </thead>
+      <tbody> </tbody>
+    </table>
+    <script>const usuario = <%- JSON.stringify(usuario || null) %>;</script>
+    <script src = "/js/listausuarios.js"></script>
+  </table>
+</section>

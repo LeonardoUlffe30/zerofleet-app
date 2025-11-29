@@ -19,8 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return false;
         }
 
-        console.log("Pasando la validacion iniical");
-
         // Si todo está bien, el formulario se envía con fetch
         const datosRegistro = {
             nombre: campos.nombre.value,
@@ -39,12 +37,9 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(
             async response => {  //Espera el json
-                console.log("ha llegado el json");
                 const data = await response.json();
                 const mensajeError = document.getElementById("mensajes");
-                console.log("data:", data);
                 if(response.status === 400) {
-                    console.log("Error en el registro:", data);
                     mensajeError.innerHTML = data.errores.map(e => `
                         <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
@@ -53,13 +48,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }else if(response.status === 500) {
                     return false;
                 }
-                console.log("hollaaa");
                 mensajeError.innerHTML = "";
                 return true;
         })
         .then((sucess) => {
             if(sucess){
-                console.log("aqiiiiiii");
                 formulario.reset();
                 window.location.href = "/";
             }

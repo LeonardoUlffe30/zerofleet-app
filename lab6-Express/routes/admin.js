@@ -1,10 +1,11 @@
 const express = require("express");
 const path = require("path");
 const router = express.Router();
-const {verificarUsuario } = require("./autenticar");
+const {verificarUsuario, verificarAdmin } = require("./autenticar");
 
 // Controller
 const reservasController = require("../controllers/reservasController");
+const usuariosController = require("../controllers/usuariosController");
 
 const reservas = [
     { id_reserva: '1', nombre: 'Juan', apellido: 'Pérez', correo: 'asdf@gmail.com', telefono: '123456789', fechaIni: '2024-07-01', horaIni: '10:00', fechaFin: '2024-07-01', horaFin: '12:00', duracion: '2 horas', tipo: 'coche' },
@@ -49,5 +50,12 @@ router.delete("/api/reservas/:id", function (request, response) {
         return res.status(500).json({ error: "Error interno del servidor" });
     }
 });
+
+router.use(function (request, response, next) {
+    verificarAdmin(request, response, next);
+});
+
+router.get("/listarUsuarios", usuariosController.listarUsuarios);
+
 
 module.exports = {router, reservas};
