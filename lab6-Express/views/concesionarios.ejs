@@ -1,0 +1,74 @@
+<section id="concesionarios">
+    <h2>Concesionarios</h2>
+
+    <div id="contenedor-progreso">
+        <label for="progreso">Progreso</label>
+        <progress id="progreso" max="100" min="0" value=""></progress>
+    </div>
+
+    <form aria-label="Formulario de concesionarios" id="formulario-concesionarios" 
+      data-modo = "<%= concesionario ? 'editar' : 'crear' %>"
+      data-id = "<%= concesionario && concesionario.id_concesionario ? concesionario.id_concesionario : '' %>"
+      action="<%= concesionario && concesionario.id_concesionario ? '/concesionarios/' + concesionario.id_concesionario + '/editar' : '/concesionarios/nuevo' %>" 
+      method="POST">
+            
+        <fieldset> 
+          <legend>Información del concesionario</legend>
+
+          <% if(error){ %>
+            <div class = "alert alert-danger" role = "alert">
+              <% error.forEach(e => { %>
+                <p><%=  e.msg %></p>
+                <% }) %>
+            </div>
+          <% } %>
+
+          <div class="container text-left">
+            <div>
+              <label for="nombre">Nombre:</label>
+              <input type="text" id="nombre" name="nombre" value="<%= concesionario && concesionario.nombre ? concesionario.nombre : '' %>" required>
+            </div>
+
+            <div>
+              <label for="ciudad">Ciudad:</label>
+              <input type="text" id="ciudad" name="ciudad" value="<%= concesionario && concesionario.ciudad ? concesionario.ciudad : '' %>" required>
+            </div>
+  
+            <div>
+              <label for="direccion">Direccion:</label>
+              <input type="text" id="direccion" name="direccion" value="<%= concesionario && concesionario.direccion ? concesionario.direccion : '' %>" required>
+            </div>
+
+            <div>
+              <label for="telefono">Telefono:</label>
+              <input type="text" id="telefono" name="telefono" value="<%= concesionario && concesionario.telefono_contacto ? concesionario.telefono_contacto : '' %>" required>
+            </div>
+        </fieldset>
+
+        <div class="form-acciones">
+            <button type="submit" class="btn btn-dark">Enviar</button>
+            <button type="reset" class="btn btn-light">Borrar</button>
+        </div>
+
+    </form>
+
+    <div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="confirmacionLabel">Confirmar concesionario</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Desea confirmar el concesionario?</p>
+            <!-- Aquí inyectadinámicamente los datos del formulario -->
+            <div id="resumen-concesionario"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="confirmarConcesionario">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>

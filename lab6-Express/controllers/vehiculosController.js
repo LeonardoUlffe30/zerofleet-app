@@ -61,13 +61,6 @@ async function listarVehiculosApi(req, res) {
         // Traer todos los vehículos filtrados por tipo
         let vehiculos = await query(sql, params);
 
-        // Filtro por columna (marca o modelo) usando la búsqueda libre
-        if (buscar && filtroCampo) {
-            console.log("Filtrando por ", filtroCampo, " y buscando ", buscar);
-            vehiculos = vehiculos.filter(v =>
-                v[filtroCampo]?.toLowerCase().includes(buscar)
-            );
-        }
         res.json(vehiculos);
 
     } catch (error) {
