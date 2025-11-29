@@ -37,11 +37,10 @@ function editarUsuario(id_usuario) {
         }
     });
 
-    // Leer el rol desde la quinta celda (index 4, empezando en 0)
+    // Leer el rol desde la quinta celda 
     const rolActual = filaSeleccionada.children[4].textContent.trim();
 
     const nuevoRol = rolActual === "admin" ? "empleado" : "admin";
-    console.log("hemos llegado aqui");
     fetch(`/admin/editar/${id_usuario}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

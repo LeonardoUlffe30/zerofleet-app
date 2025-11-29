@@ -1,5 +1,6 @@
 const e = require("express");
 const pool = require("../config/db");
+const bcrypt = require("bcrypt");
 
 function query(sql, params = []) {
     return new Promise(function (resolve, reject) {
@@ -9,6 +10,8 @@ function query(sql, params = []) {
         })
     })
 }
+
+// PARA LISTAR USUARIOS
 
 async function listarUsuarios(request, response) {
     console.log("Acceso al controlador de listar usuarios");
@@ -24,21 +27,18 @@ async function listarUsuariosApi(request, response) {
     const sql = `SELECT * FROM usuarios`;
     let usuario = await query(sql);
     response.json(usuario);
-}   
+} 
 
-function obtenerUsuario(request, response) {
-    const sql = `SELECT * FROM usuarios WHERE id_usuario = ?`;
-    const params = [request.params.id];
+//PARA CREAR USUARIOS
 
-    pool.query(sql, params, function (error, filas) {
-        if (error) return response.status(500).send("Error obteniendo usuario");
-
-        response.render("admin/usuarios", {
-            titulo: "Usuarios disponibles",
-            estilo: "usuarios.css",
-            script: "",
-            concesionarioss: filas
-        });
+function formularioCrearUsuario(request, response) {
+    response.status(200).render("layout", {
+        titulo: "Registrar usuario",
+        estilo: "autenticar.css",
+        script: "registrar.js",
+        abrirModalRegistrar: true,
+        error: null,
+        body: ""
     });
 }
 
@@ -58,6 +58,8 @@ async function crearUsuario(datosRegistro) {
     await query(sql, valores);
 }
 
+//PARA ACTUALIZAR EL ROL DEL USUARIO
+
 async function actualizarUsuario(id_usuario, nuevoRol) {
     console.log("Acceso al controlador de actualizar usuario");
 
@@ -70,6 +72,45 @@ async function actualizarUsuario(id_usuario, nuevoRol) {
     const valores = [nuevoRol, id_usuario];
     await query(sql, valores);
 }
+
+//PARA OBTENER USUSARIO
+
+function formularioObtenerUsuario(request, response) {
+    response.status(200).render("layout", {
+        titulo: "Iniciar sesión",
+        estilo: "autenticar.css",
+        script: "iniciarSesion.js",
+        abrirModalIniciarSesion: true,
+        error: null,
+        body: ""
+    });
+}
+
+async function obtenerUsuario(correo, contrasenia) {
+    console.log("Acceso al controlador de iniciar sesion");
+    const sql = `SELECT * FROM usuarios WHERE correo = ?`;
+    const parametro = [correo];
+
+    const usuario = await query(sql, parametro);
+    if(usuario.length === 0) {
+        console.log("3333333");
+       const error = new Error("Correo o Contraseña incorrecta");
+       error.status = 400; 
+       throw error;
+    }
+
+
+    const match = await bcrypt.compare(contrasenia, usuario[0].contraseña);
+    if (!match) {
+        const error = new Error("Correo o Contraseña incorrecta");
+        error.status = 400; 
+        throw error;
+    }
+    
+    return usuario[0];
+}
+
+//PARA ELIMINAR USUARIO
 
 function eliminarUsuario(request, response) {
     const sql = `
@@ -92,5 +133,7 @@ module.exports = {
     obtenerUsuario,
     crearUsuario,
     actualizarUsuario,
-    eliminarUsuario
+    eliminarUsuario,
+    formularioCrearUsuario,
+    formularioObtenerUsuario
 }
