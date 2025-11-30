@@ -1,26 +1,63 @@
-<section id="listausuarios">
-  <table border="1">
-    <caption><h2>Lista de usuarios</h2></caption>
-    <div class="container" id="alertContainer"></div>
-    <table id="tablausuarios">
-      <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Apellido</th>
-          <th scope="col">Correo</th>
-          <th scope="col">Rol</th>
-          <th scope="col">Telefono</th>
-          <th scope="col">Concesionario asignado</th>
-          <th scope="col">Preferencias de accesibilidad</th>
-          <th scope="col">Activo</th>
-        </tr>
-      </thead>
-      <tbody> </tbody>
-    </table>
-    <script>
-        const usuario = <%- JSON.stringify(usuario || null) %>;
-    </script>
-    <script src = "/js/listausuarios.js"></script>
-  </table>
-</section>
+<div class="container" id="alertContainer"></div>
+<div class="container-fluid">
+  <div class="row text-left align-items-start">
+    <div class="col-2 col-xl-2">
+      <form class = "buscador" action = "/usuarios" method = "GET" >
+
+        <label for="campo">Filtrar: </label>
+          <select id="filtroCampo" name="filtroCampo">
+              <option value="" disabled selected>Seleccione el filtro</option>
+              <option value="nombre" <%= filtro === "nombre" ? "selected" : "" %> >Nombre</option>
+              <option value="apellido" <%= filtro === "apellido" ? "selected" : "" %> >Apellidos</option>
+          </select>
+          
+          <label for="buscar"> </label>
+          <input type="text" id="buscar" name="buscar" value="<%= buscar %>" placeholder="Introduce aqui el nombre/apellido que quieras buscar">
+
+          <label for="filtroRol"> Rol: </label>
+          <select id="filtroRol" name="filtroRol">
+              <option value="">Todos</option>
+              <option value="empleado">Empleado</option>
+              <option value="admin">Administrador</option>
+          </select>
+      </form>
+    </div>
+
+    <div class="col-12 col-xl-10">
+      <section id="listaUsuarios">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h2 id="tituloTabla" class="m-0">Usuarios disponibles</h2>
+
+          <% if(usuario && usuario.tipo === "admin") { %>
+          <a href="/usuarios/nuevo" class="btn btn-dark">+ Añadir</a>
+          <% } %>
+        </div>
+        <div class="table-responsive text-center">
+          <table aria-labelledby="tituloTabla" class="table table-sm table-hover align-middle" id="tablaUsuarios">
+            <thead class="table-dark text-center">
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellido</th>
+                <th scope="col">Correo</th>
+                <th scope="col">Rol</th>
+                <th scope="col">Telefono</th>
+                <th scope="col">Concesionario asignado</th>
+                <th scope="col">Preferencias de accesibilidad</th>
+                <th scope="col">Activo</th>
+                <% if(usuario && usuario.rol === "admin") {%>
+                    <th scope="col">Acciones</th>
+                  <% } %>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+  const usuariosIniciales = <%- JSON.stringify(usuarios || []) %>; 
+  const usuario = <%- JSON.stringify(usuario || null) %>;
+</script>

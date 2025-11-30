@@ -21,7 +21,7 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h2 id="tituloTabla" class="m-0">Concesionarios disponibles</h2>
 
-          <% if(usuario && usuario.tipo === "admin") { %>
+          <% if(usuario && usuario.rol === "admin") { %>
           <a href="/concesionarios/nuevo" class="btn btn-dark">+ Añadir</a>
           <% } %>
         </div>
@@ -33,7 +33,7 @@
                 <th scope="col">Ciudad</th>
                 <th scope="col">Direccion</th>
                 <th scope="col">Telefono</th>
-                <% if(usuario && usuario.tipo === "admin") {%>
+                <% if(usuario && usuario.rol === "admin") {%>
                     <th scope="col">Acciones</th>
                   <% } %>
               </tr>
@@ -45,6 +45,7 @@
     </div>
   </div>
 </div>
+
 <script>
   const concesionariosIniciales = <%- JSON.stringify(concesionarios || []) %>; 
   const usuario = <%- JSON.stringify(usuario || null) %>;

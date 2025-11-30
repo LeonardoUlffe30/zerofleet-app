@@ -24,7 +24,7 @@ function mostrarVehiculos(vehiculos) {
     const tbody = document.querySelector('#tablavehiculos tbody');
     tbody.innerHTML = '';
     vehiculos.forEach(v => {
-        const accciones = (usuario && usuario.tipo === "admin") ? `
+        const accciones = (usuario && usuario.rol === "admin") ? `
                     <td class = "fit">
                         <a href ="/vehiculos/${v.matricula}/editar" class="btn btn-light">Editar</a>
                         <button class="btn btn-danger" onclick="eliminarVehiculo('${v.matricula}')">Eliminar</button>

@@ -34,12 +34,10 @@ async function listarConcesionarios(request, response) {
 }
 
 // ------------------- LISTAR CONCESIONARIOS API CON FETCH ---------------------
-async function listarConcesionariosApi(req, res) {
+async function listarConcesionariosApi(request, response) {
     try {
-        console.log("Request query: ", req.query);
-        console.log("API listarConcesionariosAPI");
-        const buscar = (req.query.buscar || "").toLowerCase();           // Texto a buscar
-        const filtroCampo = req.query.filtroCampo || "";                           // "nombre" o "ciudad"
+        const buscar = (request.query.buscar || "").toLowerCase();           // Texto a buscar
+        const filtroCampo = request.query.filtroCampo || "";                           // "nombre" o "ciudad"
 
         console.log(buscar, filtroCampo);
 
@@ -52,14 +50,14 @@ async function listarConcesionariosApi(req, res) {
             params.push(`%${buscar}%`);
         }
 
-        // Traer todos los vehículos filtrados por tipo
-        let concesionarios = await query(sql, params);
+        // Traer todos los vehículos filtrados
+        const concesionarios = await query(sql, params);
 
-        res.json(concesionarios);
+        response.json(concesionarios);
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Error al obtener concesionarios" });
+        response.status(500).json({ error: "Error al obtener concesionarios" });
     }
 }
 
@@ -177,7 +175,7 @@ async function actualizarConcesionario(request, response) {
 
     } catch (error) {
         console.error(error);
-        response.status(500).json({ mensaje: "Error actualizando concesionarios" });
+        response.status(500).json({ mensaje: "Error actualizando concesionario" });
     }
 }
 

@@ -42,8 +42,6 @@ async function listarVehiculosApi(req, res) {
         const filtroCampo = req.query.filtroCampo || "";                           // "marca" o "modelo"
         const filtroTipo = req.query.filtroTipo || "";             // "coche", "moto", etc.
 
-        console.log(buscar, filtroCampo, filtroTipo);
-
         let sql = "SELECT * FROM vehiculos WHERE activo = true";
         const params = [];
 

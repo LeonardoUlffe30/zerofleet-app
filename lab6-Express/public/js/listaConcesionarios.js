@@ -22,7 +22,7 @@ function mostrarConcesionarios(concesionarios) {
     const tbody = document.querySelector('#tablaConcesionarios tbody');
     tbody.innerHTML = '';
     concesionarios.forEach(c => {
-        const accciones = (usuario && usuario.tipo === "admin") ? `
+        const accciones = (usuario && usuario.rol === "admin") ? `
                     <td class = "fit">
                         <a href ="/concesionarios/${c.id_concesionario}/editar" class="btn btn-light">Editar</a>
                         <button class="btn btn-danger" onclick="eliminarConcesionario('${c.id_concesionario}')">Eliminar</button>

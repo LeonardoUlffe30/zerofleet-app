@@ -3,7 +3,7 @@ const router = express.Router();
 const { check } = require("express-validator");
 
 // Middlewares de autenticacion
-const { verificarUsuario, verificarAdmin } = require("./autenticar");
+const { verificarUsuario, verificarAdmin } = require("../middleware/autenticacion");
 
 // Controller
 const concesionariosController = require("../controllers/concesionariosController");

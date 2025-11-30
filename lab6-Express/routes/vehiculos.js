@@ -5,7 +5,7 @@ const path = require("path");
 const multer = require("multer");
 
 // Middlewares de autenticacion
-const { verificarUsuario, verificarAdmin } = require("./autenticar");
+const { verificarUsuario, verificarAdmin } = require("../middleware/autenticacion");
 
 // Controller
 const vehiculosController = require("../controllers/vehiculosController");

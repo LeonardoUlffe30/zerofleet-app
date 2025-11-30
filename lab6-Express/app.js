@@ -13,6 +13,7 @@ const { autenticarRouter } = require("./routes/autenticar");
 const { router: adminRouter } = require("./routes/admin");
 const cargarJSONRouter = require("./routes/cargarJSON");
 const concesionariosRouter = require("./routes/concesionarios");
+const usuariosRouter = require("./routes/usuarios");
 
 let bdVacia = false;
 
@@ -57,6 +58,7 @@ app.use("/autenticar", autenticarRouter);
 app.use("/admin", adminRouter);
 app.use("/cargar-json", cargarJSONRouter);
 app.use("/concesionarios", concesionariosRouter);
+app.use("/usuarios", usuariosRouter);
 
 // Ruta principal
 app.get("/", function (request, response) {

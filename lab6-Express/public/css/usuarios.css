@@ -5,7 +5,7 @@ main {
     padding: 20px;
 }
 
-#concesionarios {
+#usuarios {
     width: 90%;
     background-color: #fff;
     padding: 20px;
@@ -69,10 +69,19 @@ input, select {
     border-radius: 4px;
 }
 
-#concesionarios select {
+#usuarios select {
     border-radius: 6px;
     height: 33.6px;
     width: 204px;
+}
+
+.file-wrapper {
+    display: flex;
+    gap: .5rem;
+}
+
+.input-file {
+    border: none;
 }
 
 .form-acciones {
@@ -99,6 +108,16 @@ input, select {
         display: inline-block;
         width: fit-content;
         text-align: center;
+    }
+
+    .file-wrapper {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .input-file {
+        width: 100%;
     }
 
     legend {

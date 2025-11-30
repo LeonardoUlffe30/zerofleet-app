@@ -29,7 +29,7 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h2 id="tituloTabla" class="m-0">Vehículos disponibles</h2>
 
-          <% if(usuario && usuario.tipo === "admin") { %>
+          <% if(usuario && usuario.rol === "admin") { %>
           <a href="/vehiculos/nuevo" class="btn btn-dark">+ Añadir</a>
           <% } %>
         </div>
@@ -49,7 +49,7 @@
                 <th scope="col">Estado</th>
                 <th scope="col">Tipo</th>
                 <th scope="col">Precio/Hora</th>
-                <% if(usuario && usuario.tipo === "admin") {%>
+                <% if(usuario && usuario.rol === "admin") {%>
                     <th scope="col">Acciones</th>
                   <% } %>
               </tr>
