@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", cargarReservas);
 
 function cargarReservas() {
-    console.log("22222222111111111111");
     fetch('/reservas/api/listareservas')
         .then(response => response.json())
         .then(reservas => {
-            const tbody = document.querySelector('#tablaReservas tbody');
+            const tbody = document.querySelector('#tablareservas tbody');
             tbody.innerHTML = '';
             reservas.forEach(r => {
                 console.log(r.id_reserva);
@@ -15,16 +14,12 @@ function cargarReservas() {
                 <td>`: '';
                 const fila =`
                 <tr>
-                  <td>${r.nombre}</td>
-                  <td>${r.apellido}</td>
-                  <td>${r.correo}</td>
-                  <td>${r.telefono}</td>
+                  <td>${r.id_reserva}</td>
+                  <td>${r.id_usuario}</td>
+                  <td>${r.id_vehiculo}</td>
                   <td>${r.fechaIni}</td>
-                  <td>${r.horaIni}</td>
                   <td>${r.fechaFin}</td>
-                  <td>${r.horaFin}</td>
-                  <td>${r.duracion}</td>
-                  <td>${r.tipo}</td>
+                  <td>${r.estado}</td>
                   ${acciones}
                 </tr>`;
 
@@ -33,26 +28,43 @@ function cargarReservas() {
         }).catch(error => console.error("Error al cargar las reservas:", error));
 }
 
-function cambiarEstado(id) {
+function cambiarEstado(id_reserva) {
     console.log("eliminarReserva");
-    console.log(id);
-    fetch(`/reserva/api/reservas/${id}`, {
-        method: 'DELETE'
+    console.log(id_reserva);
+    const filas = document.querySelectorAll('#tablareservas tbody tr');
+    let filaSeleccionada = null;
+
+    filas.forEach(fila => {
+        if (fila.children[0].textContent.trim() === id_reserva) {
+            filaSeleccionada = fila;
+        }
+    })
+    const estadoActual = filaSeleccionada.children[5].textContent.trim();
+    let estadoNuevo;
+    if(estadoActual === "activo") {
+        estadoNuevo = "finalizada";
+    }else if(estadoActual === "finalizada"){
+        estadoNuevo = "cancelada";
+    }else if(estadoActual === "cancelada"){
+        estadoNuevo = "activo";
+    }
+
+    fetch(`/reservas/editar/${id_reserva}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({id_reserva, estado: estadoNuevo })
     })
     .then(response => {
-         if(response.status === 200) {
-            console.log("200Ç");
-                response.json().then(data =>{
-                     mostrarMensaje(data.mensaje, "success");
-                })
-                cargarReservas();
-            }else {
-                response.json().then(data =>{
-                     mostrarMensaje(data.error, "warning");
-                })
-            }
+        if(response.ok) {
+            mostrarMensaje("Estado actualizado de forma correcta", "success");
+            mostrarUsuarios();
+        }else{
+            mostrarMensaje("No se pudo actualizar el estado", "error");
+        }
     })
-    .catch(error => console.error("Error al eliminar:", error));
+    .catch(error => {
+            console.error("Error al cambiar el estado: " + error.message);
+     })
 }
 
 function mostrarMensaje(mensaje, tipo) {

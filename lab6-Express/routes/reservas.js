@@ -44,19 +44,6 @@ router.get("/listareservas", reservasController.listarReservas);
 router.get("/api/listareservas", reservasController.listarReservasApi)
 
 
-router.delete("/api/reservas/:id", function (request, response) {
-    console.log(request.params)
-    try{
-        const index = reservas.findIndex(r => r.id_reserva === request.params.id)
-        if (index !== -1) {
-            vehiculos.splice(index, 1);
-            response.status(200).json({mensaje: "Reserva eliminado correctamente"});
-        } else {
-            response.status(404).json({ error: "Reserva no encontrado" });
-        }
-    }catch (err){
-        console.error("Error en DELETE:", err);
-        return res.status(500).json({ error: "Error interno del servidor" });
-    }
-});
+router.delete("editar/:id", reservasController.actualizarReserva);
+
 module.exports = router;

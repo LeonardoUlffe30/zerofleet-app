@@ -27,23 +27,6 @@ async function listarReservasApi(request, response) {
     response.json(reserva);
 }
 
-// Falta editar
-function obtenerReserva(request, response) {
-    const sql = `SELECT * FROM concesionarios WHERE id_concesionario = ?`;
-    let params = [request.params.id];
-
-    pool.query(sql, params, function (error, filas) {
-        if (error) return response.status(500).send("Error obteniendo concesionario");
-
-        response.render("concesionarios", {
-            titulo: "Reservas disponibles",
-            estilo: "concesionarios.css",
-            script: "",
-            concesionarioss: filas
-        });
-    });
-}
-
 // CREAR RESERVAS
 
 function formulariocrearReserva(request, response) {
@@ -103,45 +86,31 @@ async function crearReserva(request, response) {
     }
 }
 
-// Falta editar
-function actualizarReserva(request, response) {
-    const { nombre, ciudad, direccion, telefono_contacto } = request.body;
+// Editar resrva
+async function actualizarReserva(request, response) {
+    try {
+        const {estado, id_reserva} = request.body;
+        
+        const sql = `
+        UPDATE reservas
+        SET estado = ?
+        WHERE id_reserva = ?`;
 
-    const sql = `
-        UPDATE concesionarios SET
-        nombre = ?, ciudad = ?, direccion = ?, telefono_contacto = ?
-        WHERE id_concesionario = ?`;
+        const valores = [estado, id_reserva];
+        await query(sql, valores);
 
-    const params = [nombre, ciudad, direccion, telefono_contacto];
-
-    pool.query(sql, params, function (error) {
-        if (error) return response.status(500).send("Error actualizando concesionario");
-        response.redirect("/admin/concesionarios");
-    });
-}
-
-// Falta editar
-function eliminarReserva(request, response) {
-    const sql = `
-        UPDATE concesionarios SET
-        activo = false
-        WHERE id_concesionario = ?`;
-
-    const params = [request.params.id];
-
-    pool.query(sql, params, function (error) {
-        if (error) return response.status(500).sendd("Error eliminando concesionario");
-        response.redirect("/admin/concesionarios");
-    })
+        return response.status(201).json({ mensaje: "Estado actualizado correctamente"});
+    } catch (err) {
+        console.error("Error al actualizar el estado:", err.message);
+        return response.status(500).json({ error: "Error al actualizar el estado" });
+    }
 }
 
 
 module.exports = {
     listarReservas,
     listarReservasApi,
-    obtenerReserva,
     formulariocrearReserva,
     crearReserva,
     actualizarReserva,
-    eliminarReserva
 }
