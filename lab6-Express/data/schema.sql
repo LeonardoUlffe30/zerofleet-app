@@ -64,12 +64,25 @@ CREATE TABLE IF NOT EXISTS vehiculos (
 );
 
 -- =========================
+--   TABLA VEHICULOS
+-- =========================
+CREATE TABLE IF NOT EXISTS clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    correo VARCHAR(150) NOT NULL,
+    telefono VARCHAR(20),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+
+-- =========================
 --   TABLA RESERVAS
 -- =========================
 CREATE TABLE IF NOT EXISTS reservas (
     id_reserva INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
     id_vehiculo INT NOT NULL,
+    id_cliente INT NOT NULL,
     fecha_inicio DATETIME NOT NULL,
     fecha_fin DATETIME NOT NULL,
     estado ENUM('activa', 'finalizada', 'cancelada') DEFAULT 'activa',
@@ -77,6 +90,10 @@ CREATE TABLE IF NOT EXISTS reservas (
     incidencias_reportadas TEXT,
     activo BOOLEAN DEFAULT TRUE,
 
+    FOREIGN KEY (id_cliente)
+        REFERENCES clientes(id_cliente)
+        ON DELETE CASCADE,
+        
     FOREIGN KEY (id_usuario)
         REFERENCES usuarios(id_usuario)
         ON DELETE CASCADE,
