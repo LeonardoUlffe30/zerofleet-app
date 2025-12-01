@@ -11,29 +11,20 @@ function query(sql, params = []) {
 }
 
 // Cargar el listado de reservas inicial
+
 function listarReservas(request, response) {
-    const usuario = request.session.usuario;
+    response.status(200).render("listareservas", { 
+        titulo: "Lista de reservas",
+        estilo: "listavehiculos.css",
+        script: "",
+     });
+}
 
-    let sql = `SELECT * FROM reservas`;
-
-    let params = [];
-
-    /*
-    if (usuario.rol === "empleado") {
-        sql += ` WHERE r.id_usuario = ?`;
-        params.push(usuario.id);
-    }*/
-
-    pool.query(sql, params, function (error, filas) {
-        if (error) return response.status(500).send("Error obteniendo las reservas");
-
-        response.render("listaReservas", {
-            titulo: "Listado de Reservas",
-            estilo: "",
-            script: "",
-            reservas: filas
-        });
-    });
+async function listarReservasApi(request, response) {
+    console.log("Acceso al controladorAPI de listar reservas");
+    const sql = `SELECT * FROM reservas`;
+    let reserva = await query(sql);
+    response.json(reserva);
 }
 
 // Falta editar
@@ -147,6 +138,7 @@ function eliminarReserva(request, response) {
 
 module.exports = {
     listarReservas,
+    listarReservasApi,
     obtenerReserva,
     formulariocrearReserva,
     crearReserva,

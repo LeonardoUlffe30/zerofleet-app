@@ -39,9 +39,10 @@ router.post("/",[
 );
 
 // ----------------- DE LISTAR RESERVAS ------------------
-router.get("/api/reservas", function (request, response){
-    response.json(reservas);
-})
+router.get("/listareservas", reservasController.listarReservas);
+
+router.get("/api/listareservas", reservasController.listarReservasApi)
+
 
 router.delete("/api/reservas/:id", function (request, response) {
     console.log(request.params)

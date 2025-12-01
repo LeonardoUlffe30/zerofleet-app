@@ -1,16 +1,17 @@
 document.addEventListener("DOMContentLoaded", cargarReservas);
 
 function cargarReservas() {
-    fetch('/admin/api/reservas')
+    console.log("22222222111111111111");
+    fetch('/reservas/api/listareservas')
         .then(response => response.json())
         .then(reservas => {
-            const tbody = document.querySelector('#tablareservas tbody');
+            const tbody = document.querySelector('#tablaReservas tbody');
             tbody.innerHTML = '';
             reservas.forEach(r => {
                 console.log(r.id_reserva);
                 const acciones = usuario ? `
                 <td class = "fit">
-                    <button class="btn btn-danger" onclick="eliminarReserva('${r.id_reserva}')">Eliminar</button>
+                    <button class="btn btn-danger" onclick="cambiarEstado('${r.id_reserva}')">Cambiar estado</button>
                 <td>`: '';
                 const fila =`
                 <tr>
@@ -32,10 +33,10 @@ function cargarReservas() {
         }).catch(error => console.error("Error al cargar las reservas:", error));
 }
 
-function eliminarReserva(id) {
+function cambiarEstado(id) {
     console.log("eliminarReserva");
     console.log(id);
-    fetch(`/admin/api/reservas/${id}`, {
+    fetch(`/reserva/api/reservas/${id}`, {
         method: 'DELETE'
     })
     .then(response => {
