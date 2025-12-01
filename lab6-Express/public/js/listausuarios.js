@@ -114,15 +114,11 @@ function editarUsuario(id_usuario) {
         body: JSON.stringify({ rol: nuevoRol })
     })
         .then(response => {
-            if (!response.ok) {
-                return false;
-            }
-            return true;
-        })
-        .then(sucess => {
-            if (sucess) {
+            if (response.ok) {
                 mostrarMensaje("Rol actualizado de forma correcta", "success");
                 mostrarUsuarios();
+            }else{
+                mostrarMensaje("No se ha podido actualiza de forma correcta el rol", "error");
             }
         })
         .catch(error => {

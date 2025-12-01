@@ -43,7 +43,8 @@ router.get("/listareservas", reservasController.listarReservas);
 
 router.get("/api/listareservas", reservasController.listarReservasApi)
 
+router.put("editar/:id", reservasController.actualizarReserva);
 
-router.delete("editar/:id", reservasController.actualizarReserva);
+router.get("/listareservas/:id", reservasController.obtenerReservasPorUsuario);
 
 module.exports = router;

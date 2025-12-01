@@ -10,7 +10,7 @@ function query(sql, params = []) {
     })
 }
 
-// Cargar el listado de reservas inicial
+// LISTAR RESERVAS
 
 function listarReservas(request, response) {
     response.status(200).render("listareservas", { 
@@ -86,18 +86,18 @@ async function crearReserva(request, response) {
     }
 }
 
-// Editar resrva
+// EDITAR RESERVAS
 async function actualizarReserva(request, response) {
     try {
-        const {estado, id_reserva} = request.body;
+        const {estado, id_reserva} = request.params;
         
         const sql = `
         UPDATE reservas
         SET estado = ?
         WHERE id_reserva = ?`;
 
-        const valores = [estado, id_reserva];
-        await query(sql, valores);
+        const params = [estado, id_reserva];
+        await query(sql, params);
 
         return response.status(201).json({ mensaje: "Estado actualizado correctamente"});
     } catch (err) {
@@ -106,6 +106,19 @@ async function actualizarReserva(request, response) {
     }
 }
 
+// OBTENER RESERVAS POR ID
+async function obtenerReservasPorUsuario(request, response) {
+    try {
+        console.log("Acceso al controladorAPI de reservas por usuario");
+        const sql = `SELECT * FROM reservas WHERE id_usuario = ?`;
+        const {id_usuario} = request.params;
+        let reservas = await query(sql, [id_usuario]);
+        response.json(reservas);
+    } catch (err) {
+        console.error("Error al obtener reservas por usuario:", err.message);
+        response.status(500).json({ error: "Error al obtener reservas por usuario" });
+    }
+}
 
 module.exports = {
     listarReservas,
@@ -113,4 +126,5 @@ module.exports = {
     formulariocrearReserva,
     crearReserva,
     actualizarReserva,
+    obtenerReservasPorUsuario
 }

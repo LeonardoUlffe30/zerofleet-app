@@ -1,7 +1,11 @@
-document.addEventListener("DOMContentLoaded", cargarReservas);
+document.addEventListener("DOMContentLoaded", () => {
+    const id_usuario = usuario ? usuario.id_usuario : null;
+    cargarReservas(id_usuario);
+});
 
-function cargarReservas() {
-    fetch('/reservas/api/listareservas')
+function cargarReservas(id_usuario) {
+    const url = id_usuario ? `/reservas/listareservas/${id_usuario}` : `/reservas/api/listareservas`
+    fetch(url)
         .then(response => response.json())
         .then(reservas => {
             const tbody = document.querySelector('#tablareservas tbody');
@@ -72,3 +76,4 @@ function mostrarMensaje(mensaje, tipo) {
     msg.innerHTML =`<div class = "alert alert-${tipo}" role = "alert">
       ${mensaje} </div>`;
 }
+
