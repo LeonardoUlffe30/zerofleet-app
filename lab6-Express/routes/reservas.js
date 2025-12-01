@@ -1,13 +1,12 @@
 const express = require("express");
 const path = require("path");
 const router = express.Router();
-const { verificarUsuario } = require("./autenticar");
+const { verificarUsuario } = require("../middleware/autenticacion");
 const {reservas} = require("./admin");
 const { check, validationResult } = require("express-validator");
 
-router.use(function (request, response, next) {
-    verificarUsuario(request, response, next);
-});
+
+router.use(verificarUsuario);
 
 // ----------------- DE RESERVAS ------------------
 
