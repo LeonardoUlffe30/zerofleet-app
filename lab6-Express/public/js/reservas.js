@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const campos = {
         nombre: document.getElementById("nombre"),
         apellido: document.getElementById("apellido"),
-        correo: document.getElementById("correo"),
+        correo: document.getElementById("correoReserva"),
         telefono: document.getElementById("telefono"),
         fechaIni: document.getElementById("fechaIni"),
         fechaFin: document.getElementById("fechaFin"),
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             condiciones: document.getElementById("condiciones").checked
         };
 
-        fetch("/reservas/api/reservas", {
+        fetch("/reservas", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(datosReserva)
@@ -51,24 +51,33 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(
             async response => {  //Espera el json
                 const data = await response.json();
-                const errores = document.getElementById("mensajes");
-
+                const mensajeError = document.getElementById("mensajes");
                 if (!response.ok) {
-                    errores.innerHTML = data.errores.map(e => `
+                    if(data.errores){
+                        console.log("22222222222");
+                        mensajeError.innerHTML = data.errores.map(e => `
                         <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
                         </div>`).join("");
-                    throw new Error("Errores de validación en el formulario de reservas");
+                    }else {
+                        console.log(data.mensaje);
+                        mensajeError.innerHTML = `
+                        <div class="alert alert-danger" role="alert">
+                            <p>${data.mensaje}</p>
+                        </div>`;
+                    }
+                    return false;
                 }
-
-                errores.innerHTML = "";
-                return data;
+                mensajeError.innerHTML = "";
+                return true;
                 
         })
-        .then(reserva => {
-            window.location.href = "/admin/listareservas";
-            formulario.reset();
-            progreso.value=0;
+        .then(sucess => {
+            if(sucess) {
+                formulario.reset();
+                progreso.value=0;
+                window.location.href = "/admin/listareservas";
+            }
         })
         .catch(error => {
             console.error("Error: " + error.message);

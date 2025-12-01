@@ -124,7 +124,7 @@ async function crearUsuario(request, response) {
         let usuario = await query(sql, params);
 
         if (usuario.length > 0) {
-            return response.status(200).json({ mensaje: "Correo ya está registrado." });
+            return response.status(400).json({ mensaje: "Correo ya está registrado." });
         }
 
         sql = `
