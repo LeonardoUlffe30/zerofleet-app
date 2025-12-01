@@ -2,13 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const formulario = document.getElementById("formulario-usuarios");
     const nombre = document.getElementById("nombre");
     const apellido = document.getElementById("apellido");
-    const correo = document.getElementById("correo");
+    const correo = document.getElementById("correoUsuario");
     const rol = document.getElementById("rol");
     const telefono = document.getElementById("telefono");
     const concesionario = document.getElementById("concesionario");
     const preferencias = document.getElementById("preferencias");
     const progreso = document.getElementById("progreso");
-    const confirmarModal = document.getElementById("confirmarVehiculo");
+    const confirmarModal = document.getElementById("confirmarUsuario");
 
     // Actualizar progreso
     formulario.addEventListener("input", () => actualizarProgreso(progreso, nombre, apellido, correo, rol, telefono,
@@ -217,7 +217,7 @@ function actualizarProgreso(progreso, nombre, apellido, correo, rol, telefono,
     if (nombre.value.trim() && validarNombre(nombre)) validos++;
     if (apellido.value.trim() && validarApellido(apellido)) validos++;
     if (correo.value.trim() && validarCorreo(correo)) validos++;
-    if (rol.value.trim() && validarTipo(tipo)) validos++;
+    if (rol.value.trim() && validarRol(rol)) validos++;
     if (telefono.value && validarTelefono(telefono)) validos++;
     if (concesionario.value && validarConcesionario(concesionario)) validos++;
     if (preferencias.value.trim() && validarPreferencias(preferencias)) validos++;

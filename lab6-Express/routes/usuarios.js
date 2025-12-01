@@ -11,9 +11,9 @@ router.get("/", usuariosController.listarUsuarios);
 
 router.get("/api/usuarios", usuariosController.listarUsuariosApi);
 
-router.get("/editar/:id", usuariosController.formularioEditarUsuario);
+router.get("/:id/editar", usuariosController.formularioEditarUsuario);
 
-router.post("/editar/:id", usuariosController.actualizarUsuario);
+router.post("/:id/editar", usuariosController.actualizarUsuario);
 
 router.delete("/api/usuarios/:id", usuariosController.eliminarUsuario);
 
