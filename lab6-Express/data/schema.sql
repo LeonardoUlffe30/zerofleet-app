@@ -72,8 +72,9 @@ CREATE TABLE IF NOT EXISTS clientes (
     apellido VARCHAR(100) NOT NULL,
     correo VARCHAR(150) NOT NULL,
     telefono VARCHAR(20),
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN DEFAULT TRUE
+);
 
 -- =========================
 --   TABLA RESERVAS
