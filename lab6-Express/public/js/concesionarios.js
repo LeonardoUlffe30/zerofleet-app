@@ -44,10 +44,6 @@ async function actualizarConcesionario(formulario) {
         telefono: formulario.telefono.value
     };
 
-    for (let [key, value] of formData.entries()) {
-        console.log("FORMDATA:", key, value);
-    }
-
     try {
         const data = await fetch(`/concesionarios/${idConcesionario}/editar`, {
             method: "POST",
@@ -101,6 +97,7 @@ async function crearConcesionario(formulario) {
 
 function validarFormulario(event, nombre, ciudad, direccion, telefono) {
     event.preventDefault();
+
     if (!validarNombre(nombre) || !validarCiudad(ciudad) || !validarDireccion(direccion) || !validarTelefono(telefono)) {
         alert("Corrige los errores antes de enviar.");
         return;
