@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 const { verificarUsuario } = require("../middleware/autenticacion");
-const {reservas} = require("./admin");
+const { reservas } = require("./admin");
 const { check, validationResult } = require("express-validator");
 const reservasController = require("../controllers/reservasController");
 
@@ -13,24 +13,24 @@ router.use(verificarUsuario);
 
 router.get("/", reservasController.formulariocrearReserva);
 
-router.post("/",[
-    check("nombre", "El nombre debe tener mínimo 3 carácteres").isLength({min: 3}),
-    check("apellido", "El apellido debe tener mínimo 3 carácteres").isLength({min: 3}),
-    check("telefono", "El teléfono debe tener  9 números").isLength({min: 9, max: 9}).isNumeric(),
-    check("correo", "El correo debe ser uno váido: xxx@zfleet.com").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
-    check("tipo", "El campo tipo es obligatorio").notEmpty(),
-    check("fechaIni").custom((fechaIni) =>{
+router.post("/", [
+    check("nombreCliente", "El nombre debe tener mínimo 3 carácteres").isLength({ min: 3 }),
+    check("apellidoCliente", "El apellido debe tener mínimo 3 carácteres").isLength({ min: 3 }),
+    check("telefonoCliente", "El teléfono debe tener  9 números").isLength({ min: 9, max: 9 }).isNumeric(),
+    check("correoCliente", "El correo debe ser uno váido: xxx@zfleet.com").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
+    check("vehiculo", "El campo vehiculo es obligatorio").notEmpty(),
+    check("fechaIni").custom((fechaIni) => {
         const fechaIngresada = new Date(fechaIni);
         const ahora = new Date();
-        if(ahora < fechaIngresada){
+        if (fechaIngresada < ahora) {
             throw new Error("La fecha de inicio debe ser posterior a la fecha actual");
         }
         return true;
     }),
-    check("fechaFin").custom((fechaFin, {req}) =>{
+    check("fechaFin").custom((fechaFin, { req }) => {
         const fechaIni = new Date(req.body.fechaIni);
         const fechaIngresada = new Date(fechaFin);
-        if(fechaIni >= fechaIngresada){
+        if (fechaIni >= fechaIngresada) {
             throw new Error("La fecha de fin debe ser posterior a la fecha de inicio");
         }
         return true;
