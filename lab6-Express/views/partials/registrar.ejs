@@ -32,6 +32,20 @@
           <div class="contenedor-input">
             <input type="password" id="repetir-contrasenia-registro" name ="repetir-contrasenia" placeholder="Repetir contraseña" required>
           </div>
+
+          <div class="container text-left">
+                <div>
+                    <label for="concesionario">Concesionario: </label>
+                    <select id="concesionario" name="concesionario" required>
+                        <option value="" disabled selected>Seleccione un concesionario</option>
+
+                        <% concesionarios.forEach(v => { %>
+                            <option value="<%= v.id_concesionario %>"><%= v.id_concesionario %></option>
+                        <% }) %>
+
+                    </select>
+                </div>
+            </div>
         
           <input type="submit" class="btn-autenticar" value="Crear cuenta">
         </form>

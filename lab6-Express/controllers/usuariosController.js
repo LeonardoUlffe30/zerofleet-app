@@ -65,15 +65,24 @@ async function listarUsuariosApi(request, response) {
 
 //PARA CREAR USUARIOS
 
-function formularioCrearUsuario(request, response) {
-    response.status(200).render("layout", {
-        titulo: "Registrar usuario",
-        estilo: "autenticar.css",
-        script: "registrar.js",
-        abrirModalRegistrar: true,
-        error: null,
-        body: ""
-    });
+async function formularioCrearUsuario(request, response) {
+    try {
+        const sql = `SELECT id_concesionario FROM concesionarios`;
+        const concesionarios = await query(sql);
+
+        response.status(200).render("layout", {
+            titulo: "Registrar usuario",
+            estilo: "autenticar.css",
+            script: "registrar.js",
+            abrirModalRegistrar: true,
+            error: null,
+            body: "",
+            concesionarios: concesionarios
+        });
+    } catch(err) {
+        console.error("Error cargando concesionarios:", err.message);
+        response.status(500).send("Error interno cargando concesionarios");
+    }
 }
 
 async function formularioEditarUsuario(request, response) {
