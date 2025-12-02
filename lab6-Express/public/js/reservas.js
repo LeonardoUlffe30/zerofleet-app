@@ -1,274 +1,279 @@
 document.addEventListener("DOMContentLoaded", function () {
     const formulario = document.getElementById("formulario-reserva");
-    const campos = {
-        nombre: document.getElementById("nombre"),
-        apellido: document.getElementById("apellido"),
-        correo: document.getElementById("correoReserva"),
-        telefono: document.getElementById("telefono"),
-        fechaIni: document.getElementById("fechaIni"),
-        fechaFin: document.getElementById("fechaFin"),
-        horaIni: document.getElementById("horaIni"),
-        horaFin: document.getElementById("horaFin"),
-        tipo: document.getElementById("tipo"),
-        duracion: document.getElementById("duracion"),
-    }
-
+    const nombre = document.getElementById("nombreCliente");
+    const apellido = document.getElementById("apellidoCliente");
+    const correo = document.getElementById("correoCliente");
+    const telefono = document.getElementById("telefonoCliente");
+    const fechaIni = document.getElementById("fechaIni");
+    const fechaFin = document.getElementById("fechaFin");
+    const horaIni = document.getElementById("horaIni");
+    const horaFin = document.getElementById("horaFin");
+    const vehiculo = document.getElementById("vehiculo");
+    const duracion = document.getElementById("duracion");
     const progreso = document.getElementById("progreso");
-    const confirmarBtn = document.getElementById("confirmarReserva");
-
-    function validarFormulario(event) {
-        event.preventDefault();
-        const validarFecha = validarFechaIni() && validarFechaFin() && validarHoraIni() && validarHoraFin();
-        if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarFecha || !validarVehiculo() || !validarTelefono() || !validarDuracion()) {
-            alert("Por favor, corrige los errores antes de enviar el formulario.");
-            return false;
-        }
-        
-        const modal = new bootstrap.Modal(document.getElementById("confirmacionModal"));
-        modal.show();
-        
-        // Si todo está bien, el formulario se envía con fetch
-        confirmarBtn.onclick = function () {
-            const datosReserva = {
-            nombre: campos.nombre.value,
-            apellido: campos.apellido.value,
-            correo: campos.correo.value,
-            telefono: campos.telefono.value,
-            tipo: campos.tipo.value,
-            fechaIni: campos.fechaIni.value,
-            horaIni: campos.horaIni.value,
-            fechaFin: campos.fechaFin.value,
-            horaFin: campos.horaFin.value,
-            duracion: campos.duracion.value,
-            condiciones: document.getElementById("condiciones").checked
-        };
-
-        fetch("/reservas", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(datosReserva)
-        })
-        .then(
-            async response => {  //Espera el json
-                const data = await response.json();
-                const mensajeError = document.getElementById("mensajes");
-                if (!response.ok) {
-                    if(data.errores){
-                        console.log("22222222222");
-                        mensajeError.innerHTML = data.errores.map(e => `
-                        <div class="alert alert-danger" role="alert">
-                        <p>${e.msg}</p>
-                        </div>`).join("");
-                    }else {
-                        console.log(data.mensaje);
-                        mensajeError.innerHTML = `
-                        <div class="alert alert-danger" role="alert">
-                            <p>${data.mensaje}</p>
-                        </div>`;
-                    }
-                    return false;
-                }
-                mensajeError.innerHTML = "";
-                return true;
-                
-        })
-        .then(sucess => {
-            if(sucess) {
-                formulario.reset();
-                progreso.value=0;
-                window.location.href = "/admin/listareservas";
-            }
-        })
-        .catch(error => {
-            console.error("Error: " + error.message);
-        })
-        }
-    }
-
-    function validarCampo(campo, condicion, mensaje) {
-        var error = campo.nextElementSibling;
-
-        if (!error || !error.classList.contains("error")) {
-            error = document.createElement("span");
-            error.classList.add("error");
-            error.setAttribute("aria-live", "polite");
-            campo.insertAdjacentElement("afterend", error);
-        }
-
-        if (campo.value == "") {
-            campo.style.border = "1px solid black";
-            error.textContent = "";
-            return true;
-        }
-
-        if (!condicion) {
-            error.textContent = mensaje;
-            error.style.color = "red"
-            campo.style.border = "2px solid red";
-            return false;
-        } else {
-            campo.style.border = "2px solid green";
-            if (error && error.classList.contains("error")) {
-                error.textContent = "";
-            }
-            return true;
-        }
-    }
-
-    function validarNombre() {
-        return validarCampo(
-            campos.nombre,
-            campos.nombre.value.trim().length >= 3,
-            "El nombre debe tener al menos 3 caracteres."
-        );
-    }
-
-    function validarApellido() {
-        return validarCampo(
-            campos.apellido,
-            campos.apellido.value.trim().length >= 3,
-            "El apellido debe tener al menos 3 caracteres."
-        );
-    }
-
-    function validarTelefono() {
-        const regex = /^\d{9}$/;
-        return validarCampo(
-            campos.telefono,
-            regex.test(campos.telefono.value),
-            "Introducir un teléfono válido. Por ejemplo: 987654321"
-
-        );
-    }
-
-    function validarCorreo() {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return validarCampo(
-            campos.correo,
-            regex.test(campos.correo.value),
-            "Ingrese un correo electrónico válido."
-        );
-    }
-
-    function validarVehiculo() {
-        return validarCampo(
-            campos.tipo,
-            campos.tipo.value.trim() !== "",
-            "Debe seleccionar un vehículo"
-        );
-    }
-
-    function validarFechaIni() {
-        const ahora = new Date();
-        const fechaActual = new Date(Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()));
-
-        const usuario = new Date(campos.fechaIni.value);
-        const fechaIni = new Date(Date.UTC(usuario.getFullYear(), usuario.getMonth(), usuario.getDate()));
-
-        // Validar fecha de inicio > actual
-        return validarCampo(
-            campos.fechaIni,
-            fechaIni.getTime() >= fechaActual.getTime(),
-            "La fecha de inicio debe ser posterior a la fecha actual."
-        );
-    }
-
-    function validarFechaFin() {
-        const ahora = new Date();
-        const fechaActual = new Date(Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()));
-
-        const usuarioIni = new Date(campos.fechaIni.value);
-        const fechaIni = new Date(Date.UTC(usuarioIni.getFullYear(), usuarioIni.getMonth(), usuarioIni.getDate()));
-
-        const usuarioFin = new Date(campos.fechaFin.value);
-        const fechaFin = new Date(Date.UTC(usuarioFin.getFullYear(), usuarioFin.getMonth(), usuarioFin.getDate()));
-
-        // Validar fecha de fin >= actual
-        if (!validarCampo(campos.fechaFin, fechaFin.getTime() >= fechaActual.getTime(), "La fecha de fin debe ser igual o posterior a la fecha actual.")) {
-            return false;
-        }
-
-        if (!validarCampo(campos.fechaFin, fechaIni.getTime() <= fechaFin.getTime(), "La fecha de fin debe ser posterior a la fecha de inicio.")) {
-            return false;
-        }
-
-        return true;
-    }
-
-    function validarHoraIni() {
-        return validarCampo(
-            campos.horaIni,
-            campos.horaIni.value,
-            "Selecciona una hora de inicio."
-        );
-    }
-
-    function validarHoraFin() {
-        const horaIni = campos.horaIni.value;
-        const horaFin = campos.horaFin.value;
-
-        const [hIni, mIni] = horaIni.split(":").map(Number);
-        const [hFin, mFin] = horaFin.split(":").map(Number);
-
-        const minutosIni = hIni * 60 + mIni;
-        const minutosFin = hFin * 60 + mFin;
-
-
-        // Validar inicio < fin
-        if (!validarCampo(
-            campos.horaFin,
-            new Date(campos.fechaIni.value).getTime() < new Date(campos.fechaFin.value).getTime() || (new Date(campos.fechaIni.value).getTime() == new Date(campos.fechaFin.value).getTime() && minutosIni < minutosFin),
-            "La fecha de fin debe ser posterior a la fecha de inicio.")) {
-            return false;
-        }
-
-        return true;
-    }
-
-    function validarDuracion() {
-        return validarCampo(
-            campos.duracion,
-            campos.duracion.value > 0,
-            "La duración debe ser un número positivo."
-        );
-    }
-
-    function actualizarProgreso() {
-        const total = 10;
-        let validos = 0;
-        if (campos.nombre.value.trim() && validarNombre()) validos++;
-        if (campos.apellido.value.trim() && validarApellido()) validos++;
-        if (campos.telefono.value.trim() && validarTelefono()) validos++;
-        if (campos.correo.value.trim() && validarCorreo()) validos++;
-        if (campos.tipo.value && validarVehiculo()) validos++;
-        if (campos.fechaIni.value && validarFechaIni()) validos++;
-        if (campos.horaIni.value && validarHoraIni()) validos++;
-        if (campos.fechaFin.value && validarFechaFin()) validos++;
-        if (campos.horaFin.value && validarHoraFin()) validos++;
-        if (campos.duracion.value && validarDuracion()) validos++;
-
-        progreso.value = (validos / total) * 100;
-
-        console.log(validos);
-    }
+    const confirmarModal = document.getElementById("confirmarReserva");
 
     // Actualizar progreso
-    formulario.addEventListener("input", actualizarProgreso);
+    formulario.addEventListener("input", () => actualizarProgreso(progreso, nombre, apellido, telefono, correo, fechaIni, horaIni,
+        fechaFin, horaFin, vehiculo, duracion));
 
-    // Validar en tiempo real (onInput)
-    campos.nombre.addEventListener("input", validarNombre);
-    campos.apellido.addEventListener("input", validarApellido);
-    campos.telefono.addEventListener("input", validarTelefono);
-    campos.correo.addEventListener("input", validarCorreo);
-    campos.fechaIni.addEventListener("input", validarFechaIni);
-    campos.horaIni.addEventListener("input", validarHoraIni);
-    campos.fechaFin.addEventListener("input", validarFechaFin);
-    campos.horaFin.addEventListener("input", validarHoraFin);
-    campos.tipo.addEventListener("change", validarVehiculo);
-    campos.duracion.addEventListener("input", validarDuracion);
+    // Validar en tiempo real
+    nombre.addEventListener("input", () => validarNombre(nombre));
+    apellido.addEventListener("input", () => validarApellido(apellido));
+    telefono.addEventListener("input", () => validarTelefono(telefono));
+    correo.addEventListener("input", () => validarCorreo(correo));
+    fechaIni.addEventListener("input", () => validarFechaIni(fechaIni));
+    horaIni.addEventListener("input", () => validarHoraIni(horaIni));
+    fechaFin.addEventListener("input", () => validarFechaFin(fechaIni, fechaFin));
+    horaFin.addEventListener("input", () => validarHoraFin(horaIni, horaFin));
+    vehiculo.addEventListener("change", () => validarVehiculo(vehiculo));
+    duracion.addEventListener("input", () => validarDuracion(duracion));
 
     // Vaidar al enviar el formulario
-    formulario.addEventListener("submit", validarFormulario);
+    formulario.addEventListener("submit", (event) => validarFormulario(event, nombre, apellido, telefono, correo, fechaIni, horaIni,
+        fechaFin, horaFin, vehiculo, duracion));
+
+    confirmarModal.addEventListener("click", () => crearReserva(formulario));
 });
+
+async function crearReserva(formulario) {
+    const body = {
+        nombreCliente: formulario.nombreCliente.value,
+        apellidoCliente: formulario.apellidoCliente.value,
+        correoCliente: formulario.correoCliente.value,
+        telefonoCliente: formulario.telefonoCliente.value,
+        vehiculo: formulario.vehiculo.value,
+        fechaIni: formulario.fechaIni.value,
+        horaIni: formulario.horaIni.value,
+        fechaFin: formulario.fechaFin.value,
+        horaFin: formulario.horaFin.value,
+        duracion: formulario.duracion.value,
+        condiciones: document.getElementById("condiciones").checked
+    };
+
+    console.log("valores en crear reserva", body);
+
+    const mensajesDiv = document.getElementById("mensajes");
+
+    try {
+        const data = await fetch("/reservas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        })
+
+        const response = await data.json();
+
+        if (data.status === 201) {
+            mensajesDiv.innerHTML = "";
+            //formulario.reset();
+            //progreso.value = 0;
+            alert("Reserva realizada");
+            window.location.href = "/admin/listareservas";
+        } else {
+            if (response.errores) {
+                mensajesDiv.innerHTML = response.errores.map(e => `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${e.msg}</p>
+                    </div>`).join("");
+            } else {
+                mensajesDiv.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${response.mensaje}</p>
+                    </div>`;
+            }
+
+            throw new Error(`HTTP error! status: ${data.status}`);
+        }
+
+    } catch (error) {
+        console.error("Error al actualizar el concesionario:", error);
+    }
+}
+
+function validarFormulario(event, nombre, apellido, telefono, correo,
+    fechaIni, horaIni, fechaFin, horaFin, vehiculo, duracion) {
+    event.preventDefault();
+
+    const validarFecha = validarFechaIni(fechaIni) && validarFechaFin(fechaIni, fechaFin) && validarHoraIni(horaIni) && validarHoraFin(horaIni, horaFin);
+    if (!validarNombre(nombre) || !validarApellido(apellido) || !validarCorreo(correo) || !validarFecha || !validarVehiculo(vehiculo) || !validarTelefono(telefono) || !validarDuracion(duracion)) {
+        alert("Por favor, corrige los errores antes de enviar el formulario.");
+        return false;
+    }
+
+    // MUY IMPORTANTE: fuerza a que los inputs guarden su valor
+    document.querySelectorAll("input, select, textarea").forEach(i => i.blur());
+
+    const modal = new bootstrap.Modal(document.getElementById("confirmacionModal"));
+    modal.show();
+}
+
+function validarCampo(campo, condicion, mensaje) {
+    var error = campo.nextElementSibling;
+
+    if (!error || !error.classList.contains("error")) {
+        error = document.createElement("span");
+        error.classList.add("error");
+        error.setAttribute("aria-live", "polite");
+        campo.insertAdjacentElement("afterend", error);
+    }
+
+    if (campo.value == "") {
+        campo.style.border = "1px solid black";
+        error.textContent = "";
+        return true;
+    }
+
+    if (!condicion) {
+        error.textContent = mensaje;
+        error.style.color = "red"
+        campo.style.border = "2px solid red";
+        return false;
+    } else {
+        campo.style.border = "2px solid green";
+        if (error && error.classList.contains("error")) {
+            error.textContent = "";
+        }
+        return true;
+    }
+}
+
+function validarNombre(nombre) {
+    return validarCampo(
+        nombre,
+        nombre.value.trim().length >= 3,
+        "El nombre debe tener al menos 3 caracteres."
+    );
+}
+
+function validarApellido(apellido) {
+    return validarCampo(
+        apellido,
+        apellido.value.trim().length >= 3,
+        "El apellido debe tener al menos 3 caracteres."
+    );
+}
+
+function validarTelefono(telefono) {
+    const regex = /^\d{9}$/;
+    return validarCampo(
+        telefono,
+        regex.test(telefono.value),
+        "Introducir un teléfono válido. Por ejemplo: 987654321"
+
+    );
+}
+
+function validarCorreo(correo) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return validarCampo(
+        correo,
+        regex.test(correo.value),
+        "Ingrese un correo electrónico válido."
+    );
+}
+
+function validarVehiculo(vehiculo) {
+    return validarCampo(
+        vehiculo,
+        vehiculo.value.trim() !== "",
+        "Debe seleccionar un vehículo"
+    );
+}
+
+function validarFechaIni(fechaIni) {
+    const ahora = new Date();
+    const fechaActual = new Date(Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()));
+
+    const usuario = new Date(fechaIni.value);
+    const fechaInicial = new Date(Date.UTC(usuario.getFullYear(), usuario.getMonth(), usuario.getDate()));
+
+    // Validar fecha de inicio > actual
+    return validarCampo(
+        fechaIni,
+        fechaInicial.getTime() >= fechaActual.getTime(),
+        "La fecha de inicio debe ser posterior a la fecha actual."
+    );
+}
+
+function validarFechaFin(fechaIni, fechaFin) {
+    const ahora = new Date();
+    const fechaActual = new Date(Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()));
+
+    const usuarioInicial = new Date(fechaIni.value);
+    const fechaInicial = new Date(Date.UTC(usuarioInicial.getFullYear(), usuarioInicial.getMonth(), usuarioInicial.getDate()));
+
+    const usuarioFinal = new Date(fechaFin.value);
+    const fechaFinal = new Date(Date.UTC(usuarioFinal.getFullYear(), usuarioFinal.getMonth(), usuarioFinal.getDate()));
+
+    // Validar fecha de fin >= actual
+    if (!validarCampo(fechaFin, fechaFinal.getTime() >= fechaActual.getTime(), "La fecha de fin debe ser igual o posterior a la fecha actual.")) {
+        return false;
+    }
+
+    if (!validarCampo(fechaFin, fechaInicial.getTime() <= fechaFinal.getTime(), "La fecha de fin debe ser posterior a la fecha de inicio.")) {
+        return false;
+    }
+
+    return true;
+}
+
+function validarHoraIni(horaIni) {
+    return validarCampo(
+        horaIni,
+        horaIni.value,
+        "Selecciona una hora de inicio."
+    );
+}
+
+function validarHoraFin(horaIni, horaFin) {
+    const horaInicial = horaIni.value;
+    const horaFinal = horaFin.value;
+
+    const [hIni, mIni] = horaInicial.split(":").map(Number);
+    const [hFin, mFin] = horaFinal.split(":").map(Number);
+
+    const minutosIni = hIni * 60 + mIni;
+    const minutosFin = hFin * 60 + mFin;
+
+
+    // Validar inicio < fin
+    if (!validarCampo(
+        horaFin,
+        new Date(fechaIni.value).getTime() < new Date(fechaFin.value).getTime() || (new Date(fechaIni.value).getTime() == new Date(fechaFin.value).getTime() && minutosIni < minutosFin),
+        "La fecha de fin debe ser posterior a la fecha de inicio.")) {
+        return false;
+    }
+
+    return true;
+}
+
+function validarDuracion(duracion) {
+    return validarCampo(
+        duracion,
+        duracion.value > 0,
+        "La duración debe ser un número positivo."
+    );
+}
+
+function actualizarProgreso(progreso, nombre, apellido, telefono, correo, fechaIni, horaIni,
+    fechaFin, horaFin, vehiculo, duracion) {
+    const total = 10;
+    let validos = 0;
+    if (nombre.value.trim() && validarNombre(nombre)) validos++;
+    if (apellido.value.trim() && validarApellido(apellido)) validos++;
+    if (telefono.value.trim() && validarTelefono(telefono)) validos++;
+    if (correo.value.trim() && validarCorreo(correo)) validos++;
+    if (vehiculo.value && validarVehiculo(vehiculo)) validos++;
+    if (fechaIni.value && validarFechaIni(fechaIni)) validos++;
+    if (horaIni.value && validarHoraIni(horaIni)) validos++;
+    if (fechaFin.value && validarFechaFin(fechaIni, fechaFin)) validos++;
+    if (horaFin.value && validarHoraFin(horaIni, horaFin)) validos++;
+    if (duracion.value && validarDuracion(duracion)) validos++;
+
+    progreso.value = (validos / total) * 100;
+
+    console.log(validos);
+}
 
 
