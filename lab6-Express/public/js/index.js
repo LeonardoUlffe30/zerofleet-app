@@ -7,7 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
         modalIniciarSesion.show();
     }
 
+    const reservaDropdown = document.querySelector(".menu-dropdown .dropdown");
+    const toggle = reservaDropdown.querySelector(".dropdown-toggle");
 
+    toggle.addEventListener("click", (e) => {
+        e.preventDefault();
+        reservaDropdown.classList.toggle("open");
+    });
 
 })
 
@@ -79,11 +85,11 @@ function desplegarBar() {
 }
 
 window.addEventListener('resize', () => {
-      const menu = document.querySelector('.menu-dropdown');
-      const btnToggleIcon = document.querySelector('.btn-toggle img');
+    const menu = document.querySelector('.menu-dropdown');
+    const btnToggleIcon = document.querySelector('.btn-toggle img');
 
-      if (window.innerWidth > 1110) {  
-          menu.classList.remove('open'); // cierra el menú si está abierto
-          btnToggleIcon.src = '/assets/icons/darkBars.svg'
-      }
-  });
+    if (window.innerWidth > 1110) {
+        menu.classList.remove('open'); // cierra el menú si está abierto
+        btnToggleIcon.src = '/assets/icons/darkBars.svg'
+    }
+});
