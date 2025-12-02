@@ -5,28 +5,31 @@
         <progress id="progreso" max="100" min="0" value=""></progress>
     </div>
 
-    <form aria-label="Formulario de reserva de vehiculos" id="formulario-reserva" novalidate>
+    <form aria-label="Formulario de reserva de vehiculos" id="formulario-reserva"
+        action="/reservas" 
+        method="POST">
+
         <div id="mensajes"></div>
         <fieldset> 
             <legend>Información personal</legend>
 
             <div class="container text-left">
                 <div>
-                    <label for="nombre">Nombre: </label>
-                    <input type="text" id="nombre" name="nombre" required>
+                    <label for="nombreCliente">Nombre: </label>
+                    <input type="text" id="nombreCliente" name="nombreCliente" required>
                 </div>
                 <div>
-                    <label for="apellido">Apellido: </label>
-                    <input type="text" id="apellido" name="apellido" required>
+                    <label for="apellidoCliente">Apellido: </label>
+                    <input type="text" id="apellidoCliente" name="apellidoCliente" required>
                 </div>
                 
                 <div>
-                    <label for="correoReserva">Email: </label>
-                    <input type="email" id="correoReserva" name="correoReserva" required>
+                    <label for="correoCliente">Email: </label>
+                    <input type="email" id="correoCliente" name="correoCliente" required>
                 </div>
                 <div>
-                    <label for="telefono">Teléfono: </label>
-                    <input type="tel" id="telefono" name="telefono" pattern="[0-9]{9}">
+                    <label for="telefonoCliente">Teléfono: </label>
+                    <input type="tel" id="telefonoCliente" name="telefonoCliente" pattern="[0-9]{9}">
                 </div>
                 
             </div>
@@ -37,12 +40,14 @@
 
             <div class="container text-left">
                 <div>
-                    <label for="tipo">Vehículo: </label>
-                    <select id="tipo" name="tipo" required>
+                    <label for="vehiculo">Vehículo: </label>
+                    <select id="vehiculo" name="vehiculo" required>
                         <option value="" disabled selected>Seleccione un vehículo</option>
-                        <option value="1234ABC">1234ABC</option>
-                        <option value="1234BBC">1234BBC</option>
-                        <option value="1234AAC">1234AAC</option>
+
+                        <% vehiculos.forEach(v => { %>
+                            <option value="<%= v.matricula %>"><%= v.matricula %></option>
+                        <% }) %>
+
                     </select>
                 </div>
             </div>
@@ -106,21 +111,21 @@
         </div>
     </form>
         <div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title" id="confirmacionLabel">Confirmar reserva</h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-            <p>¿Desea confirmar la reserva?</p>
-            <div id="resumen-reserva"></div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" id="confirmarReserva">Confirmar</button>
-        </div>
-        </div>
-        </div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="confirmacionLabel">Confirmar reserva</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Desea confirmar la reserva?</p>
+                        <div id="resumen-reserva"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="confirmarReserva">Confirmar</button>
+                    </div>
+                </div>
+            </div>
         </div>
 </section>
