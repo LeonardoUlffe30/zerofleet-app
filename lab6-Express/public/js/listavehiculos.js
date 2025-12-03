@@ -98,6 +98,21 @@ async function eliminarVehiculo(id) {
     }
 }
 
+async function cargarFiltros() {
+    try {
+        const res = await fetch("/vehiculos/api/filtros");
+        const data = await res.json();
+
+        llenarSelect("filtroColor", data.colores);
+        llenarSelect("filtroModelo", data.modelos);
+        llenarSelect("filtroPlazas", data.plazas);
+        llenarSelect("filtroConcesionario", data.concesionarios);
+
+    } catch (err) {
+        console.error("Error cargando filtros", err);
+    }
+}
+
 function mostrarMensaje(mensaje, tipo) {
     const msg = document.getElementById("alertContainer");
     msg.innerHTML = `<div class = "alert alert-${tipo}" role = "alert">

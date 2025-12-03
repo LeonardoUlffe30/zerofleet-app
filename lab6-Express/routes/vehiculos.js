@@ -31,6 +31,8 @@ router.get("/", vehiculosController.listarVehiculos);
 
 router.get("/api/vehiculos", vehiculosController.listarVehiculosApi);
 
+router.get("/api/filtros", vehiculosController.obtenerFiltros);
+
 // ----------------- MIDDLEWARES DE SEGURIDAD ------------------
 
 // Todo lo que está debajo requiere usuario

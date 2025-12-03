@@ -169,7 +169,7 @@ async function crearVehiculo(request, response) {
 
     } catch (error) {
         console.error(error);
-        response.status(500).json({ mensaje: "Error creando vehiculo" });
+        res.status(500).json({ error: "Error al obtener los filtros" });
     }
 }
 
@@ -251,6 +251,31 @@ async function eliminarVehiculo(request, response) {
     }
 }
 
+async function obtenerFiltros(request, respone) {
+    try {
+        const sql = `
+            SELECT DISTINCT marca FROM vehiculos WHERE activo = true;
+            SELECT DISTINCT tipo FROM vehiculos WHERE activo = true;
+            SELECT DISTINCT nombre FROM concesionarios;
+        `;
+        const params = [];
+
+        const response = await query(sql, params);
+
+        const filtros = {
+            marcas: results[0].map(r => r.marca),
+            tipos: results[1].map(r => r.tipo),
+            concesionarios: results[2].map(r => r.nombre)
+        }
+
+        response.json({ filtros });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error interno" });
+    }
+}
+
+
 module.exports = {
     listarVehiculos,
     listarVehiculosApi,
@@ -259,5 +284,6 @@ module.exports = {
     obtenerVehiculo,
     crearVehiculo,
     actualizarVehiculo,
-    eliminarVehiculo
+    eliminarVehiculo,
+    obtenerFiltros
 };
