@@ -40,14 +40,14 @@ legend {
     font-weight: bold;
 }
 
-.container {
+#reserva .container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 1.25rem;
 }
 
-.container div {
+#reserva .container > div {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
@@ -57,13 +57,13 @@ legend {
 
 
 /* Para alinear a la derecha a todos los labels de los inputs */
-form label {
+#reserva form label {
     display: inline-block;
     width: 100px;
     text-align: right;
 }
 
-input, select {
+#reserva input, #reserva select {
     font-size: 16px;
     padding: 4px;
     border: 0.12px solid black;
@@ -101,21 +101,27 @@ input, select {
     width: fit-content;
 }
 
+.td-datetimepicker {
+    z-index: 1100 !important; /* evita que quede debajo de otros elementos */
+    min-width: 280px !important;
+}
+
+
 @media (max-width: 578px) {
     #contenedor-progreso {
         justify-content: center;
     }
 
-    .container {
+    #reserva .container {
         text-align: center;
     }
 
-    .container div {
+    #reserva .container > div {
         flex-direction: column;
         width: 100%;
     }
     
-    form label {
+    #reserva form label {
         display: inline-block;
         width: fit-content;
         text-align: center;

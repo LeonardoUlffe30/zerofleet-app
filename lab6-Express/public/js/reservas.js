@@ -4,34 +4,94 @@ document.addEventListener("DOMContentLoaded", function () {
     const apellido = document.getElementById("apellidoCliente");
     const correo = document.getElementById("correoCliente");
     const telefono = document.getElementById("telefonoCliente");
-    const fechaIni = document.getElementById("fechaIni");
-    const fechaFin = document.getElementById("fechaFin");
-    const horaIni = document.getElementById("horaIni");
-    const horaFin = document.getElementById("horaFin");
+    const fechaHoraIni = document.getElementById("fechaHoraIni");
+    const fechaHoraFin = document.getElementById("fechaHoraFin");
     const vehiculo = document.getElementById("vehiculo");
     const duracion = document.getElementById("duracion");
     const progreso = document.getElementById("progreso");
     const confirmarModal = document.getElementById("confirmarReserva");
 
+    // Inicialización Tempus Dominus con formato correcto
+    const pickerIni = new tempusDominus.TempusDominus(document.getElementById('datetimepickerIni'), {
+        display: {
+            components: {
+                calendar: true,
+                clock: true,
+                date: true,
+                month: true,
+                year: true,
+                hours: true,
+                minutes: true,
+                seconds: false
+            },
+            icons: {
+                previous: 'bi bi-chevron-left',
+                next: 'bi bi-chevron-right',
+                up: 'bi bi-chevron-up',
+                down: 'bi bi-chevron-down',
+                date: 'bi bi-calendar-event',
+                time: 'bi bi-clock'
+            }
+        },
+        localization: {
+            locale: 'es',
+            format: 'dd/MM/yyyy HH:mm'
+        }
+    });
+
+    const pickerFin = new tempusDominus.TempusDominus(document.getElementById('datetimepickerFin'), {
+        display: {
+            components: {
+                calendar: true,
+                clock: true,
+                date: true,
+                month: true,
+                year: true,
+                hours: true,
+                minutes: true,
+                seconds: false
+            },
+            icons: {
+                previous: 'bi bi-chevron-left',
+                next: 'bi bi-chevron-right',
+                up: 'bi bi-chevron-up',
+                down: 'bi bi-chevron-down',
+                date: 'bi bi-calendar-event',
+                time: 'bi bi-clock'
+            }
+        },
+        localization: {
+            locale: 'es',
+            format: 'dd/MM/yyyy HH:mm'
+        }
+    });
+
+    // Sincronizar pickers con inputs
+    pickerIni.subscribe(tempusDominus.Namespace.events.change, (e) => {
+        fechaHoraIni.value = e.date ? e.date.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+    });
+
+    pickerFin.subscribe(tempusDominus.Namespace.events.change, (e) => {
+        fechaHoraFin.value = e.date ? e.date.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+    });
+
     // Actualizar progreso
-    formulario.addEventListener("input", () => actualizarProgreso(progreso, nombre, apellido, telefono, correo, fechaIni, horaIni,
-        fechaFin, horaFin, vehiculo, duracion));
+    formulario.addEventListener("input", () => actualizarProgreso(progreso, nombre, apellido, telefono, correo, fechaHoraIni,
+        fechaHoraFin, vehiculo, duracion));
 
     // Validar en tiempo real
     nombre.addEventListener("input", () => validarNombre(nombre));
     apellido.addEventListener("input", () => validarApellido(apellido));
     telefono.addEventListener("input", () => validarTelefono(telefono));
     correo.addEventListener("input", () => validarCorreo(correo));
-    fechaIni.addEventListener("input", () => validarFechaIni(fechaIni));
-    horaIni.addEventListener("input", () => validarHoraIni(horaIni));
-    fechaFin.addEventListener("input", () => validarFechaFin(fechaIni, fechaFin));
-    horaFin.addEventListener("input", () => validarHoraFin(horaIni, horaFin));
+    fechaHoraIni.addEventListener("input", () => validarFechaHoraIni(fechaHoraIni));
+    fechaHoraFin.addEventListener("input", () => validarFechaHoraFin(fechaHoraIni, fechaHoraFin));
     vehiculo.addEventListener("change", () => validarVehiculo(vehiculo));
     duracion.addEventListener("input", () => validarDuracion(duracion));
 
     // Vaidar al enviar el formulario
-    formulario.addEventListener("submit", (event) => validarFormulario(event, nombre, apellido, telefono, correo, fechaIni, horaIni,
-        fechaFin, horaFin, vehiculo, duracion));
+    formulario.addEventListener("submit", (event) => validarFormulario(event, nombre, apellido, telefono, correo, fechaHoraIni,
+        fechaHoraFin, vehiculo, duracion));
 
     confirmarModal.addEventListener("click", () => crearReserva(formulario));
 });
@@ -92,11 +152,11 @@ async function crearReserva(formulario) {
 }
 
 function validarFormulario(event, nombre, apellido, telefono, correo,
-    fechaIni, horaIni, fechaFin, horaFin, vehiculo, duracion) {
+    fechaHoraIni, fechaHoraFin, vehiculo, duracion) {
     event.preventDefault();
 
-    const validarFecha = validarFechaIni(fechaIni) && validarFechaFin(fechaIni, fechaFin) && validarHoraIni(horaIni) && validarHoraFin(horaIni, horaFin);
-    if (!validarNombre(nombre) || !validarApellido(apellido) || !validarCorreo(correo) || !validarFecha || !validarVehiculo(vehiculo) || !validarTelefono(telefono) || !validarDuracion(duracion)) {
+    if (!validarNombre(nombre) || !validarApellido(apellido) || !validarCorreo(correo) || !validarFechaHoraIni(fechaHoraIni) || !validarFechaHoraFin(fechaHoraIni, fechaHoraFin) ||
+        !validarVehiculo(vehiculo) || !validarTelefono(telefono) || !validarDuracion(duracion)) {
         alert("Por favor, corrige los errores antes de enviar el formulario.");
         return false;
     }
@@ -181,6 +241,38 @@ function validarVehiculo(vehiculo) {
     );
 }
 
+function validarFechaHoraIni(fechaHoraIni) {
+    const ahora = new Date();
+    const valor = new Date(fechaHoraIni.value);
+
+    console.log("Ahora ", ahora, " gettime() ", ahora.getTime());
+    console.log("Fecha Hora Ini", valor, " gettime() ", valor.getTime());
+
+    return validarCampo(
+        fechaHoraIni,
+        valor.getTime() >= ahora.getTime(),
+        "La fecha y hora de inicio debe ser igual o posterior a la fecha y hora actual"
+    )
+}
+
+function validarFechaHoraFin(fechaHoraIni, fechaHoraFin) {
+    const valorInicio = new Date(fechaHoraIni.value);
+    const valorFin = new Date(fechaHoraFin.value);
+    const ahora = new Date();
+
+    // Validar que la fecha + hora de fin sea >= ahora
+    if (!validarCampo(fechaHoraFin, valorFin.getTime() >= ahora.getTime(), "La fecha y hora de fin debe ser igual o posterior a la fecha y hora actual.")) {
+        return false;
+    }
+
+    // Validar que la fecha + hora de fin sea posterior a la fecha + hora de inicio
+    if (!validarCampo(fechaHoraFin, valorFin.getTime() > valorInicio.getTime(), "La fecha y hora de fin debe ser posterior a la fecha y hora de inicio.")) {
+        return false;
+    }
+
+    return true;
+}
+
 function validarFechaIni(fechaIni) {
     const ahora = new Date();
     const fechaActual = new Date(Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()));
@@ -256,19 +348,16 @@ function validarDuracion(duracion) {
     );
 }
 
-function actualizarProgreso(progreso, nombre, apellido, telefono, correo, fechaIni, horaIni,
-    fechaFin, horaFin, vehiculo, duracion) {
-    const total = 10;
+function actualizarProgreso(progreso, nombre, apellido, telefono, correo, fechaHoraIni, fechaHoraFin, vehiculo, duracion) {
+    const total = 8;
     let validos = 0;
     if (nombre.value.trim() && validarNombre(nombre)) validos++;
     if (apellido.value.trim() && validarApellido(apellido)) validos++;
     if (telefono.value.trim() && validarTelefono(telefono)) validos++;
     if (correo.value.trim() && validarCorreo(correo)) validos++;
     if (vehiculo.value && validarVehiculo(vehiculo)) validos++;
-    if (fechaIni.value && validarFechaIni(fechaIni)) validos++;
-    if (horaIni.value && validarHoraIni(horaIni)) validos++;
-    if (fechaFin.value && validarFechaFin(fechaIni, fechaFin)) validos++;
-    if (horaFin.value && validarHoraFin(horaIni, horaFin)) validos++;
+    if (fechaHoraIni.value && validarFechaHoraIni(fechaHoraIni)) validos++;
+    if (fechaHoraFin.value && validarFechaHoraFin(fechaHoraIni, fechaHoraFin)) validos++;
     if (duracion.value && validarDuracion(duracion)) validos++;
 
     progreso.value = (validos / total) * 100;
