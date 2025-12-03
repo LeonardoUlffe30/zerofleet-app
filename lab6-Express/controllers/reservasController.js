@@ -82,6 +82,16 @@ async function crearReserva(request, response) {
             id_cliente = cliente.insertId;
         } else id_cliente = cliente[0].id_cliente;
 
+        // Cambiar el estado del vehiculo de disponible a reservado
+        sql = `UPDATE vehiculos SET estado = 'reservado' WHERE matricula = ?`;
+        params = [vehiculo];
+
+        const vehiculoActualizado = await query(sql, params);
+
+        if (vehiculoActualizado.affectedRows === 0) {
+            return response.status(404).json({ mensaje: "No se ha podido cambiar el estado a reseervado del vehiculo" });
+        }
+
         // Obtener id_vehiculo con la matricula seleccionada
         sql = `SELECT id_vehiculo FROM vehiculos WHERE matricula = ?`;
         params = [vehiculo];
