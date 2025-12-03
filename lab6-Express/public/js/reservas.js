@@ -126,8 +126,6 @@ async function crearReserva(formulario) {
 
         if (data.status === 201) {
             mensajesDiv.innerHTML = "";
-            //formulario.reset();
-            //progreso.value = 0;
             alert("Reserva realizada");
             window.location.href = "/admin/listareservas";
         } else {

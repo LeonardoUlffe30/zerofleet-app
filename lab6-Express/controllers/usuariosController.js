@@ -111,6 +111,7 @@ async function formularioEditarUsuario(request, response) {
 
 async function crearUsuario(request, response) {
     try {
+        console.log("Entra aqui");
         const err = validationResult(request);
 
         if (!err.isEmpty()) {
@@ -133,6 +134,7 @@ async function crearUsuario(request, response) {
         let usuario = await query(sql, params);
 
         if (usuario.length > 0) {
+            console.log("fallo");
             return response.status(400).json({ mensaje: "Correo ya está registrado." });
         }
 
