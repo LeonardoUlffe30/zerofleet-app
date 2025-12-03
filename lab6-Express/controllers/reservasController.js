@@ -60,9 +60,9 @@ async function crearReserva(request, response) {
             return response.status(400).json({ errores: err.array() })
         }
 
-        const { nombreCliente, apellidoCliente, correoCliente, telefonoCliente, vehiculo, fechaIni, horaIni, fechaFin, horaFin, duracion } = request.body;
+        const { nombreCliente, apellidoCliente, correoCliente, telefonoCliente, vehiculo, fechaHoraIni, fechaHoraFin, duracion } = request.body;
 
-        console.log(nombreCliente, apellidoCliente, correoCliente, telefonoCliente, vehiculo, fechaIni, horaIni, fechaFin, horaFin, duracion);
+        console.log(nombreCliente, apellidoCliente, correoCliente, telefonoCliente, vehiculo, fechaHoraIni, fechaHoraFin, duracion);
 
         // Verificar si existe cliente
         let sql = `SELECT * FROM clientes WHERE correo = ?`;
@@ -98,7 +98,7 @@ async function crearReserva(request, response) {
         sql = `INSERT INTO reservas
         (id_usuario, id_vehiculo, id_cliente, fecha_inicio, fecha_fin, estado, activo)
         VALUES (?, ?, ?, ?, ?, 'disponible', true)`;
-        params = [id_usuario, id_vehiculo, id_cliente, fechaIni, fechaFin];
+        params = [id_usuario, id_vehiculo, id_cliente, fechaHoraIni, fechaHoraFin];
 
         const resultado = await query(sql, params);
 

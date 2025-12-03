@@ -69,10 +69,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Sincronizar pickers con inputs
     pickerIni.subscribe(tempusDominus.Namespace.events.change, (e) => {
         fechaHoraIni.value = e.date ? e.date.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+        fechaHoraIni.dispatchEvent(new Event("input"));
     });
 
     pickerFin.subscribe(tempusDominus.Namespace.events.change, (e) => {
         fechaHoraFin.value = e.date ? e.date.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+        fechaHoraFin.dispatchEvent(new Event("input"));
     });
 
     // Actualizar progreso
@@ -103,10 +105,8 @@ async function crearReserva(formulario) {
         correoCliente: formulario.correoCliente.value,
         telefonoCliente: formulario.telefonoCliente.value,
         vehiculo: formulario.vehiculo.value,
-        fechaIni: formulario.fechaIni.value,
-        horaIni: formulario.horaIni.value,
-        fechaFin: formulario.fechaFin.value,
-        horaFin: formulario.horaFin.value,
+        fechaHoraIni: parsearFechaHora(formulario.fechaHoraIni.value),
+        fechaHoraFin: parsearFechaHora(formulario.fechaHoraFin.value),
         duracion: formulario.duracion.value,
         condiciones: document.getElementById("condiciones").checked
     };
@@ -167,13 +167,25 @@ function validarFormulario(event, nombre, apellido, telefono, correo,
 }
 
 function validarCampo(campo, condicion, mensaje) {
-    var error = campo.nextElementSibling;
+    let contenedor;
+    let error;
+
+    if (campo.closest('[data-td-target-input]')) {
+        contenedor = campo.closest('[data-td-target-input]');
+        error = contenedor.querySelector('.error');
+    } else {
+        // Para el resto de inputs
+        error = campo.nextElementSibling;
+    }
+
 
     if (!error || !error.classList.contains("error")) {
         error = document.createElement("span");
         error.classList.add("error");
         error.setAttribute("aria-live", "polite");
-        campo.insertAdjacentElement("afterend", error);
+        contenedor ?
+            contenedor.appendChild(error) :
+            campo.insertAdjacentElement("afterend", error);
     }
 
     if (campo.value == "") {
@@ -239,12 +251,24 @@ function validarVehiculo(vehiculo) {
     );
 }
 
+function parsearFechaHora(ddmmyyyy_hhmm) {
+    if (!ddmmyyyy_hhmm) return null;
+
+    const [fecha, hora] = ddmmyyyy_hhmm.split(",").map(s => s.trim());;
+    const [dia, mes, anio] = fecha.split("/").map(Number);
+    const [horas, minutos] = hora.split(":").map(Number);
+
+    // IMPORTANTE: el mes en JS va 0-11
+    return `${anio}-${mes}-${dia} ${horas}:${minutos}`;
+}
+
 function validarFechaHoraIni(fechaHoraIni) {
     const ahora = new Date();
-    const valor = new Date(fechaHoraIni.value);
+    const valor = new Date(parsearFechaHora(fechaHoraIni.value));
 
-    console.log("Ahora ", ahora, " gettime() ", ahora.getTime());
-    console.log("Fecha Hora Ini", valor, " gettime() ", valor.getTime());
+    console.log("Fecha Hora Ini sin parsear ", fechaHoraIni.value);
+    console.log("Fecha Hora Ini con parseo ", valor);
+    console.log("Fecha Hora Ini con getTime() ", valor.getTime());
 
     return validarCampo(
         fechaHoraIni,
@@ -254,84 +278,17 @@ function validarFechaHoraIni(fechaHoraIni) {
 }
 
 function validarFechaHoraFin(fechaHoraIni, fechaHoraFin) {
-    const valorInicio = new Date(fechaHoraIni.value);
-    const valorFin = new Date(fechaHoraFin.value);
+    const inicio = new Date(parsearFechaHora(fechaHoraIni.value));
+    const fin = new Date(parsearFechaHora(fechaHoraFin.value));
     const ahora = new Date();
 
     // Validar que la fecha + hora de fin sea >= ahora
-    if (!validarCampo(fechaHoraFin, valorFin.getTime() >= ahora.getTime(), "La fecha y hora de fin debe ser igual o posterior a la fecha y hora actual.")) {
+    if (!validarCampo(fechaHoraFin, fin.getTime() >= ahora.getTime(), "La fecha y hora de fin debe ser igual o posterior a la fecha y hora actual.")) {
         return false;
     }
 
     // Validar que la fecha + hora de fin sea posterior a la fecha + hora de inicio
-    if (!validarCampo(fechaHoraFin, valorFin.getTime() > valorInicio.getTime(), "La fecha y hora de fin debe ser posterior a la fecha y hora de inicio.")) {
-        return false;
-    }
-
-    return true;
-}
-
-function validarFechaIni(fechaIni) {
-    const ahora = new Date();
-    const fechaActual = new Date(Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()));
-
-    const usuario = new Date(fechaIni.value);
-    const fechaInicial = new Date(Date.UTC(usuario.getFullYear(), usuario.getMonth(), usuario.getDate()));
-
-    // Validar fecha de inicio > actual
-    return validarCampo(
-        fechaIni,
-        fechaInicial.getTime() >= fechaActual.getTime(),
-        "La fecha de inicio debe ser posterior a la fecha actual."
-    );
-}
-
-function validarFechaFin(fechaIni, fechaFin) {
-    const ahora = new Date();
-    const fechaActual = new Date(Date.UTC(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()));
-
-    const usuarioInicial = new Date(fechaIni.value);
-    const fechaInicial = new Date(Date.UTC(usuarioInicial.getFullYear(), usuarioInicial.getMonth(), usuarioInicial.getDate()));
-
-    const usuarioFinal = new Date(fechaFin.value);
-    const fechaFinal = new Date(Date.UTC(usuarioFinal.getFullYear(), usuarioFinal.getMonth(), usuarioFinal.getDate()));
-
-    // Validar fecha de fin >= actual
-    if (!validarCampo(fechaFin, fechaFinal.getTime() >= fechaActual.getTime(), "La fecha de fin debe ser igual o posterior a la fecha actual.")) {
-        return false;
-    }
-
-    if (!validarCampo(fechaFin, fechaInicial.getTime() <= fechaFinal.getTime(), "La fecha de fin debe ser posterior a la fecha de inicio.")) {
-        return false;
-    }
-
-    return true;
-}
-
-function validarHoraIni(horaIni) {
-    return validarCampo(
-        horaIni,
-        horaIni.value,
-        "Selecciona una hora de inicio."
-    );
-}
-
-function validarHoraFin(horaIni, horaFin) {
-    const horaInicial = horaIni.value;
-    const horaFinal = horaFin.value;
-
-    const [hIni, mIni] = horaInicial.split(":").map(Number);
-    const [hFin, mFin] = horaFinal.split(":").map(Number);
-
-    const minutosIni = hIni * 60 + mIni;
-    const minutosFin = hFin * 60 + mFin;
-
-
-    // Validar inicio < fin
-    if (!validarCampo(
-        horaFin,
-        new Date(fechaIni.value).getTime() < new Date(fechaFin.value).getTime() || (new Date(fechaIni.value).getTime() == new Date(fechaFin.value).getTime() && minutosIni < minutosFin),
-        "La fecha de fin debe ser posterior a la fecha de inicio.")) {
+    if (!validarCampo(fechaHoraFin, fin.getTime() > inicio.getTime(), "La fecha y hora de fin debe ser posterior a la fecha y hora de inicio.")) {
         return false;
     }
 

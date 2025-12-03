@@ -47,9 +47,9 @@ legend {
     gap: 1.25rem;
 }
 
-#reserva .container > div {
+#reserva .container div {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.25rem;
     align-items: center;
     justify-content: center;

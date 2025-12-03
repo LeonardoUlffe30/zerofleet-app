@@ -19,18 +19,18 @@ router.post("/", [
     check("telefonoCliente", "El teléfono debe tener  9 números").isLength({ min: 9, max: 9 }).isNumeric(),
     check("correoCliente", "El correo debe ser uno váido: xxx@zfleet.com").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
     check("vehiculo", "El campo vehiculo es obligatorio").notEmpty(),
-    check("fechaIni").custom((fechaIni) => {
-        const fechaIngresada = new Date(fechaIni);
+    check("fechaHoraIni").custom((fechaHoraIni, { req }) => {
+        const inicio = new Date(req.body.fechaHoraIni);
         const ahora = new Date();
-        if (fechaIngresada < ahora) {
+        if (inicio.getTime() < ahora.getTime()) {
             throw new Error("La fecha de inicio debe ser posterior a la fecha actual");
         }
         return true;
     }),
-    check("fechaFin").custom((fechaFin, { req }) => {
-        const fechaIni = new Date(req.body.fechaIni);
-        const fechaIngresada = new Date(fechaFin);
-        if (fechaIni >= fechaIngresada) {
+    check("fechaHoraFin").custom((fechaHoraFin, { req }) => {
+        const inicio = new Date(req.body.fechaHoraIni);
+        const fin = new Date(req.body.fechaHoraFin);
+        if (inicio.getTime() >= fin.getTime()) {
             throw new Error("La fecha de fin debe ser posterior a la fecha de inicio");
         }
         return true;
