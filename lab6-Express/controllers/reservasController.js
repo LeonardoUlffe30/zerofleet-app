@@ -106,9 +106,9 @@ async function crearReserva(request, response) {
         const id_usuario = request.session.usuario.id_usuario; // Obtenido de la sesion guardada al iniciar sesión
 
         sql = `INSERT INTO reservas
-        (id_usuario, id_vehiculo, id_cliente, fecha_inicio, fecha_fin, estado, activo)
-        VALUES (?, ?, ?, ?, ?, 'disponible', true)`;
-        params = [id_usuario, id_vehiculo, id_cliente, fechaHoraIni, fechaHoraFin];
+        (id_usuario, id_vehiculo, fecha_inicio, fecha_fin, kilometros_recorridos, incidencias_reportadas)
+        VALUES (?, ?, ?, ?, ?, ?)`;
+        params = [id_usuario, id_vehiculo, fechaHoraIni, fechaHoraFin, 0, 0];
 
         const resultado = await query(sql, params);
 
@@ -143,10 +143,11 @@ async function actualizarReserva(request, response) {
 // OBTENER RESERVAS POR ID
 async function obtenerReservasPorUsuario(request, response) {
     try {
-        console.log("Acceso al controladorAPI de reservas por usuario");
+        console.log("Acceso al controladorAPI de reservas por usuario: ");
         const sql = `SELECT * FROM reservas WHERE id_usuario = ?`;
-        const { id_usuario } = request.params;
-        let reservas = await query(sql, [id_usuario]);
+        const { id } = request.params;
+        let reservas = await query(sql, [id]);
+        console.log(reservas);
         response.json(reservas);
     } catch (err) {
         console.error("Error al obtener reservas por usuario:", err.message);

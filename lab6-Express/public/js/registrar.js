@@ -31,41 +31,36 @@ document.addEventListener("DOMContentLoaded", function () {
             concesionario: campos.concesionario.value
         };
 
-        const mensajeError = document.getElementById("mensajes");
-
-        try {
-            const data = await fetch("/autenticar/registrar", {
+        fetch("/autenticar/registrar", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(datosRegistro)
-            })
-
-            const response = await data.json();
-
-            if(data.status === 201){
-                mensajeError.innerHTML = "";
-                alert("Usuario registrado")
-                window.location.href = "/";
-            } else {
-                if(response.errores){
-                    mensajeError.innerHTML = response.errores.map(e => `
-                    <div class="alert alert-danger" role="alert">
-                    <p>${e.msg}</p>
-                    </div>`).join("");
-                }else {
-                    console.log(response.mensaje);
-                    mensajeError.innerHTML = `
-                    <div class="alert alert-danger" role="alert">
-                        <p>${response.mensaje}</p>
-                    </div>`;
-                    console.log("HTML escrito:", mensajeError.innerHTML);
+        })
+        .then(
+            async response => {  //Espera el json
+                const data = await response.json();
+                const mensajeError = document.getElementById("mensajesRegistrar");
+                console.log("data:", data);
+                if(response.status === 400) {
+                    if(data.errores){
+                        mensajeError.innerHTML = data.errores.map(e => `
+                        <div class="alert alert-danger" role="alert">
+                        <p>${e.msg}</p>
+                        </div>`).join("");
+                    }else{
+                        mensajeError.innerHTML = `
+                        <div class="alert alert-danger" role="alert">
+                        <p>${data.mensaje}</p>
+                        </div>`
+                    }
+                    return false;
                 }
-            }
-
-        } catch(err) {
-            console.error("Error en registrar: " + err);
-        }
-    
+                window.location.href = "/";
+                return true;
+        })
+        .catch(error => {
+            console.error("Error: " + error.message);
+        })
     }
 
     function validarCampo(campo, condicion, mensaje) {

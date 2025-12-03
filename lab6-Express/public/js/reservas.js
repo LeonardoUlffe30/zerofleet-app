@@ -116,7 +116,7 @@ async function crearReserva(formulario) {
     const mensajesDiv = document.getElementById("mensajes");
 
     try {
-        const data = await fetch("/reservas", {
+        const data = await fetch("/reservas/nuevo", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body)
@@ -127,7 +127,7 @@ async function crearReserva(formulario) {
         if (data.status === 201) {
             mensajesDiv.innerHTML = "";
             alert("Reserva realizada");
-            window.location.href = "/admin/listareservas";
+            window.location.href = "/reservas/mis-reservas";
         } else {
             if (response.errores) {
                 mensajesDiv.innerHTML = response.errores.map(e => `

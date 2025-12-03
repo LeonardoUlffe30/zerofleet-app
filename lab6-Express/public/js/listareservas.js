@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
     const id_usuario = usuario ? usuario.id_usuario : null;
-    cargarReservas(id_usuario);
+    cargarReservas(usuario.id_usuario);
 });
 
 function cargarReservas(id_usuario) {
-    const url = id_usuario ? `/reservas/listareservas/${id_usuario}` : `/reservas/api/listareservas`
+    const url = id_usuario ? `/reservas/mis-reservas/${id_usuario}` : `/reservas/api/mis-reservas`
+    console.log(`/reservas/mis-reservas/${id_usuario}`);
     fetch(url)
         .then(response => response.json())
         .then(reservas => {
@@ -21,6 +22,7 @@ function cargarReservas(id_usuario) {
                   <td>${r.id_reserva}</td>
                   <td>${r.id_usuario}</td>
                   <td>${r.id_vehiculo}</td>
+                  <td>0</td>
                   <td>${r.fechaIni}</td>
                   <td>${r.fechaFin}</td>
                   <td>${r.estado}</td>

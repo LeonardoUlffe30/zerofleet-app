@@ -11,9 +11,9 @@ router.use(verificarUsuario);
 
 // ----------------- DE RESERVAS ------------------
 
-router.get("/", reservasController.formulariocrearReserva);
+router.get("/nuevo", reservasController.formulariocrearReserva);
 
-router.post("/", [
+router.post("/nuevo", [
     check("nombreCliente", "El nombre debe tener mínimo 3 carácteres").isLength({ min: 3 }),
     check("apellidoCliente", "El apellido debe tener mínimo 3 carácteres").isLength({ min: 3 }),
     check("telefonoCliente", "El teléfono debe tener  9 números").isLength({ min: 9, max: 9 }).isNumeric(),
@@ -39,12 +39,12 @@ router.post("/", [
 );
 
 // ----------------- DE LISTAR RESERVAS ------------------
-router.get("/listareservas", reservasController.listarReservas);
+router.get("/mis-reservas", reservasController.listarReservas);
 
-router.get("/api/listareservas", reservasController.listarReservasApi)
+//router.get("/api/mis-reservas", reservasController.listarReservasApi)
 
 router.put("editar/:id", reservasController.actualizarReserva);
 
-router.get("/listareservas/:id", reservasController.obtenerReservasPorUsuario);
+router.get("/mis-reservas/:id", reservasController.obtenerReservasPorUsuario);
 
 module.exports = router;
