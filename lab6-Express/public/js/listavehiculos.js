@@ -1,22 +1,44 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const filtroMarca = document.getElementById("filtroMarca");
+    const filtroColor = document.getElementById("filtroColor");
+    const filtroConcesionario = document.getElementById("filtroConcesionario");
+    const filtroPlazas = document.getElementById("filtroPlazas");
+    const filtroAutonomia = document.getElementById("filtroAutonomia");
     const filtroTipo = document.getElementById("filtroTipo");
-    const filtroCampo = document.getElementById("filtroCampo");
-    const buscarInput = document.getElementById("buscar");
 
     // Si EJS ya mandó vehículos, mostrarlos SIN fetch
     if (vehiculosIniciales && vehiculosIniciales.length > 0) {
         mostrarVehiculos(vehiculosIniciales);
     }
 
-    filtroTipo.addEventListener("change", actualizarVehiculos);
-    filtroCampo.addEventListener("change", actualizarVehiculos);
-    buscarInput.addEventListener("input", () => {
+    // Cargamos las opciones de los filtros en base a lo que esta en la base de datos
+    cargarFiltros();
+
+    filtroMarca.addEventListener("change", actualizarVehiculos);
+    filtroColor.addEventListener("input", () => {
         // Cancelamos el timer anterior si existe
         clearTimeout(window.delayBuscador);
 
         // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
         window.delayBuscador = setTimeout(actualizarVehiculos, 300);
     });
+
+    filtroConcesionario.addEventListener("change", actualizarVehiculos);
+    filtroPlazas.addEventListener("input", () => {
+        // Cancelamos el timer anterior si existe
+        clearTimeout(window.delayBuscador);
+
+        // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
+        window.delayBuscador = setTimeout(actualizarVehiculos, 300);
+    });
+    filtroAutonomia.addEventListener("input", () => {
+        // Cancelamos el timer anterior si existe
+        clearTimeout(window.delayBuscador);
+
+        // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
+        window.delayBuscador = setTimeout(actualizarVehiculos, 2);
+    });
+    filtroTipo.addEventListener("change", actualizarVehiculos);
 });
 
 // Inserta las etiquetas con los datos de los vehiculos en la tbody de la tabla
@@ -51,20 +73,25 @@ function mostrarVehiculos(vehiculos) {
 }
 
 async function actualizarVehiculos() {
-    const filtroTipo = document.getElementById("filtroTipo").value;
-    const filtroCampo = document.getElementById("filtroCampo").value;
-    const buscarInput = document.getElementById("buscar").value.trim();
-
     let url = `/vehiculos/api/vehiculos?`;
+
+    const filtros = {
+        filtroMarca: document.getElementById("filtroMarca").value,
+        filtroColor: document.getElementById("filtroColor").value.trim(),
+        filtroConcesionario: document.getElementById("filtroConcesionario").value,
+        filtroPlazas: document.getElementById("filtroPlazas").value,
+        filtroAutonomia: document.getElementById("filtroAutonomia").value,
+        filtroTipo: document.getElementById("filtroTipo").value
+    }
 
     // Utilizamos encoding para convertir caracteres especiales(/=<>&" ") en SEGUROS para la URL
     // y evitar ataques de inyección como XSS. Por ejemplo, buscar="<script>alert('xss')</script>"
     // se convierte en buscar="%3Cscript%3Ealert('xss')%3C/script%3E"
-    if (filtroTipo)
-        url += `filtroTipo=${encodeURIComponent(filtroTipo)}&`;
-
-    if (filtroCampo && buscarInput)
-        url += `filtroCampo=${encodeURIComponent(filtroCampo)}&buscar=${encodeURIComponent(buscarInput)}`;
+    for (let key in filtros) {
+        if (filtros[key]) {
+            url += `${key}=${encodeURIComponent(filtros[key])}&`;
+        }
+    }
 
     try {
         const data = await fetch(url);
@@ -103,14 +130,23 @@ async function cargarFiltros() {
         const res = await fetch("/vehiculos/api/filtros");
         const data = await res.json();
 
-        llenarSelect("filtroColor", data.colores);
-        llenarSelect("filtroModelo", data.modelos);
-        llenarSelect("filtroPlazas", data.plazas);
-        llenarSelect("filtroConcesionario", data.concesionarios);
+        llenarSelect("filtroMarca", data.marcas, "marca");
+        llenarSelect("filtroTipo", data.tipos, "tipo");
+        llenarSelect("filtroConcesionario", data.concesionarios, "nombre");
 
     } catch (err) {
         console.error("Error cargando filtros", err);
     }
+}
+
+function llenarSelect(id, valores, key) {
+    const select = document.getElementById(id);
+    valores.forEach(v => {
+        const option = document.createElement("option");
+        option.value = v[key];
+        option.textContent = v[key];
+        select.appendChild(option);
+    })
 }
 
 function mostrarMensaje(mensaje, tipo) {

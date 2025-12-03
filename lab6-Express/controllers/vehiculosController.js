@@ -38,22 +38,49 @@ async function listarVehiculosApi(req, res) {
     try {
         console.log("Request query: ", req.query);
         console.log("API listarVehiculosAPI");
-        const buscar = (req.query.buscar || "").toLowerCase();           // Texto a buscar
-        const filtroCampo = req.query.filtroCampo || "";                           // "marca" o "modelo"
-        const filtroTipo = req.query.filtroTipo || "";             // "coche", "moto", etc.
+        const filtroMarca = req.query.filtroMarca || "";
+        const filtroColor = (req.query.filtroColor || "").toLowerCase();
+        const filtroConcesionario = req.query.filtroConcesionario || "";
+        const filtroPlazas = req.query.filtroPlazas || "";
+        const filtroAutonomia = req.query.filtroAutonomia || "";
+        const filtroTipo = req.query.filtroTipo || "";
+
 
         let sql = "SELECT * FROM vehiculos WHERE activo = true";
         const params = [];
 
-        if (filtroTipo) {
-            sql += " AND tipo = ?";
-            params.push(filtroTipo);
+        if (filtroMarca) {
+            sql += " AND marca = ?";
+            params.push(filtroMarca);
         }
 
-        if (buscar && filtroCampo && (filtroCampo === "marca" || filtroCampo === "modelo")) {
-            console.log("Filtrando por ", filtroCampo, "y buscando ", buscar);
-            sql += ` AND LOWER(${filtroCampo}) LIKE ?`;
-            params.push(`%${buscar}%`);
+        if (filtroColor) {
+            sql += ` AND color LIKE ?`;
+            params.push(`%${filtroColor}%`);
+        }
+
+        if (filtroConcesionario) {
+            const aux_sql = `SELECT id_concesionario FROM concesionarios WHERE nombre = ?`
+            const aux_params = [filtroConcesionario];
+            const concesionario = await query(aux_sql, aux_params);
+
+            sql += ` AND id_concesionario = ?`;
+            params.push(concesionario[0].id_concesionario);
+        }
+
+        if (filtroPlazas) {
+            sql += ` AND numero_plazas = ?`;
+            params.push(filtroPlazas);
+        }
+
+        if (filtroAutonomia) {
+            sql += ` AND autonomia_km = ?`;
+            params.push(filtroAutonomia);
+        }
+
+        if (filtroTipo) {
+            sql += ` AND tipo = ?`;
+            params.push(filtroTipo);
         }
 
         // Traer todos los vehículos filtrados por tipo
@@ -251,24 +278,14 @@ async function eliminarVehiculo(request, response) {
     }
 }
 
-async function obtenerFiltros(request, respone) {
+async function obtenerFiltros(request, response) {
     try {
-        const sql = `
-            SELECT DISTINCT marca FROM vehiculos WHERE activo = true;
-            SELECT DISTINCT tipo FROM vehiculos WHERE activo = true;
-            SELECT DISTINCT nombre FROM concesionarios;
-        `;
-        const params = [];
+        const marcas = await query("SELECT DISTINCT marca FROM vehiculos WHERE activo = true");
+        const tipos = await query("SELECT DISTINCT tipo FROM vehiculos WHERE activo = true");
+        const concesionarios = await query("SELECT DISTINCT nombre FROM concesionarios");
 
-        const response = await query(sql, params);
 
-        const filtros = {
-            marcas: results[0].map(r => r.marca),
-            tipos: results[1].map(r => r.tipo),
-            concesionarios: results[2].map(r => r.nombre)
-        }
-
-        response.json({ filtros });
+        response.json({ marcas, tipos, concesionarios });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Error interno" });

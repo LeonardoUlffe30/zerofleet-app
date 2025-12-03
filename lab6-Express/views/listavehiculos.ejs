@@ -8,27 +8,19 @@
         <div>
           <label for="filtroMarca">Marca: </label>
           <select id="filtroMarca" name="filtroMarca">
-              <option value="" disabled selected></option>
-              <option value="marca" <%= filtro === "marca" ? "selected" : "" %> >Marca</option>
-              <option value="modelo" <%= filtro === "modelo" ? "selected" : "" %> >Modelo</option>
+              <option value="" selected></option>
           </select>
         </div>
 
         <div>
           <label for="filtroColor">Color: </label>
-          <select id="filtroColor" name="filtroColor">
-              <option value="" disabled selected></option>
-              <option value="marca" <%= filtro === "marca" ? "selected" : "" %> >Marca</option>
-              <option value="modelo" <%= filtro === "modelo" ? "selected" : "" %> >Modelo</option>
-          </select>
+          <input type="text" id="filtroColor" name="filtroColor">
         </div>
 
         <div>
           <label for="filtroConcesionario">Concesionario: </label>
           <select id="filtroConcesionario" name="filtroConcesionario">
-              <option value="" disabled selected></option>
-              <option value="marca" <%= filtro === "marca" ? "selected" : "" %> >Marca</option>
-              <option value="modelo" <%= filtro === "modelo" ? "selected" : "" %> >Modelo</option>
+              <option value="" selected></option>
           </select>
         </div>
 
@@ -40,7 +32,7 @@
         <div>
           <label for="filtroAutonomia">Autonomia: </label>
           <select id="filtroAutonomia" name="filtroAutonomia">
-              <option value="" disabled selected></option>
+              <option value=""></option>
               <option value="marca" <%= filtro === "marca" ? "selected" : "" %> >Marca</option>
               <option value="modelo" <%= filtro === "modelo" ? "selected" : "" %> >Modelo</option>
           </select>
@@ -49,10 +41,7 @@
         <div>
           <label for="filtroTipo"> Tipo vehiculo: </label>
           <select id="filtroTipo" name="filtroTipo">
-              <option value="">Todos</option>
-              <option value="coche">Coche</option>
-              <option value="moto">Moto</option>
-              <option value="patinete electrico">Patinete eléctrico</option>
+              <option value="" selected>Todos</option>
           </select>
         </div>
       </form>
