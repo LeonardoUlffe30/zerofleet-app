@@ -15,6 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const progreso = document.getElementById("progreso");
     const confirmarModal = document.getElementById("confirmarVehiculo");
 
+    // Cargamos los nombres de los concesionarios en base a lo que esta en la base de datos
+    cargarNombres();
+
     // Actualizar progreso
     formulario.addEventListener("input", () => actualizarProgreso(progreso, matricula, marca, modelo, anyoMatriculacion,
         numeroPlazas, autonomia, color, tipo, estado, precioHora, concesionario, imagen));
@@ -283,4 +286,21 @@ function actualizarProgreso(progreso, matricula, marca, modelo, anyoMatriculacio
     if (imagen.value.trim() && validarImagen(imagen)) validos++;
 
     progreso.value = (validos / total) * 100;
+}
+
+async function cargarNombres() {
+    try {
+        const res = await fetch("/vehiculos/api/concesionarios");
+        const concesionarios = await res.json();
+
+        const select = document.getElementById("concesionario");
+        concesionarios.forEach(c => {
+            const option = document.createElement("option");
+            option.value = c.nombre;
+            option.textContent = c.nombre;
+            select.appendChild(option);
+        })
+    } catch (error) {
+        console.error("Error cargando concesionarios", error);
+    }
 }

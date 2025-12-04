@@ -17,7 +17,7 @@ router.post("/nuevo", [
     check("nombreCliente", "El nombre debe tener mínimo 3 carácteres").isLength({ min: 3 }),
     check("apellidoCliente", "El apellido debe tener mínimo 3 carácteres").isLength({ min: 3 }),
     check("telefonoCliente", "El teléfono debe tener  9 números").isLength({ min: 9, max: 9 }).isNumeric(),
-    check("correoCliente", "El correo debe ser uno váido: xxx@zfleet.com").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
+    check("correoCliente", "El correo debe ser uno váido: xxx@dominio.extensión").matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
     check("vehiculo", "El campo vehiculo es obligatorio").notEmpty(),
     check("fechaHoraIni").custom((fechaHoraIni, { req }) => {
         const inicio = new Date(req.body.fechaHoraIni);
