@@ -125,14 +125,42 @@ async function eliminarVehiculo(id) {
     }
 }
 
+function aplicarFiltrosModal() {
+    document.getElementById("filtroMarca").value =
+        document.getElementById("filtroMarcaModal").value;
+
+    document.getElementById("filtroColor").value =
+        document.getElementById("filtroColorModal").value;
+
+    document.getElementById("filtroConcesionario").value =
+        document.getElementById("filtroConcesionarioModal").value;
+
+    document.getElementById("filtroPlazas").value =
+        document.getElementById("filtroPlazasModal").value;
+
+    document.getElementById("filtroAutonomia").value =
+        document.getElementById("filtroAutonomiaModal").value;
+
+    document.getElementById("filtroTipo").value =
+        document.getElementById("filtroTipoModal").value;
+
+    setTimeout(actualizarVehiculos, 150);
+}
+
 async function cargarFiltros() {
     try {
         const res = await fetch("/vehiculos/api/filtros");
         const data = await res.json();
 
+        // FILTROS DEL PANEL LATERAL
         llenarSelect("filtroMarca", data.marcas, "marca");
         llenarSelect("filtroTipo", data.tipos, "tipo");
         llenarSelect("filtroConcesionario", data.concesionarios, "nombre");
+
+        // FILTROS DEL MODAL
+        llenarSelect("filtroMarcaModal", data.marcas, "marca");
+        llenarSelect("filtroTipoModal", data.tipos, "tipo");
+        llenarSelect("filtroConcesionarioModal", data.concesionarios, "nombre");
 
     } catch (err) {
         console.error("Error cargando filtros", err);

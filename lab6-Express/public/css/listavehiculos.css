@@ -18,3 +18,25 @@ caption {
 .fit a {
   margin: 0.25rem;
 }
+
+#filtroVehiculo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+#filtroVehiculo div {
+  display: flex;
+  flex-direction: column;
+}
+
+#filtroVehiculo input, #filtroVehiculo select {
+    font-size: 16px;
+    padding: 4px;
+    border: 0.12px solid black;
+    border-radius: 6px;
+    height: 28px;
+    min-width: 140px;
+    max-width: 240px;
+    width: 150px;
+}

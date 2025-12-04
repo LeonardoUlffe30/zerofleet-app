@@ -73,14 +73,16 @@ async function listarVehiculosApi(req, res) {
             params.push(filtroPlazas);
         }
 
-        if (filtroAutonomia) {
-            sql += ` AND autonomia_km = ?`;
-            params.push(filtroAutonomia);
-        }
-
         if (filtroTipo) {
             sql += ` AND tipo = ?`;
             params.push(filtroTipo);
+        }
+
+        // --- ORDENAR POR AUTONOMÍA ---
+        if (filtroAutonomia === "maxima") {
+            sql += " ORDER BY autonomia_km DESC";
+        } else if (filtroAutonomia === "minima") {
+            sql += " ORDER BY autonomia_km ASC";
         }
 
         // Traer todos los vehículos filtrados por tipo
