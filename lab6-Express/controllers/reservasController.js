@@ -106,9 +106,9 @@ async function crearReserva(request, response) {
         const id_usuario = request.session.usuario.id_usuario; // Obtenido de la sesion guardada al iniciar sesión
 
         sql = `INSERT INTO reservas
-        (id_usuario, id_vehiculo, fecha_inicio, fecha_fin, kilometros_recorridos, incidencias_reportadas)
-        VALUES (?, ?, ?, ?, ?, ?)`;
-        params = [id_usuario, id_vehiculo, fechaHoraIni, fechaHoraFin, 0, 0];
+        (id_usuario, id_vehiculo,  id_cliente, fecha_inicio, fecha_fin, kilometros_recorridos, incidencias_reportadas)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        params = [id_usuario, id_vehiculo, id_cliente, fechaHoraIni, fechaHoraFin, 0, 0];
 
         const resultado = await query(sql, params);
 
