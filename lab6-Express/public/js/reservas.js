@@ -235,7 +235,7 @@ function validarTelefono(telefono) {
 }
 
 function validarCorreo(correo) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return validarCampo(
         correo,
         regex.test(correo.value),

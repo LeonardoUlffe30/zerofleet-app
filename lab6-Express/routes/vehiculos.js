@@ -70,6 +70,8 @@ router.get("/:id", vehiculosController.obtenerVehiculo);
 
 router.get("/:id/editar", vehiculosController.formularioEditarVehiculo);
 
+router.get("/api/concesionarios", vehiculosController.obtenerConcesionarios);
+
 router.post("/:id/editar",
     multerFactory.single('imagen'),
     [

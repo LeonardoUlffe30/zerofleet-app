@@ -86,7 +86,9 @@
 
             <div>
               <label for="concesionario">Concesionario:</label>
-              <input type="text" id="concesionario" name="concesionario" value="<%= vehiculo && vehiculo.id_concesionario ? vehiculo.id_concesionario : '' %>" required>
+              <select id="concesionario" name="concesionario" required>
+                <option value="" disabled selected>Seleccione</option>
+              </select>
             </div>
                 
             <div class="file-wrapper">

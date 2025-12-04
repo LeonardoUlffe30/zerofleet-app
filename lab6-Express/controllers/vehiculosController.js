@@ -294,6 +294,18 @@ async function obtenerFiltros(request, response) {
     }
 }
 
+async function obtenerConcesionarios(request, response) {
+    try {
+        const concesionarios = await query("SELECT DISTINCT nombre FROM concesionarios WHERE activo = true");
+
+        response.json(concesionarios);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error interno" });
+    }
+}
+
+
 
 module.exports = {
     listarVehiculos,
@@ -304,5 +316,6 @@ module.exports = {
     crearVehiculo,
     actualizarVehiculo,
     eliminarVehiculo,
-    obtenerFiltros
+    obtenerFiltros,
+    obtenerConcesionarios
 };
