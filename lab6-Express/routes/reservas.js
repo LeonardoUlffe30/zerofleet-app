@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 const { verificarUsuario } = require("../middleware/autenticacion");
-const { reservas } = require("./admin");
+const { reservas } = require("./accesibilidad");
 const { check, validationResult } = require("express-validator");
 const reservasController = require("../controllers/reservasController");
 

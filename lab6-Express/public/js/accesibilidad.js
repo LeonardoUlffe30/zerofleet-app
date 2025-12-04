@@ -3,28 +3,25 @@ const body = document.body;
 
 // Funciones de sesión
 async function guardarPreferencia(clave, valor) {
-    try {
-        await fetch("/guardar-preferencias", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ clave, valor })
-        })
-    } catch(err) {
-        console.error("Error guardando preferencia:", err);
-    }
+    fetch("/accesibilidad/guardar-preferencias", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clave, valor })
+    })
+    .catch(err => console.error("Error guardando preferencia:", err));
 }
 
 async function cargarPreferencias() {
-    try {
-        const response = await fetch("/obtener-preferencias");
-        const data = await response.json();
-
-        if(data.fontSize) html.style.fontSize = data.fontSize;
-        if(data.altoContraste) body.classList.add("alto-contraste");
-
-    } catch(err) {
-        console.error("Error obteniendo preferencias:", err);
-    }
+    fetch("/accesibilidad/obtener-preferencias")
+    .then(response => {
+        if (!response.ok) throw new Error("Error obteniendo preferencias");
+        return response.json();
+    })
+    .then(data => {
+        if (data.fontSize) html.style.fontSize = data.fontSize;
+        if (data.altoContraste) body.classList.add("alto-contraste");
+    })
+    .catch(err => console.error("Error obteniendo preferencias:", err));
 }
 
 // Tamaño del texto

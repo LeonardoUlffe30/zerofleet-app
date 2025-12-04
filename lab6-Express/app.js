@@ -10,7 +10,7 @@ const { inicializarBD } = require("./config/initDB");
 const vehiculosRouter = require("./routes/vehiculos");
 const reservasRouter = require("./routes/reservas");
 const { autenticarRouter } = require("./routes/autenticar");
-const { router: adminRouter } = require("./routes/admin");
+const accesibilidadRouter = require("./routes/accesibilidad");
 const cargarJSONRouter = require("./routes/cargarJSON");
 const concesionariosRouter = require("./routes/concesionarios");
 const usuariosRouter = require("./routes/usuarios");
@@ -55,7 +55,7 @@ app.set("layout", "layout");
 app.use("/vehiculos", vehiculosRouter);
 app.use("/reservas", reservasRouter);
 app.use("/autenticar", autenticarRouter);
-app.use("/admin", adminRouter);
+app.use("/accesibilidad", accesibilidadRouter);
 app.use("/cargar-json", cargarJSONRouter);
 app.use("/concesionarios", concesionariosRouter);
 app.use("/usuarios", usuariosRouter);
@@ -111,19 +111,3 @@ inicializarBD((err, info) => {
         }
     });
 });
-
-// Obtener preferencias de sesión
-app.get("/obtener-preferencias", function (request, response) {
-    response.json(request.session.preferencias || {})
-});
-
-// Guardar preferencias
-app.post("/guardar-preferencias", function (request, response) {
-    const {clave, valor} = request.body;
-    if(!request.session.preferencias) {
-        request.session.preferencias = {};
-    }
-    request.session.preferencias[clave] = valor;
-    response.json({ok: true});
-})
-
