@@ -19,18 +19,18 @@ caption {
   margin: 0.25rem;
 }
 
-#filtroVehiculo {
+#filtroVehiculos {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-#filtroVehiculo div {
+#filtroVehiculos div {
   display: flex;
   flex-direction: column;
 }
 
-#filtroVehiculo input, #filtroVehiculo select {
+#filtroVehiculos input, #filtroVehiculos select {
     font-size: 16px;
     padding: 4px;
     border: 0.12px solid black;

@@ -15,29 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarFiltros();
 
     filtroMarca.addEventListener("change", actualizarVehiculos);
-    filtroColor.addEventListener("input", () => {
-        // Cancelamos el timer anterior si existe
-        clearTimeout(window.delayBuscador);
-
-        // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
-        window.delayBuscador = setTimeout(actualizarVehiculos, 300);
-    });
-
+    filtroColor.addEventListener("input", retrasoActualizar);
     filtroConcesionario.addEventListener("change", actualizarVehiculos);
-    filtroPlazas.addEventListener("input", () => {
-        // Cancelamos el timer anterior si existe
-        clearTimeout(window.delayBuscador);
-
-        // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
-        window.delayBuscador = setTimeout(actualizarVehiculos, 300);
-    });
-    filtroAutonomia.addEventListener("input", () => {
-        // Cancelamos el timer anterior si existe
-        clearTimeout(window.delayBuscador);
-
-        // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
-        window.delayBuscador = setTimeout(actualizarVehiculos, 2);
-    });
+    filtroPlazas.addEventListener("input", retrasoActualizar);
+    filtroAutonomia.addEventListener("input", retrasoActualizar);
     filtroTipo.addEventListener("change", actualizarVehiculos);
 });
 
@@ -175,6 +156,14 @@ function llenarSelect(id, valores, key) {
         option.textContent = v[key];
         select.appendChild(option);
     })
+}
+
+function retrasoActualizar() {
+    // Cancelamos el timer anterior si existe
+    clearTimeout(window.delayBuscador);
+
+    // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
+    window.delayBuscador = setTimeout(actualizarVehiculos, 300);
 }
 
 function mostrarMensaje(mensaje, tipo) {

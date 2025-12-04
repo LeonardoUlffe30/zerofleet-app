@@ -36,21 +36,29 @@ async function listarConcesionarios(request, response) {
 // ------------------- LISTAR CONCESIONARIOS API CON FETCH ---------------------
 async function listarConcesionariosApi(request, response) {
     try {
-        const buscar = (request.query.buscar || "").toLowerCase();           // Texto a buscar
-        const filtroCampo = request.query.filtroCampo || "";                           // "nombre" o "ciudad"
-
-        console.log(buscar, filtroCampo);
+        const filtroNombre = (request.query.filtroNombre || "").toLowerCase();
+        const filtroCiudad = (request.query.filtroCiudad || "").toLowerCase();
+        const filtroDireccion = (request.query.filtroDireccion || "").toLowerCase();
 
         let sql = "SELECT * FROM concesionarios WHERE activo = true";
         const params = [];
 
-        if (buscar && filtroCampo && (filtroCampo === "nombre" || filtroCampo === "ciudad")) {
-            console.log("Filtrando por ", filtroCampo, "y buscando ", buscar);
-            sql += ` AND LOWER(${filtroCampo}) LIKE ?`;
-            params.push(`%${buscar}%`);
+        if (filtroNombre) {
+            sql += ` AND nombre LIKE ?`;
+            params.push(`%${filtroNombre}%`);
         }
 
-        // Traer todos los vehículos filtrados
+        if (filtroCiudad) {
+            sql += ` AND ciudad LIKE ?`;
+            params.push(`%${filtroCiudad}%`);
+        }
+
+        if (filtroDireccion) {
+            sql += ` AND direccion LIKE ?`;
+            params.push(`%${filtroDireccion}%`);
+        }
+
+        // Traer todos los concesionarios filtrados
         const concesionarios = await query(sql, params);
 
         response.json(concesionarios);

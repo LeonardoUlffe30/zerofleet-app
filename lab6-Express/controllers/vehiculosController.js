@@ -85,7 +85,7 @@ async function listarVehiculosApi(req, res) {
             sql += " ORDER BY autonomia_km ASC";
         }
 
-        // Traer todos los vehículos filtrados por tipo
+        // Traer todos los vehículos filtrados
         let vehiculos = await query(sql, params);
 
         res.json(vehiculos);

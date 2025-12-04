@@ -1,20 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const filtroCampo = document.getElementById("filtroCampo");
-    const buscarInput = document.getElementById("buscar");
+    const filtroNombre = document.getElementById("filtroNombre");
+    const filtroCiudad = document.getElementById("filtroCiudad");
+    const filtroDireccion = document.getElementById("filtroDireccion");
 
     // Si EJS ya mandó concesionarios, mostrarlos SIN fetch
     if (concesionariosIniciales && concesionariosIniciales.length > 0) {
         mostrarConcesionarios(concesionariosIniciales);
     }
 
-    filtroCampo.addEventListener("change", actualizarConcesionarios);
-    buscarInput.addEventListener("input", () => {
-        // Cancelamos el timer anterior si existe
-        clearTimeout(window.delayBuscador);
-
-        // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
-        window.delayBuscador = setTimeout(actualizarConcesionarios, 300);
-    });
+    filtroNombre.addEventListener("input", retrasoActualizar);
+    filtroCiudad.addEventListener("input", retrasoActualizar);
+    filtroDireccion.addEventListener("input", retrasoActualizar);
 });
 
 // Inserta las etiquetas con los datos de los concesionarios en la tbody de la tabla
@@ -41,16 +37,22 @@ function mostrarConcesionarios(concesionarios) {
 }
 
 async function actualizarConcesionarios() {
-    const filtroCampo = document.getElementById("filtroCampo").value;
-    const buscarInput = document.getElementById("buscar").value.trim();
-
     let url = `/concesionarios/api/concesionarios?`;
+
+    const filtros = {
+        filtroNombre: document.getElementById("filtroNombre").value.trim(),
+        filtroCiudad: document.getElementById("filtroCiudad").value.trim(),
+        filtroDireccion: document.getElementById("filtroDireccion").value.trim()
+    }
 
     // Utilizamos encoding para convertir caracteres especiales(/=<>&" ") en SEGUROS para la URL
     // y evitar ataques de inyección como XSS. Por ejemplo, buscar="<script>alert('xss')</script>"
     // se convierte en buscar="%3Cscript%3Ealert('xss')%3C/script%3E"
-    if (filtroCampo && buscarInput)
-        url += `filtroCampo=${encodeURIComponent(filtroCampo)}&buscar=${encodeURIComponent(buscarInput)}`;
+    for (let key in filtros) {
+        if (filtros[key]) {
+            url += `${key}=${encodeURIComponent(filtros[key])}&`;
+        }
+    }
 
     try {
         const data = await fetch(url);
@@ -82,6 +84,27 @@ async function eliminarConcesionario(id) {
         console.error("Error al eliminar:", error);
         mostrarMensaje("Error al eliminar el concesionario", "danger");
     }
+}
+
+function aplicarFiltrosModal() {
+    document.getElementById("filtroNombre").value =
+        document.getElementById("filtroNombreModal").value;
+
+    document.getElementById("filtroCiudad").value =
+        document.getElementById("filtroCiudadModal").value;
+
+    document.getElementById("filtroDireccion").value =
+        document.getElementById("filtroDireccionModal").value;
+
+    setTimeout(actualizarConcesionarios, 150);
+}
+
+function retrasoActualizar() {
+    // Cancelamos el timer anterior si existe
+    clearTimeout(window.delayBuscador);
+
+    // Retardo de 300ms para no hacer fetch inmediato en cada letra que escribe el usuario
+    window.delayBuscador = setTimeout(actualizarConcesionarios, 300);
 }
 
 function mostrarMensaje(mensaje, tipo) {
