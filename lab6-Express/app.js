@@ -111,3 +111,19 @@ inicializarBD((err, info) => {
         }
     });
 });
+
+// Obtener preferencias de sesión
+app.get("/obtener-preferencias", function (request, response) {
+    response.json(request.session.preferencias || {})
+});
+
+// Guardar preferencias
+app.post("/guardar-preferencias", function (request, response) {
+    const {clave, valor} = request.body;
+    if(!request.session.preferencias) {
+        request.session.preferencias = {};
+    }
+    request.session.preferencias[clave] = valor;
+    response.json({ok: true});
+})
+

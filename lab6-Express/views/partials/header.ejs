@@ -59,8 +59,13 @@
           <option value="es" aria-label="español" selected>ES</option>
           <option value="en" aria-label="english">EN</option>
         </select>
-      
-        <button id="contraste" onclick="activarAltoContraste()" aria-label="activar modo alto contraste"><img src="/assets/icons/darkMode.png" alt="modo oscuro" width="25px"></button>
+
+        <!-- Boton de accesibilidad-->
+        <button class="btn btn-outline-dark ms-2" data-bs-toggle="modal" data-bs-target="#modalAccesibilidad"
+          aria-label="Abrir menú de accesibilidad" style="padding: 3px 8px; border-radius: 50px;">
+          <i class="bi bi-universal-access"></i>
+        </button>
+
       </div>
       
       <div class="btn-toggle" onclick="desplegarBar()">
