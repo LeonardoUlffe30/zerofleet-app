@@ -52,22 +52,16 @@ document.getElementById("btnContraste")?.addEventListener("click", () => {
     body.classList.toggle("alto-contraste");
 
     const boton = document.getElementById("btnContraste");
-    const icono = boton.querySelector("img");
+    const icono = boton.querySelector("i");
+
+    //const botonAcc = document.getElementByClassName("iconoAccesibilidad")[0];
 
     if (body.classList.contains("alto-contraste")) {
-        icono.src = "assets/icons/lightMode.png";
-        icono.style.background = "white";
-        icono.style.borderRadius = "50%";
-        icono.style.padding = "1px";
-        icono.alt = "modo claro";
-        boton.setAttribute("aria-label", "desactivar modo alto contraste");
+        icono.classList.replace("bi-moon-stars-fill", "bi-brightness-high-fill");
+        //botonAcc.classList.replace("btn btn-outline-dark", "btn btn-outline-light");
     } else {
-        icono.src = "assets/icons/darkMode.png";
-        icono.alt = "modo oscuro";
-        boton.setAttribute("aria-label", "activar modo alto contraste");
-        icono.style.background = "none";
-        icono.style.padding = "0";
-        icono.style.borderRadius = "0";
+        icono.classList.replace("bi-brightness-high-fill", "bi-moon-stars-fill");
+       // botonAcc.classList.replace("btn btn-outline-light", "btn btn-outline-dark");
     }
     guardarPreferencia("altoContraste", body.classList.contains("alto-contraste"))
 })

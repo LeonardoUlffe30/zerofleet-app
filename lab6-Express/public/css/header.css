@@ -318,6 +318,11 @@ body.alto-contraste .menu-dropdown #registrar-menu {
     color: white;
 }
 
+.body.alto-contraste .iconoAccesibilidad{
+    background-color: #ffffff;
+    color: #000000;
+}
+
 /* Diseño responsivo */
 @media (max-width: 1110px) {
     nav .links, #iniciar-sesion, #registrar, #cerrar-sesion, #MensajeUsuarioNombre {

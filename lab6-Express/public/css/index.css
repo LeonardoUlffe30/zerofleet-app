@@ -81,10 +81,6 @@ ol, ul {
   text-align: left;
 }
 
-dl {
-  margin: 0;
-}
-
 .container {
   background-color: #fff;
   padding: 20px;
@@ -93,7 +89,7 @@ dl {
   margin: 20px 0;
 }
 
-body.alto-contraste .intro, body.alto-contraste .tareas, body.alto-contraste .tecnologias{
+body.alto-contraste .contenedorInfo{
   background-color: #000000;
   color: #ffffff;
 }
@@ -102,11 +98,10 @@ body.alto-contraste .intro, body.alto-contraste .tareas, body.alto-contraste .te
   width: 15rem;
 }
 
-body.alto-contraste .tecnologiasImagen, 
-body.alto-contraste .tareasImg{
+body.alto-contraste .contenedorImagen{
   background-color: #ffffff; 
   padding: 1rem;             
-  border-radius: 0.5rem; 
+  border-radius: 100%; 
 }
 
 @media (max-width: 768px) {
