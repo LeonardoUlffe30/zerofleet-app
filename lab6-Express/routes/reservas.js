@@ -43,7 +43,7 @@ router.get("/mis-reservas", reservasController.listarReservas);
 
 //router.get("/api/mis-reservas", reservasController.listarReservasApi)
 
-router.put("editar/:id", reservasController.actualizarReserva);
+router.put("/editar/:id", reservasController.actualizarReserva);
 
 router.get("/mis-reservas/:id", reservasController.obtenerReservasPorUsuario);
 

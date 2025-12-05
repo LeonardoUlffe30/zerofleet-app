@@ -16,15 +16,19 @@ function cargarReservas(id_usuario) {
                 const acciones = usuario ? `
                 <td class = "fit">
                     <button class="btn btn-danger" onclick="cambiarEstado('${r.id_reserva}')">Cambiar estado</button>
-                <td>`: '';
-                const fila =`
+                </td>`: '';
+                const fila = `
                 <tr>
                   <td>${r.id_reserva}</td>
-                  <td>${r.id_usuario}</td>
-                  <td>${r.id_vehiculo}</td>
-                  <td>0</td>
-                  <td>${r.fechaIni}</td>
-                  <td>${r.fechaFin}</td>
+                  <td>${r.nombre}</td>
+                  <td>${r.apellido}</td>
+                  <td>${r.correo}</td>
+                  <td>${r.telefono}</td>
+                  <td>${r.matricula}</td>
+                  <td>${r.marca}</td>
+                  <td>${r.modelo}</td>
+                  <td>${formatearFecha(r.fecha_inicio)}</td>
+                  <td>${formatearFecha(r.fecha_fin)}</td>
                   <td>${r.estado}</td>
                   ${acciones}
                 </tr>`;
@@ -47,35 +51,38 @@ function cambiarEstado(id_reserva) {
     })
     const estadoActual = filaSeleccionada.children[5].textContent.trim();
     let estadoNuevo;
-    if(estadoActual === "activo") {
+    if (estadoActual === "activo") {
         estadoNuevo = "finalizada";
-    }else if(estadoActual === "finalizada"){
+    } else if (estadoActual === "finalizada") {
         estadoNuevo = "cancelada";
-    }else if(estadoActual === "cancelada"){
+    } else if (estadoActual === "cancelada") {
         estadoNuevo = "activo";
     }
 
     fetch(`/reservas/editar/${id_reserva}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id_reserva, estado: estadoNuevo })
+        body: JSON.stringify({ id_reserva, estado: estadoNuevo })
     })
-    .then(response => {
-        if(response.ok) {
-            mostrarMensaje("Estado actualizado de forma correcta", "success");
-            mostrarUsuarios();
-        }else{
-            mostrarMensaje("No se pudo actualizar el estado", "error");
-        }
-    })
-    .catch(error => {
+        .then(response => {
+            if (response.ok) {
+                mostrarMensaje("Estado actualizado de forma correcta", "success");
+            } else {
+                mostrarMensaje("No se pudo actualizar el estado", "error");
+            }
+        })
+        .catch(error => {
             console.error("Error al cambiar el estado: " + error.message);
-     })
+        })
+}
+
+function formatearFecha(date) {
+    return new Date(date).toISOString().slice(0, 19).replace('T', ' ');
 }
 
 function mostrarMensaje(mensaje, tipo) {
     const msg = document.getElementById("alertContainer");
-    msg.innerHTML =`<div class = "alert alert-${tipo}" role = "alert">
+    msg.innerHTML = `<div class = "alert alert-${tipo}" role = "alert">
       ${mensaje} </div>`;
 }
 

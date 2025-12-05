@@ -33,7 +33,7 @@ async function formulariocrearReserva(request, response) {
     try {
         const idConcesionario = request.session.usuario.id_concesionario;
 
-        const sql = `SELECT matricula FROM vehiculos WHERE id_concesionario = ? AND activo = true`;
+        const sql = `SELECT matricula FROM vehiculos WHERE id_concesionario = ? AND activo = true AND estado = 'disponible'`;
         const params = [idConcesionario];
 
         const vehiculos = await query(sql, params);
@@ -144,9 +144,15 @@ async function actualizarReserva(request, response) {
 async function obtenerReservasPorUsuario(request, response) {
     try {
         console.log("Acceso al controladorAPI de reservas por usuario: ");
-        const sql = `SELECT * FROM reservas WHERE id_usuario = ?`;
-        const { id } = request.params;
-        let reservas = await query(sql, [id]);
+        const sql = `SELECT r.id_reserva, c.nombre, c.apellido, c.correo, c.telefono, v.matricula, v.marca, v.modelo,r.fecha_inicio, r.fecha_fin, r.estado
+                     FROM (
+                        SELECT * FROM reservas WHERE id_usuario = ?
+                    ) AS r
+                     INNER JOIN clientes AS c ON r.id_cliente = c.id_cliente
+                     INNER JOIN vehiculos AS v ON r.id_vehiculo = v.id_vehiculo`;
+        const params = [request.params.id];
+
+        let reservas = await query(sql, params);
         console.log(reservas);
         response.json(reservas);
     } catch (err) {
