@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tipo = document.getElementById("tipo");
     const estado = document.getElementById("estado");
     const precioHora = document.getElementById("precioHora");
-    const concesionario = document.getElementById("concesionario");
+    const concesionario = document.getElementById("concesionarioVehiculo");
     const imagen = document.querySelector("input[name='imagen']");
     const progreso = document.getElementById("progreso");
     const confirmarModal = document.getElementById("confirmarVehiculo");
@@ -52,49 +52,81 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-async function actualizarVehiculo(formulario) {
+function actualizarVehiculo(formulario) {
     const matriculaAntigua = formulario.dataset.id;
     const formData = new FormData(formulario);
+    const mensajesDiv = document.getElementById("mensaje");
 
-    try {
-        const data = await fetch(`/vehiculos/${matriculaAntigua}/editar`, {
-            method: "POST",
-            body: formData
-        });
-
-        if (data.status === 200) {
-            await data.json();
-            alert("Vehículo actualizado");
+    fetch(`/vehiculos/${matriculaAntigua}/editar`, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        const ok = response.ok;
+        return response.json().then(data => ({ ok, data}));
+    })
+    .then(resultado => {
+        if (resultado.ok) {
+            mensajesDiv.innerHTML = `
+                <div class="alert alert-success" role="alert">
+                    <p>Vehículo actualizado con éxito</p>
+                </div>`;
             window.location.href = "/vehiculos/";
         } else {
-            alert(data.errores.map(e => e.msg).join("\n"));
-            throw new Error(`HTTP error! status: ${data.status}`);
+            if (resultado.data.errores) {
+                mensajesDiv.innerHTML = resultado.data.errores.map(e => `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${e.msg}</p>
+                    </div>`).join("");
+            } else if (resultado.data.mensaje) {
+                mensajesDiv.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${resultado.data.mensaje}</p>
+                    </div>`;
+            }
         }
-    } catch (error) {
+    })
+    .catch(error => {
         console.error("Error al actualizar el vehiculo:", error);
-    }
+    });
 }
 
-async function crearVehiculo(formulario) {
-    const formData = new FormData(formulario);
-    try {
-        const data = await fetch("/vehiculos/nuevo", {
-            method: "POST",
-            body: formData
-        });
 
-        if (data.status === 201) {
-            const vehiculo = await data.json();
-            alert(`Vehículo registrado con éxito con ID: ${vehiculo.id}`);
+function crearVehiculo(formulario) {
+    const formData = new FormData(formulario);
+    const mensajesDiv = document.getElementById("mensaje");
+
+    fetch("/vehiculos/nuevo", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        const ok = response.ok;
+        return response.json().then(data => ({ok, data}));
+    })
+    .then(resultado => {
+        if (resultado.ok) {
+            alert(`Vehículo registrado con éxito`);
             window.location.href = "/vehiculos/";
         } else {
-            alert(data.errores.map(e => e.msg).join("\n"));
-            throw new Error(`HTTP error! status: ${data.status}`);
+           if (resultado.data.errores) {
+                mensajesDiv.innerHTML = resultado.data.errores.map(e => `
+                <div class="alert alert-danger" role="alert">
+                    <p>${e.msg}</p>
+                </div>`).join("");
+            }else if (resultado.data.mensaje) {
+                mensajesDiv.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <p>${resultado.data.mensaje}</p>
+                </div>`;
+            }
         }
-    } catch (error) {
+    })
+    .catch(error => {
         console.error("Error al crear el vehiculo:", error);
-    }
+    });
 }
+
 
 function validarFormulario(event, matricula, marca, modelo, anyoMatriculacion,
     numeroPlazas, autonomia, color, tipo, estado, precioHora, concesionario, imagen) {
@@ -288,19 +320,21 @@ function actualizarProgreso(progreso, matricula, marca, modelo, anyoMatriculacio
     progreso.value = (validos / total) * 100;
 }
 
-async function cargarNombres() {
-    try {
-        const res = await fetch("/vehiculos/api/concesionarios");
-        const concesionarios = await res.json();
+function cargarNombres() {
+    fetch("/vehiculos/api/concesionarios")
+        .then(response => response.json())
+        .then(concesionarios => {
+            const select = document.getElementById("concesionarioVehiculo");
 
-        const select = document.getElementById("concesionario");
-        concesionarios.forEach(c => {
-            const option = document.createElement("option");
-            option.value = c.nombre;
-            option.textContent = c.nombre;
-            select.appendChild(option);
+            concesionarios.forEach(c => {
+                const option = document.createElement("option");
+                option.value = c.nombre;
+                option.textContent = c.nombre;
+                select.appendChild(option);
+            });
         })
-    } catch (error) {
-        console.error("Error cargando concesionarios", error);
-    }
+        .catch(error => {
+            console.error("Error cargando concesionarios", error);
+        });
 }
+

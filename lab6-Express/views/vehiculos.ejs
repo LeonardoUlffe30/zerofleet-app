@@ -11,17 +11,8 @@
       data-id = "<%= vehiculo ? vehiculo.matricula : '' %>"
       action="<%= vehiculo && vehiculo.matricula ? '/vehiculos/' + vehiculo.matricula + '/editar' : '/vehiculos/nuevo' %>" 
       method="POST" enctype="multipart/form-data">
-            
+    <div id = "mensaje"></div>
         <fieldset> 
-          <legend>Información del vehiculo</legend>
-
-          <% if(error){ %>
-            <div class = "alert alert-danger" role = "alert">
-              <% error.forEach(e => { %>
-                <p><%=  e.msg %></p>
-                <% }) %>
-            </div>
-          <% } %>
 
           <div class="container text-left">
             <div>
@@ -85,8 +76,8 @@
             </div>
 
             <div>
-              <label for="concesionario">Concesionario:</label>
-              <select id="concesionario" name="concesionario" required>
+              <label for="concesionarioVehiculo">Concesionario:</label>
+              <select id="concesionarioVehiculo" name="concesionarioVehiculo" required>
                 <option value="" disabled selected>Seleccione</option>
               </select>
             </div>

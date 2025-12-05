@@ -53,7 +53,7 @@ function mostrarVehiculos(vehiculos) {
     });
 }
 
-async function actualizarVehiculos() {
+function actualizarVehiculos() {
     let url = `/vehiculos/api/vehiculos?`;
 
     const filtros = {
@@ -74,37 +74,42 @@ async function actualizarVehiculos() {
         }
     }
 
-    try {
-        const data = await fetch(url);
-
-        if (data.status === 200) {
-            const vehiculos = await data.json();
-            mostrarVehiculos(vehiculos);
-        } else throw new Error(`HTTP error! status: ${data.status}`);
-
-    } catch (error) {
+    fetch(url)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(vehiculos => {
+        mostrarVehiculos(vehiculos);
+    })
+    .catch(error => {
         console.error("Error al cargar los vehiculos:", error);
         mostrarMensaje("Error al cargar los vehículos", "danger");
-    }
+    });
 }
 
-async function eliminarVehiculo(id) {
-    try {
-        const data = await fetch(`/vehiculos/api/vehiculos/${id}`, {
-            method: 'DELETE'
-        });
-
-        if (data.status === 200) {
-            const response = await data.json();
-            mostrarMensaje(response.mensaje, "success");
-            actualizarVehiculos();
-        } else throw new Error(`HTTP error! status: ${data.status}`);
-
-    } catch (error) {
+function eliminarVehiculo(id) {
+    fetch(`/vehiculos/api/vehiculos/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); 
+    })
+    .then(data => {
+        mostrarMensaje(data.mensaje, "success");
+        return actualizarVehiculos(); 
+    })
+    .catch(error => {
         console.error("Error al eliminar:", error);
         mostrarMensaje("Error al eliminar el vehiculo", "danger");
-    }
+    });
 }
+
 
 function aplicarFiltrosModal() {
     document.getElementById("filtroMarca").value =
@@ -128,25 +133,25 @@ function aplicarFiltrosModal() {
     setTimeout(actualizarVehiculos, 150);
 }
 
-async function cargarFiltros() {
-    try {
-        const res = await fetch("/vehiculos/api/filtros");
-        const data = await res.json();
+function cargarFiltros() {
+    fetch("/vehiculos/api/filtros")
+        .then(response => response.json())
+        .then(data => {
+            // FILTROS DEL PANEL LATERAL
+            llenarSelect("filtroMarca", data.marcas, "marca");
+            llenarSelect("filtroTipo", data.tipos, "tipo");
+            llenarSelect("filtroConcesionario", data.concesionarios, "nombre");
 
-        // FILTROS DEL PANEL LATERAL
-        llenarSelect("filtroMarca", data.marcas, "marca");
-        llenarSelect("filtroTipo", data.tipos, "tipo");
-        llenarSelect("filtroConcesionario", data.concesionarios, "nombre");
-
-        // FILTROS DEL MODAL
-        llenarSelect("filtroMarcaModal", data.marcas, "marca");
-        llenarSelect("filtroTipoModal", data.tipos, "tipo");
-        llenarSelect("filtroConcesionarioModal", data.concesionarios, "nombre");
-
-    } catch (err) {
-        console.error("Error cargando filtros", err);
-    }
+            // FILTROS DEL MODAL
+            llenarSelect("filtroMarcaModal", data.marcas, "marca");
+            llenarSelect("filtroTipoModal", data.tipos, "tipo");
+            llenarSelect("filtroConcesionarioModal", data.concesionarios, "nombre");
+        })
+        .catch(err => {
+            console.error("Error cargando filtros", err);
+        });
 }
+
 
 function llenarSelect(id, valores, key) {
     const select = document.getElementById(id);
