@@ -79,7 +79,7 @@ async function formularioCrearUsuario(request, response) {
             body: "",
             concesionarios: concesionarios
         });
-    } catch(err) {
+    } catch (err) {
         console.error("Error cargando concesionarios:", err.message);
         response.status(500).send("Error interno cargando concesionarios");
     }
@@ -192,6 +192,58 @@ async function actualizarUsuario(request, response) {
     }
 }
 
+async function actualizarPreferencias(request, response) {
+    try {
+        const { preferencias } = request.body;
+
+        if (request.session.usuario) {
+            const sql = `
+                UPDATE usuarios 
+                SET preferencias_accesibilidad = ?
+                WHERE id_usuario = ?`;
+            const params = [JSON.stringify(preferencias), request.session.usuario.id_usuario];
+
+            const resultado = await query(sql, params);
+
+            if (resultado.affectedRows === 0) {
+                return response.status(404).json({ mensaje: "Usuario no encontrado" });
+            }
+        } else {
+            request.session.preferencias = preferencias;
+        }
+
+        response.status(200).json({ mensaje: "Preferencias guardadas correctamente" });
+
+    } catch (error) {
+        console.error(error);
+        return response.status(500).json({ mensaje: "Error guardando preferencias" });
+    }
+}
+
+async function obtenerPreferencias(request, response) {
+    try {
+        // Si esta autenticado
+        if (request.session.usuario) {
+            const sql = `SELECT preferencias_accesibilidad FROM usuarios WHERE id_usuario = ?`;
+            const params = [request.session.usuario.id_usuario];
+
+            const result = await query(sql, params);
+
+            const preferencias = result[0]?.preferencias_accesibilidad;
+
+            response.json(preferencias || {});
+        } else { // Si no esta autenticado, usar la sesion para guardar preferencias temporalmente
+            response.json(request.session.preferencias || {});
+        }
+    } catch (error) {
+        console.error("Error obteniendo preferencias:", error);
+        res.status(500).json({ error: "Error obteniendo preferencias" });
+    }
+
+    if (result.length === 0) return null;
+    return result[0].preferencias_accesibilidad || {};
+}
+
 function formularioObtenerUsuario(request, response) {
     response.status(200).render("layout", {
         titulo: "Iniciar sesión",
@@ -258,6 +310,8 @@ module.exports = {
     obtenerUsuario,
     crearUsuario,
     actualizarUsuario,
+    actualizarPreferencias,
+    obtenerPreferencias,
     eliminarUsuario,
     formularioCrearUsuario,
     formularioEditarUsuario,
