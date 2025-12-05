@@ -138,6 +138,23 @@ body.alto-contraste nav a:hover {
     color: black;
 }
 
+body.alto-contraste #btnAccesibilidad {
+    background-color: black !important; 
+    border: 1px solid white !important;
+}
+
+body.alto-contraste #btnAccesibilidad i {
+    color: white !important;
+}
+
+body.alto-contraste #btnAccesibilidad:hover {
+    background-color: white !important; /* fondo blanco al pasar mouse */
+}
+
+body.alto-contraste #btnAccesibilidad:hover i {
+    color: black !important; /* icono negro al pasar mouse */
+}
+
 /* ============================================================
    DROPDOWN EN EL MENU MÓVIL (MENU-DROPDOWN)
    ============================================================ */
