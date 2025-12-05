@@ -21,10 +21,22 @@ function listarReservas(request, response) {
 }
 
 async function listarReservasApi(request, response) {
-    console.log("Acceso al controladorAPI de listar reservas");
-    const sql = `SELECT * FROM reservas`;
-    let reserva = await query(sql);
-    response.json(reserva);
+    try {
+        console.log("Acceso al controladorAPI de reservas ");
+        const sql = `SELECT r.id_reserva, c.nombre, c.apellido, c.correo, c.telefono, v.matricula, v.marca, v.modelo,r.fecha_inicio, r.fecha_fin, r.estado
+                     FROM (
+                        SELECT * FROM reservas
+                    ) AS r
+                     INNER JOIN clientes AS c ON r.id_cliente = c.id_cliente
+                     INNER JOIN vehiculos AS v ON r.id_vehiculo = v.id_vehiculo`;
+
+        let reservas = await query(sql);
+        console.log(reservas);
+        response.json(reservas);
+    } catch (err) {
+        console.error("Error al obtener reservas por usuario:", err.message);
+        response.status(500).json({ error: "Error al obtener reservas por usuario" });
+    }
 }
 
 // CREAR RESERVAS
@@ -143,7 +155,7 @@ async function actualizarReserva(request, response) {
 // OBTENER RESERVAS POR ID
 async function obtenerReservasPorUsuario(request, response) {
     try {
-        console.log("Acceso al controladorAPI de reservas por usuario: ");
+        console.log("Acceso al controladorAPI de reservas por usuario");
         const sql = `SELECT r.id_reserva, c.nombre, c.apellido, c.correo, c.telefono, v.matricula, v.marca, v.modelo,r.fecha_inicio, r.fecha_fin, r.estado
                      FROM (
                         SELECT * FROM reservas WHERE id_usuario = ?

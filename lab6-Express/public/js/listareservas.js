@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
     const id_usuario = usuario ? usuario.id_usuario : null;
-    cargarReservas(usuario.id_usuario);
+    const rol = usuario ? usuario.rol : null;
+    cargarReservas(usuario.id_usuario, rol);
 });
 
-function cargarReservas(id_usuario) {
-    const url = id_usuario ? `/reservas/mis-reservas/${id_usuario}` : `/reservas/api/mis-reservas`
-    console.log(`/reservas/mis-reservas/${id_usuario}`);
+function cargarReservas(id_usuario, rol) {
+    console.log(rol);
+    const url = rol === 'empleado' ?  `/reservas/mis-reservas/${id_usuario}` : `/reservas`
     fetch(url)
         .then(response => response.json())
         .then(reservas => {
