@@ -129,36 +129,37 @@ function formularioCrearVehiculo(request, response) {
 }
 
 function crearVehiculo(request, response) {
-    console.log("Acceso al controlador de crear vehiculos");
-    const error = validationResult(request);
-    if (!error.isEmpty()) {
-        return response.status(400).json({ errores: error.array() });
-    }
 
+    const { matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia, color,
+            estado, tipo, precioHora, concesionarioVehiculo } = request.body;
     const imagen = request.file ? request.file.filename : "";
-    const {
-        matricula, marca, modelo, anyoMatriculacion,
-        numeroPlazas, autonomia, color,
-        estado, tipo, precioHora, concesionarioVehiculo
-    } = request.body;
 
-    // Verificamos que el concesionario existe
-    let sql = `SELECT id_concesionario FROM concesionarios WHERE nombre = ?`;
-    let params = [concesionarioVehiculo];
+    sql = "SELECT matricula FROM vehiculos WHERE matricula = ?";
+    params = [matricula];
+
     query(sql, params)
+    .then(existente => {
+        if (existente.length > 0) {
+            throw { status: 400, mensaje: "La matrícula ya existe" };
+        }
+
+        sql = "SELECT id_concesionario FROM concesionarios WHERE nombre = ?";
+        params = [concesionarioVehiculo];
+        return query(sql, params);
+    })
     .then(concesionarioId => {
         if (concesionarioId.length === 0) {
-            return response.status(400).json({ mensaje: "Concesionario no existe" });
+            throw { status: 400, mensaje: "Concesionario no existe" };
         }
 
         const id_concesionario = concesionarioId[0].id_concesionario;
 
-        // Insertamos vehículo
+        // Insertamos el vehículo
         sql = `
             INSERT INTO vehiculos
             (matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km,
-                color, imagen, estado, tipo, precio_hora, id_concesionario)
-            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+             color, imagen, estado, tipo, precio_hora, id_concesionario)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         params = [
             matricula, marca, modelo, anyoMatriculacion,
@@ -174,8 +175,12 @@ function crearVehiculo(request, response) {
         }
     })
     .catch(error => {
-        console.error(error);
-        response.status(500).json({ error: "Error al obtener los filtros" });
+        if (error.status && error.mensaje) {
+            response.status(error.status).json({ mensaje: error.mensaje });
+        } else {
+            console.error(error);
+            response.status(500).json({ error: "Error al crear el vehículo" });
+        }
     });
 }
 
@@ -186,7 +191,7 @@ function formularioEditarVehiculo(request, response) {
     query(sql, params)
     .then(vehiculo => {
         if (vehiculo.length === 0) {
-            return response.status(404).json({ mensaje: "Vehiculo no encontrado" });
+            throw { status: 400, mensaje: "Vehiculo no existe" };
         }
 
         sql = `SELECT nombre FROM concesionarios WHERE id_concesionario = ?`;
@@ -206,11 +211,14 @@ function formularioEditarVehiculo(request, response) {
         });
     })
     .catch(error => {
-        console.error(error);
-        response.status(500).send("Error interno del servidor");
+        if (error.status && error.mensaje) {
+            response.status(error.status).json({ mensaje: error.mensaje });
+        } else {
+            console.error(error);
+            response.status(500).json({ error: "Error al crear el vehículo" });
+        }
     });
 }
-
 
 function obtenerVehiculo(request, response) {
     const sql = `SELECT * FROM vehiculos WHERE matricula = ? and activo = true`;
@@ -250,7 +258,7 @@ function actualizarVehiculo(request, response) {
     query(sql, params)
     .then(concesionarioId => {
         if (concesionarioId.length === 0) {
-            return response.status(400).json({ mensaje: "Concesionario no existe" });
+            throw { status: 400, mensaje: "Concesionario no existe" };
         }
 
         const id_concesionario = concesionarioId[0].id_concesionario;
@@ -275,13 +283,17 @@ function actualizarVehiculo(request, response) {
     })
     .then(resultado => {
         if (resultado && resultado.affectedRows === 0) {
-            return response.status(404).json({ mensaje: "Vehiculo no encontrado" });
+            throw { status: 400, mensaje: "Vehiculo no existe" };
         }
         response.status(200).json({ mensaje: "Vehiculo actualizado correctamente" });
     })
     .catch(error => {
-        console.error(error);
-        response.status(500).json({ mensaje: "Error actualizando vehiculo" });
+        if (error.status && error.mensaje) {
+            response.status(error.status).json({ mensaje: error.mensaje });
+        } else {
+            console.error(error);
+            response.status(500).json({ error: "Error al crear el vehículo" });
+        }
     });
 }
 
