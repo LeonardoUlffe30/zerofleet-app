@@ -111,6 +111,21 @@ nav a:hover {
     background-color: #eaeaea;
 }
 
+#btnContraste {
+    border-radius: 50%;
+    height: 33px;
+    width: 33px;
+}
+
+#modalAccesibilidad input {
+    padding: 0.5rem;
+    border: 1px solid black;
+    border-radius: 3px;
+    font-size: 1rem;
+    width: 5rem; 
+    height: 2rem; 
+}
+
 /* Modo alto contraste */
 body.alto-contraste .nav-item .dropdown-toggle {
     color: white;
