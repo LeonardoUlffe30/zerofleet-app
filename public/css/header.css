@@ -112,9 +112,18 @@ nav a:hover {
 }
 
 #btnContraste {
+    background-color: white;
     border-radius: 50%;
     height: 33px;
     width: 33px;
+}
+
+#btnContraste:hover {
+    background-color: black; 
+}
+
+#btnContraste:hover i {
+    color: white;
 }
 
 #modalAccesibilidad input {
@@ -137,16 +146,16 @@ body.alto-contraste .nav-item .dropdown-toggle:hover {
 }
 
 body.alto-contraste .dropdown-menu {
-    background-color: rgba(0,0,0,0.85) !important;
+    background-color: rgba(0,0,0,0.85);
     box-shadow: 0 2px 5px rgba(255,255,255,0.2);
 }
 
 body.alto-contraste .dropdown-item {
-    color: white !important;
+    color: white;
 }
 
 body.alto-contraste .dropdown-item:hover {
-    background-color: rgba(255,255,255,0.15) !important;
+    background-color: rgba(255,255,255,0.15);
 }
 
 body.alto-contraste nav a:hover {
@@ -154,20 +163,37 @@ body.alto-contraste nav a:hover {
 }
 
 body.alto-contraste #btnAccesibilidad {
-    background-color: black !important; 
-    border: 1px solid white !important;
+    background-color: black; 
+    border: 1px solid white;
 }
 
 body.alto-contraste #btnAccesibilidad i {
-    color: white !important;
+    color: white;
 }
 
 body.alto-contraste #btnAccesibilidad:hover {
-    background-color: white !important; /* fondo blanco al pasar mouse */
+    background-color: white; /* fondo blanco al pasar mouse */
 }
 
 body.alto-contraste #btnAccesibilidad:hover i {
-    color: black !important; /* icono negro al pasar mouse */
+    color: black; /* icono negro al pasar mouse */
+}
+
+body.alto-contraste #btnContraste {
+    background-color: black; 
+    border: 2px solid white; 
+}
+
+body.alto-contraste #btnContraste i {
+    color: white;
+}
+
+body.alto-contraste #btnContraste:hover {
+    background-color: white;
+}
+
+body.alto-contraste #btnContraste:hover i {
+    color: black;
 }
 
 /* ============================================================
@@ -191,8 +217,8 @@ body.alto-contraste #btnAccesibilidad:hover i {
 
 .menu-dropdown .dropdown-menu {
     position: relative !important; /* Hace que no flote */
-    box-shadow: none !important;
-    background-color: transparent !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    background-color: rgba(255,255,255,0.95);
     width: 100%;
     text-align: center;
 }
@@ -229,14 +255,20 @@ body.alto-contraste #btnAccesibilidad:hover i {
 
 /* Boton de hamburguesa y utilidades */
 .btn-toggle {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
     display: none;
+    background-color: transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
 }
 
-.body.alto-contraste .btn-toggle{
-    stroke: white;
+.btn-toggle i {
+    font-size: 2rem;
+    color: black;
+}
+
+body.alto-contraste .btn-toggle i {
+    color: white;
 }
 
 .utilidades {
@@ -266,7 +298,7 @@ body.alto-contraste #btnAccesibilidad:hover i {
     top: 95px;
     z-index: 1000;
     width: 300px;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(8px);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border-radius: 10px;
@@ -278,6 +310,15 @@ body.alto-contraste #btnAccesibilidad:hover i {
 body.alto-contraste .menu-dropdown {
     background-color: rgba(0, 0, 0, 0.85);
     box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+}
+
+body.alto-contraste .menu-dropdown .nav-item .dropdown-toggle {
+    color: white;
+}
+
+body.alto-contraste .menu-dropdown .nav-item .dropdown-toggle:hover {
+    background-color: #dbdbdb;
+    color: #000;
 }
 
 .menu-dropdown.open {
@@ -371,8 +412,11 @@ body.alto-contraste .menu-dropdown #registrar-menu {
     }
 
     .menu-dropdown .dropdown-menu {
+        display: none !important;
+    }
+
+    .menu-dropdown .dropdown-menu.show {
         display: block !important;
-        max-height: 0;
         opacity: 0;
         overflow: hidden;
         transform: none;
@@ -381,9 +425,8 @@ body.alto-contraste .menu-dropdown #registrar-menu {
             opacity 0.15s ease;      /* Nada más */
         width: 100%;
         margin-top: 0.5rem;
-    }
-
-    .menu-dropdown .dropdown.open .dropdown-menu {
+        padding: 0px;
+        text-align: center;
         max-height: 400px;
         opacity: 1;        
     }
