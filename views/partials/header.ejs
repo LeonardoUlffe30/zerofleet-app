@@ -77,24 +77,32 @@
   <div class="menu-dropdown">
     <nav> 
       <ul>
-        <li><a href="/" aria-label="Ir a la página de inicio" lang="es">Inicio</a></li>
-        <li><a href="/vehiculos" aria-label="Ir a la página de vehículos" lang="es">Vehículos</a></li>
-        <li class="dropdown text-center">
-          <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-display="static"
-                   data-bs-popper="none">
-            Reserva
-          </a>
-          <ul class="dropdown-menu w-100 text-center">
-            <li><a class="dropdown-item" href="/reservas/nuevo">Reservar Vehículo</a></li>
-            <li><a class="dropdown-item" href="/reservas/mis-reservas">Mis Reservas</a></li>
-          </ul>
-        </li>
-        <li><a href="/contacto" aria-label="Ir a la página de contacto" lang="es">Contacto</a>
-  
-        <li hidden><a href="/" aria-label="Ir a la página de inicio" lang="en" hidden>Home</a></li>
-        <li hidden><a href="/vehiculos" aria-label="Ir a la página de vehículos" lang="en" hidden>Vehicles</a></li>
-        <li hidden><a href="/reservas/nuevo" aria-label="Ir a la página de reserva" lang="en" hidden accesskey="r">Reserve</a></li>
-        <li hidden><a href="/contacto" aria-label="Ir a la página de contacto" lang="en" hidden>Contact</a></li>
+        <% if (!session || !session.usuario || session.usuario.rol === "empleado") { %>
+          <!-- Usuario no autenticado o usuario autenticado con rol de empleado -->
+          <li><a href="/" aria-label="Ir a la página de inicio" lang="es">Inicio</a></li>
+          <li><a href="/vehiculos" aria-label="Ir a la página de vehículos" lang="es">Vehículos</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="reservasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Reserva
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="reservasDropdown">
+              <li><a class="dropdown-item" href="/reservas/nuevo">Reservar Vehículo</a></li>
+              <li><a class="dropdown-item" href="/reservas/mis-reservas">Mis Reservas</a></li>
+            </ul>
+          </li>
+          <li><a href="/contacto" aria-label="Ir a la página de contacto" lang="es">Contacto</a>
+            
+          <li hidden><a href="/" aria-label="Ir a la página de inicio" lang="en" hidden>Home</a></li>
+          <li hidden><a href="/vehiculos" aria-label="Ir a la página de vehículos" lang="en" hidden>Vehicles</a></li>
+          <li hidden><a href="/reservas/nuevo" aria-label="Ir a la página de reserva" lang="en" hidden accesskey="r">Reserve</a></li>
+          <li hidden><a href="/contacto" aria-label="Ir a la página de contacto" lang="en" hidden>Contact</a></li>
+        <% } else { %>
+            <!-- Usuario autenticado con rol de admin -->
+            <li><a href="/vehiculos" aria-label="Ir a la página de inicio" lang="es">Vehículos</a></li>
+            <li><a href="/concesionarios" aria-label="Ir a la página de vehículos" lang="es">Concesionarios</a></li>
+            <li><a href="/usuarios" aria-label="Ir a la página de reserva"  lang="es" accesskey="r">Usuarios</a></li>
+            <li><a href="/estadisticas" aria-label="Ir a la página de contacto" lang="es">Estadísticas</a>
+        <% } %>
       </ul>
     </nav>
 
