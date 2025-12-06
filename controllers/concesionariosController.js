@@ -80,28 +80,28 @@ function formularioCrearConcesionario(request, response) {
     });
 }
 
-async function formularioEditarConcesionario(request, response) {
-    try {
-        let sql = `SELECT * FROM concesionarios WHERE id_concesionario = ? AND activo = true`;
-        let params = [request.params.id];
+function formularioEditarConcesionario(request, response) {
+    let sql = `SELECT * FROM concesionarios WHERE id_concesionario = ? AND activo = true`;
+    let params = [request.params.id];
 
-        const concesionario = await query(sql, params);
+    query(sql, params)
+        .then(concesionario => {
+            if (concesionario.length === 0) {
+                return response.status(404).json({ mensaje: "Concesionario no encontrado" });
+            }
 
-        if (concesionario.length === 0) {
-            return response.status(404).json({ mensaje: "Concesionario no encontrado" });
-        }
-
-        response.status(200).render("concesionarios", {
-            titulo: "Editar concesionario",
-            estilo: "concesionarios.css",
-            script: "concesionarios.js",
-            concesionario: concesionario[0],
-            error: ""
+            response.status(200).render("concesionarios", {
+                titulo: "Editar concesionario",
+                estilo: "concesionarios.css",
+                script: "concesionarios.js",
+                concesionario: concesionario[0],
+                error: ""
+            });
+        })
+        .catch(error => {
+            console.error(error);
+            response.status(500).send("Error interno del servidor");
         });
-    } catch (error) {
-        console.error(error);
-        response.status(500).send("Error interno del servidor");
-    }
 }
 
 function obtenerConcesionario(request, response) {

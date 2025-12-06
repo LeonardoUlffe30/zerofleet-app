@@ -14,6 +14,7 @@ const accesibilidadRouter = require("./routes/accesibilidad");
 const cargarJSONRouter = require("./routes/cargarJSON");
 const concesionariosRouter = require("./routes/concesionarios");
 const usuariosRouter = require("./routes/usuarios");
+const estadisticasRouter = require("./routes/estadisticas");
 
 let bdVacia = false;
 
@@ -59,6 +60,7 @@ app.use("/accesibilidad", accesibilidadRouter);
 app.use("/cargar-json", cargarJSONRouter);
 app.use("/concesionarios", concesionariosRouter);
 app.use("/usuarios", usuariosRouter);
+app.use("/estadisticas", estadisticasRouter);
 
 // Ruta principal
 app.get("/", function (request, response) {
