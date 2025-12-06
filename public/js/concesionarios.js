@@ -31,9 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-async function actualizarConcesionario(formulario) {
+function actualizarConcesionario(formulario) {
     const idConcesionario = formulario.dataset.id;
-
     // No se utiliza formData() para enviarlo en el body porque
     // codifica con multipart/form-data y para eso necesito multer
     // y multer no lo necesito ya que no hay archivos en este formulario
@@ -44,30 +43,40 @@ async function actualizarConcesionario(formulario) {
         telefono: formulario.telefono.value
     };
 
-    try {
-        const data = await fetch(`/concesionarios/${idConcesionario}/editar`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-        });
-
-        const response = await data.json();
-        if (data.status === 200) {
+    fetch(`/concesionarios/${idConcesionario}/editar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(response => 
+        response.json().then(responseJSON => ({ ok: response.ok, status: response.status, body: responseJSON }))
+    )
+    .then(resultado => {
+        if (resultado.ok) {
+            console.log("111111111111111111111");
             alert("Concesionario actualizado");
-            window.location.href = "/concesionarios/";
+            window.location.href = "/concesionarios";
         } else {
-            alert(response.errores.map(e => e.msg).join("\n"));
-            throw new Error(`HTTP error! status: ${data.status}`);
+            if (resultado.body.errores) {
+                mensajesDiv.innerHTML = resultado.body.errores.map(e => `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${e.msg}</p>
+                    </div>`).join("");
+            } else if (resultado.body.mensaje) {
+                mensajesDiv.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${resultado.body.mensaje}</p>
+                    </div>`;
+            }
         }
-    } catch (error) {
+    })
+    .catch(error => {
         console.error("Error al actualizar el concesionario:", error);
-    }
+    });
 }
 
-async function crearConcesionario(formulario) {
-    // No se utiliza formData() para enviarlo en el body porque
-    // codifica con multipart/form-data y para eso necesito multer
-    // y multer no lo necesito ya que no hay archivos en este formulario
+
+function crearConcesionario(formulario) {
     const body = {
         nombre: formulario.nombre.value,
         ciudad: formulario.ciudad.value,
@@ -75,24 +84,37 @@ async function crearConcesionario(formulario) {
         telefono: formulario.telefono.value
     };
 
-    try {
-        const data = await fetch("/concesionarios/nuevo", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-        });
+    const mensajesDiv = document.getElementById("mensajes");
 
-        if (data.status === 201) {
-            const concesionario = await data.json();
-            alert(`Concesionario registrado con éxito con ID: ${concesionario.id}`);
-            window.location.href = "/concesionarios/";
+    fetch("/concesionarios/nuevo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(response => 
+        response.json().then(json => ({ ok: response.ok, status: response.status, body: json }))
+    )
+    .then(resultado => {
+        if (resultado.ok) {
+            alert(`Concesionario registrado con éxito`);
+            window.location.href = "/concesionarios";
         } else {
-            alert(data.errores.map(e => e.msg).join("\n"));
-            throw new Error(`HTTP error! status: ${data.status}`);
+            if (resultado.body.errores) {
+                mensajesDiv.innerHTML = resultado.body.errores.map(e => `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${e.msg}</p>
+                    </div>`).join("");
+            } else if (resultado.body.mensaje) {
+                mensajesDiv.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${resultado.body.mensaje}</p>
+                    </div>`;
+            }
         }
-    } catch (error) {
+    })
+    .catch(error => {
         console.error("Error al crear el concesionario:", error);
-    }
+    });
 }
 
 function validarFormulario(event, nombre, ciudad, direccion, telefono) {

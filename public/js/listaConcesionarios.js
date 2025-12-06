@@ -36,55 +36,55 @@ function mostrarConcesionarios(concesionarios) {
     });
 }
 
-async function actualizarConcesionarios() {
+function actualizarConcesionarios() {
     let url = `/concesionarios/api/concesionarios?`;
 
     const filtros = {
         filtroNombre: document.getElementById("filtroNombre").value.trim(),
         filtroCiudad: document.getElementById("filtroCiudad").value.trim(),
         filtroDireccion: document.getElementById("filtroDireccion").value.trim()
-    }
+    };
 
-    // Utilizamos encoding para convertir caracteres especiales(/=<>&" ") en SEGUROS para la URL
-    // y evitar ataques de inyección como XSS. Por ejemplo, buscar="<script>alert('xss')</script>"
-    // se convierte en buscar="%3Cscript%3Ealert('xss')%3C/script%3E"
     for (let key in filtros) {
         if (filtros[key]) {
             url += `${key}=${encodeURIComponent(filtros[key])}&`;
         }
     }
 
-    try {
-        const data = await fetch(url);
-
-        if (data.status === 200) {
-            const concesionarios = await data.json();
-            mostrarConcesionarios(concesionarios);
-        } else throw new Error(`HTTP error! status: ${data.status}`);
-
-    } catch (error) {
+    fetch(url)
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } 
+    })
+    .then(concesionarios => {
+        mostrarConcesionarios(concesionarios);
+    })
+    .catch(error => {
         console.error("Error al cargar los concesionarios:", error);
         mostrarMensaje("Error al cargar los concesionarios", "danger");
-    }
+    });
 }
 
-async function eliminarConcesionario(id) {
-    try {
-        const data = await fetch(`/concesionarios/api/concesionarios/${id}`, {
-            method: 'DELETE'
-        });
-
-        if (data.status === 200) {
-            const response = await data.json();
-            mostrarMensaje(response.mensaje, "success");
-            actualizarConcesionarios();
-        } else throw new Error(`HTTP error! status: ${data.status}`);
-
-    } catch (error) {
+function eliminarConcesionario(id) {
+    fetch(`/concesionarios/api/concesionarios/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+    })
+    .then(response => {
+        mostrarMensaje(response.mensaje, "success");
+        actualizarConcesionarios();
+    })
+    .catch(error => {
         console.error("Error al eliminar:", error);
         mostrarMensaje("Error al eliminar el concesionario", "danger");
-    }
+    });
 }
+
 
 function aplicarFiltrosModal() {
     document.getElementById("filtroNombre").value =

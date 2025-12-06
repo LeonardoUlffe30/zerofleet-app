@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
                     </div>`).join("");
-                } else {
+                } else {;
                     mensajeError.innerHTML = `
                     <div class="alert alert-danger" role="alert">
                         <p>${resultado.body.mensaje}</p>

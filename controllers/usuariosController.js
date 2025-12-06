@@ -91,7 +91,7 @@ function crearUsuario(request, response) {
 
     if (!err.isEmpty()) {
         console.log("Errores de validación:", err.array());
-        return response.status(400).json({ errores: err.array() });
+        throw { tipo: "VALIDACION", errores: err.array() };
     }
 
     const { nombre, apellido, correo, contrasenia, telefono, concesionario } = request.body;
@@ -110,7 +110,7 @@ function crearUsuario(request, response) {
     })
     .then(({ usuario, contraseniaEncriptada }) => {
         if (usuario.length > 0) {
-            return response.status(400).json({ mensaje: "Correo ya está registrado." });
+            throw { tipo: "NO_ENCONTRADO", mensaje: "Correo ya registrado" };
         }
 
         const sql = `
@@ -123,13 +123,18 @@ function crearUsuario(request, response) {
 
         return query(sql, params);
     })
-    .then(resultado => {
-        if (!resultado) return;
+    .then( () => {
         response.status(201).json({ mensaje: "Usuario creado correctamente"});
     })
-    .catch(error => {
-        console.error(error);
-        response.status(500).json({ mensaje: "Error creando usuario" });
+    .catch(err => {
+        if (err.tipo === "VALIDACION") {
+            return response.status(400).json({ errores: err.errores });
+        } else if (err.tipo === "NO_ENCONTRADO") {
+            return response.status(404).json({ mensaje: err.mensaje });
+        } else {
+            console.error(err);
+            return response.status(500).json({ mensaje: "Error creando reserva" });
+        }
     });
 }
 
@@ -195,20 +200,20 @@ function actualizarPreferencias(request, response) {
     const params = [JSON.stringify(preferencias), request.session.usuario.id_usuario];
 
     query(sql, params)
-        .then(resultado => {
-            if (resultado.affectedRows === 0) {
-                return response.status(404).json({ mensaje: "Usuario no encontrado" });
-            }
+    .then(resultado => {
+        if (resultado.affectedRows === 0) {
+            return response.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
 
-            // Actualizamos la sesión
-            request.session.usuario.preferencias_accesibilidad = JSON.stringify(preferencias);
+        // Actualizamos la sesión
+        request.session.usuario.preferencias_accesibilidad = JSON.stringify(preferencias);
 
-            response.status(200).json({ mensaje: "Preferencias guardadas correctamente" });
-        })
-        .catch(error => {
-            console.error(error);
-            response.status(500).json({ mensaje: "Error guardando preferencias" });
-        });
+        response.status(200).json({ mensaje: "Preferencias guardadas correctamente" });
+    })
+    .catch(error => {
+        console.error(error);
+        response.status(500).json({ mensaje: "Error guardando preferencias" });
+    });
 }
 
 function obtenerPreferencias(request, response) {
@@ -258,36 +263,37 @@ function obtenerUsuario(request, response) {
     const parametro = [correo];
 
     query(sql, parametro)
-        .then(usuario => {
-            if (usuario.length === 0) {
-                throw {status: 400, mensaje: "Correo o Contraseña incorrecta"}
-            }
-            // Comparamos la contraseña
-            return bcrypt.compare(contrasenia, usuario[0].contraseña)
-                .then(match => ({ usuario: usuario[0], match }));
-        })
-        .then(({ usuario, match }) => {
-            if (!match) {
-                throw {status: 400, mensaje: "Correo o Contraseña incorrecta"}
-            }
+    .then(usuario => {
+        if (usuario.length === 0) {
+            throw {status: 400, mensaje: "Correo o Contraseña incorrecta"}
+        }
+        // Comparamos la contraseña
+        return bcrypt.compare(contrasenia, usuario[0].contraseña)
+            .then(match => ({ usuario: usuario[0], match }));
+    })
+    .then(({ usuario, match }) => {
+        if (!match) {
+            throw {status: 400, mensaje: "Correo o Contraseña incorrecta"}
+        }
 
-            request.session.usuario = usuario;
+        request.session.usuario = usuario;
 
-            if (recordar) {
-                request.session.cookie.maxAge = 24 * 60 * 60 * 1000;
-            } else {
-                request.session.cookie.expires = false;
-            }
+        if (recordar) {
+            request.session.cookie.maxAge = 24 * 60 * 60 * 1000;
+        } else {
+            request.session.cookie.expires = false;
+        }
 
-            response.status(201).json({});
-        })
-        .catch(err => {
-            if (err.status === 400) {
-                response.status(400).json({ error: err.mensaje });
-            } else {
-                response.status(500).json({ error: err.message });
-            }
-        });
+        response.status(201).json({});
+    })
+    .catch(err => {
+        if (err.status === 400) {
+            console.log(err.mensaje);
+            response.status(400).json({ mensaje: err.mensaje });
+        } else {
+            response.status(500).json({ error: err.message });
+        }
+    });
 }
 
 function eliminarUsuario(request, response) {

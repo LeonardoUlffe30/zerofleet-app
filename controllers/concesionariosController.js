@@ -12,11 +12,11 @@ function query(sql, params = []) {
 }
 
 // ------------------- LISTADO VISTAS ---------------------
-async function listarConcesionarios(request, response) {
-    try {
-        const sql = "SELECT * FROM concesionarios WHERE activo = true";
-        const concesionarios = await query(sql);
+function listarConcesionarios(request, response) {
+    const sql = "SELECT * FROM concesionarios WHERE activo = true";
 
+    query(sql)
+    .then(concesionarios => {
         response.status(200).render("listaConcesionarios", {
             titulo: "Concesionarios",
             estilo: "listaConcesionarios.css",
@@ -27,47 +27,48 @@ async function listarConcesionarios(request, response) {
             error: "",
             mensaje: ""
         });
-    } catch (error) {
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).send("Error interno del servidor");
-    }
+    });
 }
+
 
 // ------------------- LISTAR CONCESIONARIOS API CON FETCH ---------------------
-async function listarConcesionariosApi(request, response) {
-    try {
-        const filtroNombre = (request.query.filtroNombre || "").toLowerCase();
-        const filtroCiudad = (request.query.filtroCiudad || "").toLowerCase();
-        const filtroDireccion = (request.query.filtroDireccion || "").toLowerCase();
+function listarConcesionariosApi(request, response) {
+    const filtroNombre = (request.query.filtroNombre || "").toLowerCase();
+    const filtroCiudad = (request.query.filtroCiudad || "").toLowerCase();
+    const filtroDireccion = (request.query.filtroDireccion || "").toLowerCase();
 
-        let sql = "SELECT * FROM concesionarios WHERE activo = true";
-        const params = [];
+    let sql = "SELECT * FROM concesionarios WHERE activo = true";
+    const params = [];
 
-        if (filtroNombre) {
-            sql += ` AND nombre LIKE ?`;
-            params.push(`%${filtroNombre}%`);
-        }
+    if (filtroNombre) {
+        sql += ` AND nombre LIKE ?`;
+        params.push(`%${filtroNombre}%`);
+    }
 
-        if (filtroCiudad) {
-            sql += ` AND ciudad LIKE ?`;
-            params.push(`%${filtroCiudad}%`);
-        }
+    if (filtroCiudad) {
+        sql += ` AND ciudad LIKE ?`;
+        params.push(`%${filtroCiudad}%`);
+    }
 
-        if (filtroDireccion) {
-            sql += ` AND direccion LIKE ?`;
-            params.push(`%${filtroDireccion}%`);
-        }
+    if (filtroDireccion) {
+        sql += ` AND direccion LIKE ?`;
+        params.push(`%${filtroDireccion}%`);
+    }
 
-        // Traer todos los concesionarios filtrados
-        const concesionarios = await query(sql, params);
-
+    query(sql, params)
+    .then(concesionarios => {
         response.json(concesionarios);
-
-    } catch (error) {
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).json({ error: "Error al obtener concesionarios" });
-    }
+    });
 }
+
 
 function formularioCrearConcesionario(request, response) {
     response.status(200).render("concesionarios", {
@@ -103,111 +104,101 @@ async function formularioEditarConcesionario(request, response) {
     }
 }
 
-async function obtenerConcesionario(request, response) {
-    try {
-        const sql = `SELECT * FROM concesionarios WHERE id_concesionario = ? and activo = true`;
-        const params = [request.params.id];
+function obtenerConcesionario(request, response) {
+    const sql = `SELECT * FROM concesionarios WHERE id_concesionario = ? and activo = true`;
+    const params = [request.params.id];
 
-        const concesionario = await query(sql, params);
-
+    query(sql, params)
+    .then(concesionario => {
         if (concesionario.length === 0) {
             return response.status(404).json({ mensaje: "Concesionario no encontrado" });
         }
-
         response.status(200).json(concesionario[0]);
-    } catch (error) {
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).json({ error: "Error al obtener concesionario" });
-    }
+    });
 }
 
-async function crearConcesionario(request, response) {
-    try {
-        const error = validationResult(request);
-        if (!error.isEmpty()) {
-            return response.status(400).json({ errores: error.array() });
-        }
+function crearConcesionario(request, response) {
+    console.log("Acceso al controlador de concesionarios");
+    const error = validationResult(request);
+    if (!error.isEmpty()) {
+        console.log("Errores de validación:", error.array());
+        return response.status(400).json({ errores: error.array() });
+    }
 
-        const {
-            nombre, ciudad, direccion, telefono
-        } = request.body;
+    const { nombre, ciudad, direccion, telefono } = request.body;
 
-        // Insertamos concesionario
-        sql = `
-            INSERT INTO concesionarios
-            (nombre, ciudad, direccion, telefono_contacto)
-            VALUES(?, ?, ?, ?)`;
+    const sql = `
+        INSERT INTO concesionarios
+        (nombre, ciudad, direccion, telefono_contacto)
+        VALUES(?, ?, ?, ?)
+    `;
 
-        params = [
-            nombre, ciudad, direccion, telefono
-        ];
+    const params = [nombre, ciudad, direccion, telefono];
 
-        const resultado = await query(sql, params);
-
-        response.status(201).json({ mensaje: "Concesionario creado", id: resultado.insertId });
-
-    } catch (error) {
-        console.error(error);
+    query(sql, params)
+    .then( () => {
+        response.status(201).json({ mensaje: "Concesionario creado"});
+    })
+    .catch(err => {
+        console.error(err);
         response.status(500).json({ mensaje: "Error creando concesionario" });
-    }
+    });
 }
 
-async function actualizarConcesionario(request, response) {
-    try {
-        const errores = validationResult(request);
+function actualizarConcesionario(request, response) {
+    const errores = validationResult(request);
 
-        if (!errores.isEmpty()) {
-            return response.status(400).json({ errores: errores.array() });
-        }
+    if (!errores.isEmpty()) {
+        return response.status(400).json({ errores: errores.array() });
+    }
 
-        const {
-            nombre, ciudad, direccion, telefono
-        } = request.body;
+    const { nombre, ciudad, direccion, telefono } = request.body;
 
-        sql = `
-            UPDATE concesionarios SET
-                nombre = ?, ciudad = ?, direccion = ?, telefono_contacto = ?
-                WHERE id_concesionario = ? AND activo = true `;
+    const sql = `
+        UPDATE concesionarios SET
+            nombre = ?, ciudad = ?, direccion = ?, telefono_contacto = ?
+        WHERE id_concesionario = ? AND activo = true
+    `;
 
-        params = [
-            nombre, ciudad, direccion, telefono, request.params.id
-        ];
+    const params = [nombre, ciudad, direccion, telefono, request.params.id];
 
-        const resultado = await query(sql, params);
-
+    query(sql, params)
+    .then(resultado => {
         if (resultado.affectedRows === 0) {
             return response.status(404).json({ mensaje: "Concesionario no encontrado" });
         }
-
         response.status(200).json({ mensaje: "Concesionario actualizado correctamente" });
-
-    } catch (error) {
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).json({ mensaje: "Error actualizando concesionario" });
-    }
+    });
 }
 
-async function eliminarConcesionario(request, response) {
-    try {
-        const sql = `
-            UPDATE concesionarios SET
-            activo = false
-            WHERE id_concesionario = ?`;
+function eliminarConcesionario(request, response) {
+    const sql = `
+        UPDATE concesionarios SET
+        activo = false
+        WHERE id_concesionario = ?
+    `;
 
-        const params = [request.params.id];
+    const params = [request.params.id];
 
-        const resultado = await query(sql, params);
-
-        if (resultado.affectedRows === 0) {
-            return response.status(404).json({ mensaje: "Concesionario no encontrado" });
-        }
-
-        return response.status(200).json({ mensaje: "Concesionario eliminado correctamente" });
-
-    } catch (error) {
-        console.error(error);
-        response.status(500).json({ mensaje: "Error eliminando concesionario" });
-    }
+    query(sql, params)
+        .then(resultado => {
+            if (resultado.affectedRows === 0) {
+                return response.status(404).json({ mensaje: "Concesionario no encontrado" });
+            }
+            response.status(200).json({ mensaje: "Concesionario eliminado correctamente" });
+        })
+        .catch(error => {
+            console.error(error);
+            response.status(500).json({ mensaje: "Error eliminando concesionario" });
+        });
 }
 
 module.exports = {

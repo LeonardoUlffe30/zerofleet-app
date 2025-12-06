@@ -32,7 +32,7 @@ router.post(
         check("nombre").notEmpty().withMessage("El nombre es obligatorio"),
         check("ciudad").notEmpty().withMessage("La ciudad es obligatoria"),
         check("direccion").notEmpty().withMessage("La dirección es obligatoria"),
-        check("telefono").isNumeric().withMessage("Telefono inválido")
+        check("telefono").isLength({ min: 9, max: 9 }).isNumeric().withMessage("Telefono inválido")
     ],
     concesionariosController.crearConcesionario
 );
@@ -46,7 +46,7 @@ router.post("/:id/editar",
         check("nombre").notEmpty().withMessage("El nombre es obligatorio"),
         check("ciudad").notEmpty().withMessage("La ciudad es obligatoria"),
         check("direccion").notEmpty().withMessage("La dirección es obligatoria"),
-        check("telefono").matches(/^\d{9}$/).withMessage("Telefono inválido")
+        check("telefono").isLength({ min: 9, max: 9 }).isNumeric().withMessage("Telefono inválido")
     ],
     concesionariosController.actualizarConcesionario
 );

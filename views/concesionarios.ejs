@@ -11,7 +11,7 @@
       data-id = "<%= concesionario && concesionario.id_concesionario ? concesionario.id_concesionario : '' %>"
       action="<%= concesionario && concesionario.id_concesionario ? '/concesionarios/' + concesionario.id_concesionario + '/editar' : '/concesionarios/nuevo' %>" 
       method="POST">
-            
+       <div id="mensajes"></div>
         <fieldset> 
           <legend>Información del concesionario</legend>
 
