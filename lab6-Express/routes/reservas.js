@@ -41,7 +41,7 @@ router.post("/nuevo", [
 // ----------------- DE LISTAR RESERVAS ------------------
 router.get("/mis-reservas", reservasController.listarReservas);
 
-router.get("/", reservasController.listarReservasApi)
+router.get("/", reservasController.listarReservasTotales)
 
 router.put("/editar/:id", reservasController.actualizarReserva);
 

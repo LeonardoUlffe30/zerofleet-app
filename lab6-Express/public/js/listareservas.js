@@ -40,8 +40,6 @@ function cargarReservas(id_usuario, rol) {
 }
 
 function cambiarEstado(id_reserva) {
-    console.log("eliminarReserva");
-    console.log(id_reserva);
     const filas = document.querySelectorAll('#tablareservas tbody tr');
     let filaSeleccionada = null;
 
@@ -50,31 +48,32 @@ function cambiarEstado(id_reserva) {
             filaSeleccionada = fila;
         }
     })
-    const estadoActual = filaSeleccionada.children[5].textContent.trim();
+    const estadoActual = filaSeleccionada.children[10].textContent.trim();
     let estadoNuevo;
-    if (estadoActual === "activo") {
+    if (estadoActual === "activa") {
         estadoNuevo = "finalizada";
     } else if (estadoActual === "finalizada") {
         estadoNuevo = "cancelada";
     } else if (estadoActual === "cancelada") {
-        estadoNuevo = "activo";
+        estadoNuevo = "activa";
     }
 
     fetch(`/reservas/editar/${id_reserva}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_reserva, estado: estadoNuevo })
+        body: JSON.stringify({estado: estadoNuevo })
     })
-        .then(response => {
-            if (response.ok) {
-                mostrarMensaje("Estado actualizado de forma correcta", "success");
-            } else {
-                mostrarMensaje("No se pudo actualizar el estado", "error");
-            }
-        })
-        .catch(error => {
-            console.error("Error al cambiar el estado: " + error.message);
-        })
+    .then(response => {
+        if (response.ok) {
+            filaSeleccionada.children[10].textContent = estadoNuevo;
+            mostrarMensaje("Estado actualizado de forma correcta", "success");
+        } else {
+            mostrarMensaje("No se pudo actualizar el estado", "danger");
+        }
+    })
+    .catch(error => {
+        console.error("Error al cambiar el estado: " + error.message);
+    })
 }
 
 function formatearFecha(date) {

@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmarModal.addEventListener("click", () => crearReserva(formulario));
 });
 
-async function crearReserva(formulario) {
+function crearReserva(formulario) {
     const body = {
         nombreCliente: formulario.nombreCliente.value,
         apellidoCliente: formulario.apellidoCliente.value,
@@ -111,43 +111,40 @@ async function crearReserva(formulario) {
         condiciones: document.getElementById("condiciones").checked
     };
 
-    console.log("valores en crear reserva", body);
-
     const mensajesDiv = document.getElementById("mensajes");
 
-    try {
-        const data = await fetch("/reservas/nuevo", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-        })
-
-        const response = await data.json();
-
-        if (data.status === 201) {
+    fetch("/reservas/nuevo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    })
+    .then(response => {
+        return response.json().then( resultadoJson=> ({ ok: response.ok, body: resultadoJson }));
+    })
+    .then(resultado => {
+        if (resultado.ok) {
             mensajesDiv.innerHTML = "";
             alert("Reserva realizada");
             window.location.href = "/reservas/mis-reservas";
         } else {
-            if (response.errores) {
-                mensajesDiv.innerHTML = response.errores.map(e => `
+            if (resultado.body.errores) {
+                mensajesDiv.innerHTML = resultado.body.errores.map(e => `
                     <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
                     </div>`).join("");
             } else {
                 mensajesDiv.innerHTML = `
                     <div class="alert alert-danger" role="alert">
-                        <p>${response.mensaje}</p>
+                        <p>${resultado.body.mensaje}</p>
                     </div>`;
             }
-
-            throw new Error(`HTTP error! status: ${data.status}`);
         }
-
-    } catch (error) {
-        console.error("Error al actualizar el concesionario:", error);
-    }
+    })
+    .catch(error => {
+        console.error("Error al crear la reserva:", error);
+    });
 }
+
 
 function validarFormulario(event, nombre, apellido, telefono, correo,
     fechaHoraIni, fechaHoraFin, vehiculo, duracion) {
