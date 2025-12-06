@@ -61,34 +61,34 @@ function actualizarVehiculo(formulario) {
         method: "POST",
         body: formData
     })
-    .then(response => {
-        const ok = response.ok;
-        return response.json().then(data => ({ ok, data}));
-    })
-    .then(resultado => {
-        if (resultado.ok) {
-            mensajesDiv.innerHTML = `
+        .then(response => {
+            const ok = response.ok;
+            return response.json().then(data => ({ ok, data }));
+        })
+        .then(resultado => {
+            if (resultado.ok) {
+                mensajesDiv.innerHTML = `
                 <div class="alert alert-success" role="alert">
                     <p>Vehículo actualizado con éxito</p>
                 </div>`;
-            window.location.href = "/vehiculos/";
-        } else {
-            if (resultado.data.errores) {
-                mensajesDiv.innerHTML = resultado.data.errores.map(e => `
+                window.location.href = "/vehiculos/";
+            } else {
+                if (resultado.data.errores) {
+                    mensajesDiv.innerHTML = resultado.data.errores.map(e => `
                     <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
                     </div>`).join("");
-            } else if (resultado.data.mensaje) {
-                mensajesDiv.innerHTML = `
+                } else if (resultado.data.mensaje) {
+                    mensajesDiv.innerHTML = `
                     <div class="alert alert-danger" role="alert">
                         <p>${resultado.data.mensaje}</p>
                     </div>`;
+                }
             }
-        }
-    })
-    .catch(error => {
-        console.error("Error al actualizar el vehiculo:", error);
-    });
+        })
+        .catch(error => {
+            console.error("Error al actualizar el vehiculo:", error);
+        });
 }
 
 
@@ -100,31 +100,31 @@ function crearVehiculo(formulario) {
         method: "POST",
         body: formData
     })
-    .then(response => {
-        const ok = response.ok;
-        return response.json().then(data => ({ok, data}));
-    })
-    .then(resultado => {
-        if (resultado.ok) {
-            alert(`Vehículo registrado con éxito`);
-            window.location.href = "/vehiculos/";
-        } else {
-           if (resultado.data.errores) {
-                mensajesDiv.innerHTML = resultado.data.errores.map(e => `
+        .then(response => {
+            const ok = response.ok;
+            return response.json().then(data => ({ ok, data }));
+        })
+        .then(resultado => {
+            if (resultado.ok) {
+                alert(`Vehículo registrado con éxito`);
+                window.location.href = "/vehiculos/";
+            } else {
+                if (resultado.data.errores) {
+                    mensajesDiv.innerHTML = resultado.data.errores.map(e => `
                 <div class="alert alert-danger" role="alert">
                     <p>${e.msg}</p>
                 </div>`).join("");
-            }else if (resultado.data.mensaje) {
-                mensajesDiv.innerHTML = `
+                } else if (resultado.data.mensaje) {
+                    mensajesDiv.innerHTML = `
                 <div class="alert alert-danger" role="alert">
                     <p>${resultado.data.mensaje}</p>
                 </div>`;
+                }
             }
-        }
-    })
-    .catch(error => {
-        console.error("Error al crear el vehiculo:", error);
-    });
+        })
+        .catch(error => {
+            console.error("Error al crear el vehiculo:", error);
+        });
 }
 
 
@@ -325,12 +325,20 @@ function cargarNombres() {
         .then(response => response.json())
         .then(concesionarios => {
             const select = document.getElementById("concesionarioVehiculo");
+            const concesionarioActual = select.dataset.actual;
+
+            console.log("concesionarios en cargaNombres()", concesionarios);
+            select.innerHTML = `<option value="" disabled selected>Seleccione</option>`;
+
+            console.log("concesionario actual ", concesionarioActual);
 
             concesionarios.forEach(c => {
-                const option = document.createElement("option");
-                option.value = c.nombre;
-                option.textContent = c.nombre;
-                select.appendChild(option);
+                const nombre = c.nombre;
+
+                const seleccionado = (nombre === concesionarioActual) ? "selected" : "";
+
+                select.innerHTML += `
+                    <option value="${nombre}" ${seleccionado}>${nombre}</option>`;
             });
         })
         .catch(error => {

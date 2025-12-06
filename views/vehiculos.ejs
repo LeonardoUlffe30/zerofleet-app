@@ -77,8 +77,7 @@
 
             <div>
               <label for="concesionarioVehiculo">Concesionario:</label>
-              <select id="concesionarioVehiculo" name="concesionarioVehiculo" required>
-                <option value="" disabled selected>Seleccione</option>
+              <select id="concesionarioVehiculo" name="concesionarioVehiculo" data-actual="<%= vehiculo && vehiculo.id_concesionario ? vehiculo.id_concesionario : '' %>" required>
               </select>
             </div>
                 
