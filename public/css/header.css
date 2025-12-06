@@ -108,7 +108,8 @@ nav a:hover {
 }
 
 .nav-item .dropdown-item:hover {
-    background-color: #eaeaea;
+    background-color: #dbdbdb;
+    color: #000;
 }
 
 #btnContraste {
@@ -155,7 +156,8 @@ body.alto-contraste .dropdown-item {
 }
 
 body.alto-contraste .dropdown-item:hover {
-    background-color: rgba(255,255,255,0.15);
+    background-color: #dbdbdb;
+    color: #000;
 }
 
 body.alto-contraste nav a:hover {
@@ -225,13 +227,13 @@ body.alto-contraste #btnContraste:hover i {
 
 .menu-dropdown .dropdown-item {
     padding: 10px 20px;
-    margin-top: 5px;
     font-weight: bold;
     border-radius: 15px;
 }
 
 .menu-dropdown .dropdown-item:hover {
     background-color: #dbdbdb;
+    color: #000;
 }
 
 .logo img {
@@ -377,18 +379,42 @@ body.alto-contraste .menu-dropdown .nav-item .dropdown-toggle:hover {
     cursor: pointer;
 }
 
+#iniciar-sesion:hover {
+    background-color: rgba(0, 0, 0, 0.762);
+}
+
+#registrar:hover {
+    background-color: rgba(243, 243, 243, 0.884);
+}
+
 body.alto-contraste #iniciar-sesion, 
 body.alto-contraste #cerrar-sesion,
 body.alto-contraste .menu-dropdown #iniciar-sesion-menu,
 body.alto-contraste .menu-dropdown #cerrar-sesion-menu {
-    background-color: rgba(255, 255, 255, 0.842);
+    background-color: white;
     color: black;
 }
 
 body.alto-contraste #registrar,
 body.alto-contraste .menu-dropdown #registrar-menu {
     border: 2px solid white;
+    background-color: black;
     color: white;
+}
+
+body.alto-contraste #registrar:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+body.alto-contraste .menu-dropdown #registrar-menu:hover {
+    background-color: rgba(43, 42, 42, 0.626);
+}
+
+body.alto-contraste #iniciar-sesion:hover, 
+body.alto-contraste #cerrar-sesion:hover,
+body.alto-contraste .menu-dropdown #iniciar-sesion-menu:hover,
+body.alto-contraste .menu-dropdown #cerrar-sesion-menu:hover {
+    background-color: rgba(243, 243, 243, 0.884);
 }
 
 .body.alto-contraste .iconoAccesibilidad{
@@ -407,8 +433,8 @@ body.alto-contraste .menu-dropdown #registrar-menu {
     }
 
     .menu-dropdown .dropdown-item {
-        margin: 0;
-        border-radius: 0;
+        border-radius: 10px;
+        padding: 10px 18px;
     }
 
     .menu-dropdown .dropdown-menu {
@@ -417,6 +443,7 @@ body.alto-contraste .menu-dropdown #registrar-menu {
 
     .menu-dropdown .dropdown-menu.show {
         display: block !important;
+        padding: 0.5rem;
         opacity: 0;
         overflow: hidden;
         transform: none;
@@ -425,7 +452,6 @@ body.alto-contraste .menu-dropdown #registrar-menu {
             opacity 0.15s ease;      /* Nada más */
         width: 100%;
         margin-top: 0.5rem;
-        padding: 0px;
         text-align: center;
         max-height: 400px;
         opacity: 1;        
