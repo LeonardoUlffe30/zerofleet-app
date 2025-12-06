@@ -194,23 +194,25 @@ async function actualizarUsuario(request, response) {
 
 async function actualizarPreferencias(request, response) {
     try {
-        const { preferencias } = request.body;
+        const preferencias = request.body;
 
-        if (request.session.usuario) {
-            const sql = `
+        if (!request.session.usuario) {
+            return response.status(401).json({ mensaje: "Usuario no autenticado" });
+        }
+
+        const sql = `
                 UPDATE usuarios 
                 SET preferencias_accesibilidad = ?
                 WHERE id_usuario = ?`;
-            const params = [JSON.stringify(preferencias), request.session.usuario.id_usuario];
+        const params = [JSON.stringify(preferencias), request.session.usuario.id_usuario];
 
-            const resultado = await query(sql, params);
+        const resultado = await query(sql, params);
 
-            if (resultado.affectedRows === 0) {
-                return response.status(404).json({ mensaje: "Usuario no encontrado" });
-            }
-        } else {
-            request.session.preferencias = preferencias;
+        if (resultado.affectedRows === 0) {
+            return response.status(404).json({ mensaje: "Usuario no encontrado" });
         }
+
+        request.session.usuario.preferencias_accesibilidad = JSON.stringify(preferencias);
 
         response.status(200).json({ mensaje: "Preferencias guardadas correctamente" });
 
@@ -233,15 +235,12 @@ async function obtenerPreferencias(request, response) {
 
             response.json(preferencias || {});
         } else { // Si no esta autenticado, usar la sesion para guardar preferencias temporalmente
-            response.json(request.session.preferencias || {});
+            response.json({});
         }
     } catch (error) {
         console.error("Error obteniendo preferencias:", error);
         res.status(500).json({ error: "Error obteniendo preferencias" });
     }
-
-    if (result.length === 0) return null;
-    return result[0].preferencias_accesibilidad || {};
 }
 
 function formularioObtenerUsuario(request, response) {

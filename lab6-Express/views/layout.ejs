@@ -14,6 +14,49 @@
   <!-- css global -->
   <link id="estiloGeneral" rel="stylesheet" href="/css/general.css">
   <link id="estiloHeader" rel="stylesheet" href="/css/header.css">
+
+  <!-- Aplicar preferencias de accesibilidad desde sesión antes de renderizar contenido -->
+  <script>
+    (function() {
+      let prefs = {};
+
+      <% if (session?.usuario) { %>
+        // Usuario autenticado: inyectar preferencias desde la sesión
+        prefs = JSON.parse('<%- session.usuario.preferencias_accesibilidad || { tamanoFuente: "16px", altoContraste: false, atajos: {} } %>');
+        console.log("preferencias de usuario autenticado ", prefs);
+        
+      <% } else { %>
+        // Usuario no autenticado: intentar cargar preferencias desde localStorage
+        try {
+          const storedPrefs = localStorage.getItem("preferenciasAccesibilidad");
+          if (storedPrefs) prefs = JSON.parse(storedPrefs);
+          console.log("preferencias de usuario no autenticado ", prefs);
+        } catch(e) { console.error("Error leyendo preferencias de localStorage:", e); }
+      <% } %>
+
+      // Aplicar preferencias al HTML
+
+      if (prefs.tamanoFuente) {
+        console.log("ingresa a condicion prefs.tamanoFuente");
+        document.documentElement.style.fontSize = prefs.tamanoFuente;
+        
+      } 
+      if (prefs.altoContraste) {
+        console.log("ingresa a condicion prefs.altoCOntrate");
+        document.addEventListener("DOMContentLoaded", function() {
+          document.body.classList.add("alto-contraste");
+        });
+        //document.body.classList.add("alto-contraste");
+
+      } 
+      window.atajosGlobales = prefs.atajos || {};
+      
+      console.log("en head de layout window.atajosGlobales ", window.atajosGlobales);
+      window.usuarioAutenticado = <%= !!session?.usuario %>;
+      console.log("usuario autenticado", window.usuarioAutenticado);
+    })();
+  </script>
+
   
   <!-- CSS específico -->
   <% if (estilo) { %>
