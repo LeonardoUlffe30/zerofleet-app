@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     rol ENUM('empleado', 'admin') DEFAULT 'empleado',
     telefono VARCHAR(20),
     id_concesionario INT,
-    preferencias_accesibilidad JSON,
+    preferencias_accesibilidad JSON DEFAULT (JSON_OBJECT()),
     activo BOOLEAN DEFAULT TRUE,
 
     FOREIGN KEY (id_concesionario) 

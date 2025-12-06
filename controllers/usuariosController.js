@@ -121,7 +121,7 @@ async function crearUsuario(request, response) {
 
         const {
             nombre, apellido, correo, contrasenia,
-            telefono, concesionario, preferencias_accesibilidad
+            telefono, concesionario
         } = request.body;
 
         // Encriptar contraseña
@@ -141,13 +141,13 @@ async function crearUsuario(request, response) {
         sql = `
             INSERT INTO usuarios 
             (nombre, apellido, correo, contraseña, rol, 
-            telefono, id_concesionario, preferencias_accesibilidad)
-            VALUES (?, ?, ?, ?, 'empleado', ?, ?, ?)
+            telefono, id_concesionario)
+            VALUES (?, ?, ?, ?, 'empleado', ?, ?)
         `;
 
         params = [
             nombre, apellido, correo, contraseniaEncriptada,
-            telefono, concesionario, preferencias_accesibilidad
+            telefono, concesionario
         ]
 
         const resultado = await query(sql, params);
