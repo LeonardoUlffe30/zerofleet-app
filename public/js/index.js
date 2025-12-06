@@ -22,13 +22,13 @@ window.addEventListener("scroll", function () {
     const altoContraste = document.body.classList.contains("alto-contraste");
 
     if (altoContraste) {
-        if (window.scrollY > 50) {
+        if (window.scrollY > 20) {
             header.classList.add("scrolled-contraste");
         } else {
             header.classList.remove("scrolled-contraste");
         }
     } else {
-        if (window.scrollY > 50) {
+        if (window.scrollY > 20) {
             header.classList.add("scrolled");
         } else {
             header.classList.remove("scrolled");
