@@ -1,3 +1,13 @@
+/* Oculta todo hasta que se apliquen las preferencias */
+body {
+    visibility: hidden;
+}
+
+/* Mostrar body cuando las preferencias se hayan aplicado */
+body.mostrar {
+    visibility: visible;
+}
+
 /* Estilos generales */
 body {
     background-color: #f7f7f7;

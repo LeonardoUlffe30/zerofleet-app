@@ -43,13 +43,18 @@
       } 
       if (prefs.altoContraste) {
         console.log("ingresa a condicion prefs.altoCOntrate");
-        document.addEventListener("DOMContentLoaded", function() {
-          document.body.classList.add("alto-contraste");
-        });
         //document.body.classList.add("alto-contraste");
-
+        
       } 
       window.atajosGlobales = prefs.atajos || {};
+      document.addEventListener("DOMContentLoaded", function() {
+        if (prefs.altoContraste)
+          document.body.classList.add("alto-contraste");
+
+        // Retardo de 200s para evitar el flash en caso se active el modo alto contraste
+        setTimeout(() => document.body.classList.add("mostrar"), 100);
+        
+      });
       
       console.log("en head de layout window.atajosGlobales ", window.atajosGlobales);
       window.usuarioAutenticado = <%= !!session?.usuario %>;
