@@ -20,8 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     correo.addEventListener("input", () => validarCorreo(correo));
     rol.addEventListener("change", () => validarRol(rol));
     telefono.addEventListener("input", () => validarTelefono(telefono));
-    concesionario.addEventListener("input", () => validarConcesionario(concesionario));
-    preferencias.addEventListener("input", () => validarPreferencias(preferencias));
 
     // Validar al enviar el formulario
     formulario.addEventListener("submit", (event) => validarFormulario(event, nombre, apellido, correo, rol, telefono,
@@ -33,35 +31,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (modo == "editar") {
             actualizarUsuario(formulario);
-        } else {
-            crearUsuario(formulario);
-        }
+        } 
     });
 });
 
-async function actualizarUsuario(formulario) {
-    const matriculaAntigua = formulario.dataset.id;
-    const formData = new FormData(formulario);
+function actualizarUsuario(formulario) {
+    const idUsuario = formulario.dataset.id;
+    const mensajesDiv = document.getElementById("mensaje");
+    console.log(idUsuario);
 
-    try {
-        const data = await fetch(`/vehiculos/${matriculaAntigua}/editar`, {
+    const body = {
+        nombre: nombre.value,
+        apellido: apellido.value,
+        correo: correo.value,
+        rol: rol.value,
+        telefono: telefono.value,
+        concesionario: concesionario.value,
+        preferencias: preferencias.value
+    };
+    console.log(correo.value);
+
+    fetch(`/usuarios/${idUsuario}/editar`, {
             method: "POST",
-            body: formData
-        });
-
-        if (data.status === 200) {
-            await data.json();
-            alert("Vehículo actualizado");
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(body)
+    })
+    .then(response => {
+            const ok = response.ok;
+            return response.json().then(data => ({ ok, data }));
+    })
+    .then(resultado => {
+        if (resultado.ok) {
+            mensajesDiv.innerHTML = `
+            <div class="alert alert-success" role="alert">
+                <p>Usuario actualizado con éxito</p>
+            </div>`;
             window.location.href = "/usuarios/";
         } else {
-            alert(data.errores.map(e => e.msg).join("\n"));
-            throw new Error(`HTTP error! status: ${data.status}`);
+            if (resultado.data.errores) {
+                mensajesDiv.innerHTML = resultado.data.errores.map(e => `
+                <div class="alert alert-danger" role="alert">
+                    <p>${e.msg}</p>
+                </div>`).join("");
+            } else if (resultado.data.mensaje) {
+                mensajesDiv.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <p>${resultado.data.mensaje}</p>
+                </div>`;
+            }
         }
-    } catch (error) {
-        console.error("Error al actualizar el usuario:", error);
-    }
+    })
+    .catch(error => {
+            console.error("Error al actualizar el vehiculo:", error);
+    });
 }
-
+/*
 async function crearVehiculo(formulario) {
     // No se utiliza formData() para enviarlo en el body porque
     // codifica con multipart/form-data y para eso necesito multer
@@ -95,7 +119,7 @@ async function crearVehiculo(formulario) {
         console.error("Error al crear el usuario:", error);
     }
 }
-
+*/
 function validarFormulario(event, nombre, apellido, correo, rol, telefono,
     concesionario, preferencias) {
     event.preventDefault();
@@ -104,9 +128,7 @@ function validarFormulario(event, nombre, apellido, correo, rol, telefono,
         !validarApellido(apellido) ||
         !validarCorreo(correo) ||
         !validarRol(rol) ||
-        !validarTelefono(telefono) ||
-        !validarConcesionario(concesionario) ||
-        !validarPreferencias(preferencias)
+        !validarTelefono(telefono)
     ) {
         alert("Corrige los errores antes de enviar.");
         return;
@@ -191,24 +213,6 @@ function validarTelefono(telefono) {
     );
 }
 
-function validarConcesionario(concesionario) {
-    const minimo = 3
-    return validarCampo(
-        concesionario,
-        concesionario.value && concesionario.value.trim().length >= minimo,
-        `El concesionario debe tener al menos ${minimo} caracteres.`
-    )
-}
-
-function validarPreferencias(preferencias) {
-    const minimo = 3;
-    return validarCampo(
-        preferencias,
-        preferencias.value.trim().length >= minimo,
-        `Las preferencias debe tener al menos ${minimo} caracteres.`
-    );
-}
-
 function actualizarProgreso(progreso, nombre, apellido, correo, rol, telefono,
     concesionario, preferencias) {
     const total = 7;
@@ -219,8 +223,8 @@ function actualizarProgreso(progreso, nombre, apellido, correo, rol, telefono,
     if (correo.value.trim() && validarCorreo(correo)) validos++;
     if (rol.value.trim() && validarRol(rol)) validos++;
     if (telefono.value && validarTelefono(telefono)) validos++;
-    if (concesionario.value && validarConcesionario(concesionario)) validos++;
-    if (preferencias.value.trim() && validarPreferencias(preferencias)) validos++;
+    if (concesionario.value) validos++;
+    if (preferencias.value.trim()) validos++;
 
     progreso.value = (validos / total) * 100;
 }

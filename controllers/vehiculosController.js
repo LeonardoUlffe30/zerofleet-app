@@ -246,11 +246,7 @@ function actualizarVehiculo(request, response) {
     }
 
     const imagen = request.file ? request.file.filename : "";
-    const {
-        matricula, marca, modelo, anyoMatriculacion,
-        numeroPlazas, autonomia, color,
-        estado, tipo, precioHora, concesionarioVehiculo
-    } = request.body;
+    const {matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia, color, estado, tipo, precioHora, concesionarioVehiculo } = request.body;
 
     let sql = `SELECT id_concesionario FROM concesionarios WHERE nombre = ?`;
     let params = [concesionarioVehiculo];

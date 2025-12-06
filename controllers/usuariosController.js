@@ -139,45 +139,66 @@ function crearUsuario(request, response) {
 }
 
 function formularioEditarUsuario(request, response) {
-    const sql = `SELECT * FROM usuarios WHERE id_usuario = ?`;
-    const params = [request.params.id];
+    console.log("Acceso al controlador de formulaio de editar usuario");
+    let sqlUsuario = `SELECT * FROM usuarios WHERE id_usuario = ?`;
+    let params = [request.params.id];
 
-    query(sql, params)
+    let sqlConcesionarios = `SELECT * FROM concesionarios`;
+
+    // Obtener usuario
+    query(sqlUsuario, params)
     .then(usuario => {
         if (usuario.length === 0) {
-            return response.status(404).json({ mensaje: "Usuario no encontrado" });
-        } else {
-            response.status(200).render("usuarios", {
-            titulo: "Editar usuario",
-            estilo: "usuarios.css",
-            script: "usuarios.js",
-            usuario: usuario[0],
-            error: ""
-        });
+            throw { status: 404, mensaje: "Usuario no encontrado" };
         }
+        // Obtener concesionarios
+        console.log(usuario[0]);
+        return query(sqlConcesionarios)
+            .then(concesionarios => {
+                response.status(200).render("usuarios", {
+                    titulo: "Editar usuario",
+                    estilo: "usuarios.css",
+                    script: "usuarios.js",
+                    usuario: usuario[0],
+                    error: "",
+                    concesionarios: concesionarios  
+                });
+            });
     })
     .catch(error => {
-        console.error(error);
-        response.status(500).send("Error interno del servidor");
+        if (error.status && error.mensaje) {
+            response.status(error.status).json({ mensaje: error.mensaje });
+        } else {
+            console.error(error);
+            response.status(500).json({ error: "Error interno del servidor" });
+        }
     });
 }
 
 function actualizarUsuario(request, response) {
+    console.log("Acceso al controlador de editar usuario");
+    const errores = validationResult(request);
+
+    if (!errores.isEmpty()) {
+        console.log("Errores de validación:", errores.array());
+        return response.status(400).json({ errores: errores.array() });
+    }
+
+    console.log(request.body);
     const { nombre, apellido, correo, contrasenia, rol, telefono, concesionario, preferencias_accesibilidad } = request.body;
 
-    const sql = `
-        UPDATE usuarios SET
-        nombre = ?, ciudad = ?, direccion = ?, rol = ?,
-        telefono = ?, id_concesionario = ?, preferencias_accesibilidad = ?
-        WHERE id_usuario = ?`;
-
+    const sql = `UPDATE usuarios SET nombre = ?, apellido = ?, correo = ?, contraseña = ?, rol = ?,telefono = ?, id_concesionario = ?, preferencias_accesibilidad = ? 
+    WHERE id_usuario = ?`;
     const params = [ nombre, apellido, correo, contrasenia, rol, telefono, concesionario, preferencias_accesibilidad, request.params.id];
 
+    console.log(request.params.id);
     query(sql, params)
     .then(resultado => {
+        console.log("1111111111");
         if (resultado.affectedRows === 0) {
             return response.status(404).json({ mensaje: "Usuario no encontrado" });
         } 
+        console.log("22222222222222");
         response.status(200).json({ mensaje: "Usuario actualizado correctamente" });
     })
     .catch(error => {

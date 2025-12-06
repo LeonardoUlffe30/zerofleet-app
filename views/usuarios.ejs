@@ -11,7 +11,7 @@
       data-id = "<%= usuario && usuario.id_usuario ? usuario.id_usuario : '' %>"
       action="<%= usuario && usuario.id_usuario ? '/usuarios/' + usuario.id_usuario + '/editar' : '/usuarios/nuevo' %>" 
       method="POST">
-            
+      <div id="mensaje"></div>
         <fieldset> 
           <legend>Información del usuario</legend>
 
@@ -35,7 +35,7 @@
             </div>
   
             <div>
-              <label for="correo">Correo:</label>
+              <label for="correoUsuario">Correo:</label>
               <input type="email" id="correoUsuario" name="correoUsuario" value="<%= usuario && usuario.correo ? usuario.correo : '' %>" required>
             </div>
 
@@ -53,10 +53,15 @@
               <input type="text" id="telefono" name="telefono" value="<%= usuario && usuario.telefono ? usuario.telefono : '' %>" required>
             </div>
 
-            <div>
-              <label for="concesionario">Concesionario asignado:</label>
-              <input type="text" id="concesionario" name="concesionario" value="<%= usuario && usuario.id_concesionario ? usuario.id_concesionario : '' %>" required>
-            </div>
+           <div class="contenedor-input">
+              <label for="concesionario">Concesionario: </label>
+              <select id="concesionario" name="concesionario" required>
+                  <option value="" disabled selected></option>
+                  <% concesionarios.forEach(v => { %>
+                      <option value="<%= v.id_concesionario %>"><%= v.id_concesionario %></option>
+                  <% }) %>
+              </select>
+          </div>
 
             <div>
               <label for="preferencias">Preferencias de accesiblidad:</label>
@@ -80,7 +85,6 @@
           </div>
           <div class="modal-body">
             <p>¿Desea confirmar el usuario?</p>
-            <!-- Aquí inyectadinámicamente los datos del formulario -->
             <div id="resumen-usuario"></div>
           </div>
           <div class="modal-footer">

@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // Funciones de sesión
-async function guardarPreferencias() {
+function guardarPreferencias() {
     const preferencias = {
         altoContraste: body.classList.contains("alto-contraste"),
         tamanoFuente: html.style.fontSize,
@@ -34,25 +34,32 @@ async function guardarPreferencias() {
     };
 
     if (window.usuarioAutenticado) {
-        // Usuario autenticado, guardamos en bd
+        // Usuario autenticado, guardar en BD
         fetch("/accesibilidad/guardar-preferencias", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(preferencias)
         })
-            .then(response => {
-                if (!response.ok) throw new Error("Error guardando preferencias");
-                alert("Preferencias guardadas");
-                return response.json();
-            })
-            .catch(err => console.error("Error guardando preferencia:", err));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error guardando preferencias");
+            }
+            alert("Preferencias guardadas");
+            return response.json();
+        })
+        .catch(err => {
+            console.error("Error guardando preferencias:", err);
+        });
+
         window.atajosGlobales = preferencias.atajos;
+
     } else {
-        // Usuario no autenticado, guardamos en localStorage
+        // Usuario no autenticado, guardar en localStorage
         localStorage.setItem("preferenciasAccesibilidad", JSON.stringify(preferencias));
         alert("Preferencias guardadas en el navegador");
     }
 }
+
 
 // Tamaño del texto
 function aumentarTexto() {
