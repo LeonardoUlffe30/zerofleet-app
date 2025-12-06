@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const progreso = document.getElementById("progreso");
     const confirmarModal = document.getElementById("confirmarUsuario");
 
+    console.log("Correo a enviar:", correo.value); 
+
     // Actualizar progreso
     formulario.addEventListener("input", () => actualizarProgreso(progreso, nombre, apellido, correo, rol, telefono,
         concesionario, preferencias));
@@ -38,18 +40,16 @@ document.addEventListener("DOMContentLoaded", () => {
 function actualizarUsuario(formulario) {
     const idUsuario = formulario.dataset.id;
     const mensajesDiv = document.getElementById("mensaje");
-    console.log(idUsuario);
 
     const body = {
-        nombre: nombre.value,
-        apellido: apellido.value,
-        correo: correo.value,
-        rol: rol.value,
-        telefono: telefono.value,
-        concesionario: concesionario.value,
-        preferencias: preferencias.value
+        nombre: formulario.nombre.value,
+        apellido: formulario.apellido.value,
+        correo: formulario.correoUsuario.value,
+        rol: formulario.rol.value,
+        telefono: formulario.telefono.value,
+        concesionario: formulario.concesionario.value,
+        preferencias: formulario.preferencias.value
     };
-    console.log(correo.value);
 
     fetch(`/usuarios/${idUsuario}/editar`, {
             method: "POST",
@@ -62,10 +62,7 @@ function actualizarUsuario(formulario) {
     })
     .then(resultado => {
         if (resultado.ok) {
-            mensajesDiv.innerHTML = `
-            <div class="alert alert-success" role="alert">
-                <p>Usuario actualizado con éxito</p>
-            </div>`;
+            alert("Usuario actualizado correctamente");
             window.location.href = "/usuarios/";
         } else {
             if (resultado.data.errores) {
@@ -85,43 +82,8 @@ function actualizarUsuario(formulario) {
             console.error("Error al actualizar el vehiculo:", error);
     });
 }
-/*
-async function crearVehiculo(formulario) {
-    // No se utiliza formData() para enviarlo en el body porque
-    // codifica con multipart/form-data y para eso necesito multer
-    // y multer no lo necesito ya que no hay archivos en este formulario
-    const body = {
-        nombre: formulario.nombre.value,
-        apellido: formulario.apellido.value,
-        correo: formulario.correo.value,
-        rol: formulario.rol.value,
-        telefono: formulario.telefono.value,
-        concesionario: formulario.concesionario.value,
-        preferencias: formulario.preferencias.value
-    };
 
-    try {
-        const data = await fetch("/usuarios/nuevo", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-        });
-
-        if (data.status === 201) {
-            const usuario = await data.json();
-            alert(`Usuario registrado con éxito con ID: ${usuario.id}`);
-            window.location.href = "/usuarios/";
-        } else {
-            alert(data.errores.map(e => e.msg).join("\n"));
-            throw new Error(`HTTP error! status: ${data.status}`);
-        }
-    } catch (error) {
-        console.error("Error al crear el usuario:", error);
-    }
-}
-*/
-function validarFormulario(event, nombre, apellido, correo, rol, telefono,
-    concesionario, preferencias) {
+function validarFormulario(event, nombre, apellido, correo, rol, telefono) {
     event.preventDefault();
     if (
         !validarNombre(nombre) ||

@@ -152,7 +152,6 @@ function formularioEditarUsuario(request, response) {
             throw { status: 404, mensaje: "Usuario no encontrado" };
         }
         // Obtener concesionarios
-        console.log(usuario[0]);
         return query(sqlConcesionarios)
             .then(concesionarios => {
                 response.status(200).render("usuarios", {
@@ -184,26 +183,22 @@ function actualizarUsuario(request, response) {
         return response.status(400).json({ errores: errores.array() });
     }
 
-    console.log(request.body);
     const { nombre, apellido, correo, contrasenia, rol, telefono, concesionario, preferencias_accesibilidad } = request.body;
 
     const sql = `UPDATE usuarios SET nombre = ?, apellido = ?, correo = ?, contraseña = ?, rol = ?,telefono = ?, id_concesionario = ?, preferencias_accesibilidad = ? 
     WHERE id_usuario = ?`;
     const params = [ nombre, apellido, correo, contrasenia, rol, telefono, concesionario, preferencias_accesibilidad, request.params.id];
 
-    console.log(request.params.id);
     query(sql, params)
     .then(resultado => {
-        console.log("1111111111");
         if (resultado.affectedRows === 0) {
             return response.status(404).json({ mensaje: "Usuario no encontrado" });
         } 
-        console.log("22222222222222");
         response.status(200).json({ mensaje: "Usuario actualizado correctamente" });
     })
     .catch(error => {
         console.error(error);
-        response.status(500).json({ mensaje: "Error actualizando usuario" });
+        response.status(500).json({ mensaje: "Correo existente" });
     });
 }
 
