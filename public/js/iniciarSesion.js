@@ -8,43 +8,44 @@ document.addEventListener("DOMContentLoaded", () => {
     formulario.addEventListener("submit", procesarFormulario);
 
     function procesarFormulario(event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    const datosIniciarSesion = {
-        correo: correo.value,
-        contrasenia: contrasenia.value,
-    }
+        const datosIniciarSesion = {
+            correo: correo.value,
+            contrasenia: contrasenia.value,
+        };
 
-    fetch(`/autenticar/iniciarSesion`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(datosIniciarSesion)
-    })
-    .then(
-            async response => {  //Espera el json
-                const data = await response.json();
-                const mensajeError = document.getElementById("mensajes");
-                if(response.status === 400) {
-                    mensajeError.innerHTML = data.errores.map(e => `
-                        <div class="alert alert-danger" role="alert">
-                        <p>${e.msg}</p>
-                        </div>`).join("");
-                    return false;
-                }else if(response.status === 500) {
-                    return false;
-                }
-                mensajeError.innerHTML = "";
-                return true;
+        fetch(`/autenticar/iniciarSesion`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datosIniciarSesion)
         })
-        .then((sucess) => {
-            if(sucess){
+        .then(response => {
+            return response.json().then(resultadoJSON => ({ ok: response.ok, body: resultadoJSON }));
+        })
+        .then(resultado => {
+            const mensajeError = document.getElementById("mensajes");
+
+            if (!resultado.ok) {
+                if(resultado.body.errores) {
+                    mensajeError.innerHTML = resultado.body.errores.map(e => `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${e.msg}</p>
+                    </div>`).join("");
+                } else {
+                    mensajeError.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${resultado.body.mensaje}</p>
+                    </div>`;
+                }
+            } else {
                 formulario.reset();
                 window.location.href = "/";
             }
         })
         .catch(error => {
             console.error("Error en iniciar sesion: " + error.message);
-        })
+        });
     }
 
 });

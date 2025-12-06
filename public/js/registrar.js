@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
         concesionario: document.getElementById("concesionario")
     }
 
-    async function validarFormulario(event) {
+    function validarFormulario(event) {
         event.preventDefault();
         if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarContrasenia() || !validarRepetirContrasenia()) {
             if(campos.telefono.value !==  ""){
@@ -32,36 +32,37 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         fetch("/autenticar/registrar", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(datosRegistro)
-        })
-        .then(
-            async response => {  //Espera el json
-                const data = await response.json();
-                const mensajeError = document.getElementById("mensajesRegistrar");
-                console.log("data:", data);
-                if(response.status === 400) {
-                    if(data.errores){
-                        mensajeError.innerHTML = data.errores.map(e => `
-                        <div class="alert alert-danger" role="alert">
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datosRegistro)
+    })
+    .then(response => {
+        return response.json().then(resultadoJson => ({ ok: response.ok, body: resultadoJson }));
+    })
+    .then(resultado => {
+        const mensajeError = document.getElementById("mensajesRegistrar");
+        console.log("data:", resultado.body);
+
+        if (!resultado.ok) {
+            if (resultado.body.errores) {
+                mensajeError.innerHTML = resultado.body.errores.map(e => `
+                    <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
-                        </div>`).join("");
-                    }else{
-                        mensajeError.innerHTML = `
-                        <div class="alert alert-danger" role="alert">
-                        <p>${data.mensaje}</p>
-                        </div>`
-                    }
-                    return false;
-                }
-                window.location.href = "/";
-                return true;
-        })
-        .catch(error => {
-            console.error("Error: " + error.message);
-        })
-    }
+                    </div>`).join("");
+            } else {
+                mensajeError.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <p>${resultado.body.mensaje}</p>
+                    </div>`;
+            }
+        } else {
+            window.location.href = "/";
+        }
+    })
+    .catch(error => {
+        console.error("Error: " + error.message);
+    });
+}
 
     function validarCampo(campo, condicion, mensaje) {
         var error = campo.nextElementSibling;

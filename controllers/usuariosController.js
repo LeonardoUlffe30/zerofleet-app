@@ -11,11 +11,11 @@ function query(sql, params = []) {
     })
 }
 
-async function listarUsuarios(request, response) {
-    try {
-        const sql = "SELECT * FROM usuarios";
-        const usuarios = await query(sql);
+function listarUsuarios(request, response) {
+    const sql = "SELECT * FROM usuarios";
 
+    query(sql)
+    .then(usuarios => {
         response.status(200).render("listaUsuarios", {
             titulo: "Usuarios",
             estilo: "listaUsuarios.css",
@@ -25,51 +25,50 @@ async function listarUsuarios(request, response) {
             filtro: "",
             error: "",
             mensaje: ""
-        })
-    } catch (error) {
+        });
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).send("Error interno del servidor");
-    }
+    });
 }
 
-async function listarUsuariosApi(request, response) {
-    try {
-        const buscar = (request.query.buscar || "").toLowerCase();           // Texto a buscar
-        const filtroCampo = request.query.filtroCampo || "";
-        const filtroRol = request.query.filtroRol || "";
+function listarUsuariosApi(request, response) {
+    const buscar = (request.query.buscar || "").toLowerCase();           // Texto a buscar
+    const filtroCampo = request.query.filtroCampo || "";
+    const filtroRol = request.query.filtroRol || "";
 
-        let sql = "SELECT * FROM usuarios WHERE true";
-        const params = [];
+    let sql = "SELECT * FROM usuarios WHERE true";
+    const params = [];
 
-        if (filtroRol) {
-            sql += " AND rol = ?";
-            params.push(filtroRol);
-        }
+    if (filtroRol) {
+        sql += " AND rol = ?";
+        params.push(filtroRol);
+    }
 
-        if (buscar && filtroCampo && (filtroCampo === "nombre" || filtroCampo === "apellido")) {
-            console.log("Filtrando por ", filtroCampo, "y buscando ", buscar);
-            sql += ` AND LOWER(${filtroCampo}) LIKE ?`;
-            params.push(`%${buscar}%`);
-        }
+    if (buscar && filtroCampo && (filtroCampo === "nombre" || filtroCampo === "apellido")) {
+        console.log("Filtrando por", filtroCampo, "y buscando", buscar);
+        sql += ` AND LOWER(${filtroCampo}) LIKE ?`;
+        params.push(`%${buscar}%`);
+    }
 
-        // Traer todos los usuarios filtrados
-        const usuarios = await query(sql, params);
-
+    query(sql, params)
+    .then(usuarios => {
         response.json(usuarios);
-
-    } catch (error) {
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).json({ error: "Error al obtener usuarios" });
-    }
+    });
 }
 
 //PARA CREAR USUARIOS
 
-async function formularioCrearUsuario(request, response) {
-    try {
-        const sql = `SELECT id_concesionario FROM concesionarios`;
-        const concesionarios = await query(sql);
-
+function formularioCrearUsuario(request, response) {
+    console.log("Acceso al controlador de crear formulario de usuario")
+    const sql = `SELECT id_concesionario FROM concesionarios`;
+    query(sql)
+    .then(concesionarios => {
         response.status(200).render("layout", {
             titulo: "Registrar usuario",
             estilo: "autenticar.css",
@@ -79,167 +78,157 @@ async function formularioCrearUsuario(request, response) {
             body: "",
             concesionarios: concesionarios
         });
-    } catch (err) {
+    })
+    .catch (err => {
         console.error("Error cargando concesionarios:", err.message);
         response.status(500).send("Error interno cargando concesionarios");
-    }
+    })
 }
 
-async function formularioEditarUsuario(request, response) {
-    try {
-        let sql = `SELECT * FROM usuarios WHERE id_usuario = ?`;
-        let params = [request.params.id];
+function crearUsuario(request, response) {
+    console.log("Acceso al controlador de crear usuario");
+    const err = validationResult(request);
 
-        const usuario = await query(sql, params);
+    if (!err.isEmpty()) {
+        console.log("Errores de validación:", err.array());
+        return response.status(400).json({ errores: err.array() });
+    }
 
-        if (usuario.length === 0) {
-            return response.status(404).json({ mensaje: "Usuario no encontrado" });
+    const { nombre, apellido, correo, contrasenia, telefono, concesionario } = request.body;
+
+    const vueltas = 10;
+
+    // Encriptar contraseña
+    bcrypt.hash(contrasenia, vueltas)
+    .then(contraseniaEncriptada => {
+        // Verificar si el usuario ya existe
+        const sql = `SELECT * FROM usuarios WHERE correo = ? AND activo = true`;
+        const params = [correo];
+
+        return query(sql, params)
+            .then(usuario => ({ usuario, contraseniaEncriptada }));
+    })
+    .then(({ usuario, contraseniaEncriptada }) => {
+        if (usuario.length > 0) {
+            return response.status(400).json({ mensaje: "Correo ya está registrado." });
         }
 
-        response.status(200).render("usuarios", {
+        const sql = `
+            INSERT INTO usuarios 
+            (nombre, apellido, correo, contraseña, rol, telefono, id_concesionario)
+            VALUES (?, ?, ?, ?, 'empleado', ?, ?)
+        `;
+
+        const params = [nombre, apellido, correo, contraseniaEncriptada, telefono, concesionario];
+
+        return query(sql, params);
+    })
+    .then(resultado => {
+        if (!resultado) return;
+        response.status(201).json({ mensaje: "Usuario creado correctamente"});
+    })
+    .catch(error => {
+        console.error(error);
+        response.status(500).json({ mensaje: "Error creando usuario" });
+    });
+}
+
+function formularioEditarUsuario(request, response) {
+    const sql = `SELECT * FROM usuarios WHERE id_usuario = ?`;
+    const params = [request.params.id];
+
+    query(sql, params)
+    .then(usuario => {
+        if (usuario.length === 0) {
+            return response.status(404).json({ mensaje: "Usuario no encontrado" });
+        } else {
+            response.status(200).render("usuarios", {
             titulo: "Editar usuario",
             estilo: "usuarios.css",
             script: "usuarios.js",
             usuario: usuario[0],
             error: ""
         });
-    } catch (error) {
+        }
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).send("Error interno del servidor");
-    }
+    });
 }
 
-async function crearUsuario(request, response) {
-    try {
-        console.log("Entra aqui");
-        const err = validationResult(request);
+function actualizarUsuario(request, response) {
+    const { nombre, apellido, correo, contrasenia, rol, telefono, concesionario, preferencias_accesibilidad } = request.body;
 
-        if (!err.isEmpty()) {
-            console.log("Errores de validación:", err.array());
-            return response.status(400).json({ errores: err.array() })
-        }
+    const sql = `
+        UPDATE usuarios SET
+        nombre = ?, ciudad = ?, direccion = ?, rol = ?,
+        telefono = ?, id_concesionario = ?, preferencias_accesibilidad = ?
+        WHERE id_usuario = ?`;
 
-        const {
-            nombre, apellido, correo, contrasenia,
-            telefono, concesionario
-        } = request.body;
+    const params = [ nombre, apellido, correo, contrasenia, rol, telefono, concesionario, preferencias_accesibilidad, request.params.id];
 
-        // Encriptar contraseña
-        const vueltas = 10;
-        const contraseniaEncriptada = await bcrypt.hash(contrasenia, vueltas);
-
-        let sql = `SELECT * FROM usuarios WHERE correo = ? AND activo = true`;
-        let params = [correo];
-
-        let usuario = await query(sql, params);
-
-        if (usuario.length > 0) {
-            console.log("fallo");
-            return response.status(400).json({ mensaje: "Correo ya está registrado." });
-        }
-
-        sql = `
-            INSERT INTO usuarios 
-            (nombre, apellido, correo, contraseña, rol, 
-            telefono, id_concesionario)
-            VALUES (?, ?, ?, ?, 'empleado', ?, ?)
-        `;
-
-        params = [
-            nombre, apellido, correo, contraseniaEncriptada,
-            telefono, concesionario
-        ]
-
-        const resultado = await query(sql, params);
-
-        response.status(201).json({ mensaje: "Usuario creado correctamente con ID: ", id: resultado.insertId });
-
-    } catch (error) {
-        console.error(error);
-        response.status(500).json({ mensaje: "Error creando usuario" });
-    }
-}
-
-async function actualizarUsuario(request, response) {
-    try {
-        const {
-            nombre, apellido, correo, contrasenia, rol,
-            telefono, concesionario, preferencias_accesibilidad
-        } = request.body;
-
-        const sql = `
-            UPDATE usuarios SET
-            nombre = ?, ciudad = ?, direccion = ?, rol = ?,
-            telefono = ?, id_concesionario = ?, preferencias_accesibilidad
-            WHERE id_usuario = ?`;
-
-        const params = [
-            nombre, apellido, correo, contrasenia, rol,
-            telefono, concesionario, preferencias_accesibilidad, request.params.id
-        ];
-
-        const resultado = await query(sql, params);
-
+    query(sql, params)
+    .then(resultado => {
         if (resultado.affectedRows === 0) {
             return response.status(404).json({ mensaje: "Usuario no encontrado" });
-        }
-
+        } 
         response.status(200).json({ mensaje: "Usuario actualizado correctamente" });
-
-    } catch (error) {
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).json({ mensaje: "Error actualizando usuario" });
-    }
+    });
 }
 
-async function actualizarPreferencias(request, response) {
-    try {
-        const preferencias = request.body;
+function actualizarPreferencias(request, response) {
+    const preferencias = request.body;
 
-        if (!request.session.usuario) {
-            return response.status(401).json({ mensaje: "Usuario no autenticado" });
-        }
-
-        const sql = `
-                UPDATE usuarios 
-                SET preferencias_accesibilidad = ?
-                WHERE id_usuario = ?`;
-        const params = [JSON.stringify(preferencias), request.session.usuario.id_usuario];
-
-        const resultado = await query(sql, params);
-
-        if (resultado.affectedRows === 0) {
-            return response.status(404).json({ mensaje: "Usuario no encontrado" });
-        }
-
-        request.session.usuario.preferencias_accesibilidad = JSON.stringify(preferencias);
-
-        response.status(200).json({ mensaje: "Preferencias guardadas correctamente" });
-
-    } catch (error) {
-        console.error(error);
-        return response.status(500).json({ mensaje: "Error guardando preferencias" });
+    if (!request.session.usuario) {
+        return response.status(401).json({ mensaje: "Usuario no autenticado" });
     }
+
+    const sql = `
+        UPDATE usuarios 
+        SET preferencias_accesibilidad = ?
+        WHERE id_usuario = ?`;
+    const params = [JSON.stringify(preferencias), request.session.usuario.id_usuario];
+
+    query(sql, params)
+        .then(resultado => {
+            if (resultado.affectedRows === 0) {
+                return response.status(404).json({ mensaje: "Usuario no encontrado" });
+            }
+
+            // Actualizamos la sesión
+            request.session.usuario.preferencias_accesibilidad = JSON.stringify(preferencias);
+
+            response.status(200).json({ mensaje: "Preferencias guardadas correctamente" });
+        })
+        .catch(error => {
+            console.error(error);
+            response.status(500).json({ mensaje: "Error guardando preferencias" });
+        });
 }
 
-async function obtenerPreferencias(request, response) {
-    try {
-        // Si esta autenticado
-        if (request.session.usuario) {
-            const sql = `SELECT preferencias_accesibilidad FROM usuarios WHERE id_usuario = ?`;
-            const params = [request.session.usuario.id_usuario];
+function obtenerPreferencias(request, response) {
+    // Si está autenticado
+    if (request.session.usuario) {
+        const sql = `SELECT preferencias_accesibilidad FROM usuarios WHERE id_usuario = ?`;
+        const params = [request.session.usuario.id_usuario];
 
-            const result = await query(sql, params);
-
-            const preferencias = result[0]?.preferencias_accesibilidad;
-
-            response.json(preferencias || {});
-        } else { // Si no esta autenticado, usar la sesion para guardar preferencias temporalmente
-            response.json({});
-        }
-    } catch (error) {
-        console.error("Error obteniendo preferencias:", error);
-        res.status(500).json({ error: "Error obteniendo preferencias" });
+        query(sql, params)
+            .then(result => {
+                const preferencias = result[0]?.preferencias_accesibilidad;
+                response.json(preferencias || {});
+            })
+            .catch(error => {
+                console.error("Error obteniendo preferencias:", error);
+                response.status(500).json({ error: "Error obteniendo preferencias" });
+            });
+    } else {
+        // Si no está autenticado, devolver preferencias vacías
+        response.json({});
     }
 }
 
@@ -254,53 +243,75 @@ function formularioObtenerUsuario(request, response) {
     });
 }
 
-async function obtenerUsuario(correo, contrasenia) {
-    console.log("Acceso al controlador de iniciar sesion");
+function obtenerUsuario(request, response) {
+    console.log("Acceso al controlador de iniciar sesión");
+
+    const err = validationResult(request);
+    if (!err.isEmpty()) {
+        console.log("Errores de validacion:", err.array());
+        return response.status(400).json({ errores: err.array() });
+    }
+
+    const { correo, contrasenia, recordar } = request.body;
+
     const sql = `SELECT * FROM usuarios WHERE correo = ?`;
     const parametro = [correo];
 
-    const usuario = await query(sql, parametro);
-    if (usuario.length === 0) {
-        console.log("No hay usuario devuelto");
-        const error = new Error("Correo o Contraseña incorrecta");
-        error.status = 400;
-        throw error;
-    }
+    query(sql, parametro)
+        .then(usuario => {
+            if (usuario.length === 0) {
+                throw {status: 400, mensaje: "Correo o Contraseña incorrecta"}
+            }
+            // Comparamos la contraseña
+            return bcrypt.compare(contrasenia, usuario[0].contraseña)
+                .then(match => ({ usuario: usuario[0], match }));
+        })
+        .then(({ usuario, match }) => {
+            if (!match) {
+                throw {status: 400, mensaje: "Correo o Contraseña incorrecta"}
+            }
 
-    console.log(usuario[0]);
+            request.session.usuario = usuario;
 
-    const match = await bcrypt.compare(contrasenia, usuario[0].contraseña);
-    if (!match) {
-        const error = new Error("Correo o Contraseña incorrecta");
-        error.status = 400;
-        throw error;
-    }
+            if (recordar) {
+                request.session.cookie.maxAge = 24 * 60 * 60 * 1000;
+            } else {
+                request.session.cookie.expires = false;
+            }
 
-    return usuario[0];
+            response.status(201).json({});
+        })
+        .catch(err => {
+            if (err.status === 400) {
+                response.status(400).json({ error: err.mensaje });
+            } else {
+                response.status(500).json({ error: err.message });
+            }
+        });
 }
 
-async function eliminarUsuario(request, response) {
-    try {
-        const sql = `
-            UPDATE usuarios SET
-            activo = false
-            WHERE id_usuario = ?`;
+function eliminarUsuario(request, response) {
+    const sql = `
+        UPDATE usuarios SET
+        activo = false
+        WHERE id_usuario = ?`;
 
-        const params = [request.params.id];
+    const params = [request.params.id];
 
-        const resultado = await query(sql, params);
-
+    query(sql, params)
+    .then(resultado => {
         if (resultado.affectedRows === 0) {
             return response.status(404).json({ mensaje: "Usuario no encontrado" });
         }
 
-        return response.status(200).json({ mensaje: "Usuario eliminado correctamente" });
-
-    } catch (error) {
+        response.status(200).json({ mensaje: "Usuario eliminado correctamente" });
+    })
+    .catch(error => {
         console.error(error);
         response.status(500).json({ mensaje: "Error eliminando usuario" });
-    }
+    });
 }
+
 
 
 module.exports = {

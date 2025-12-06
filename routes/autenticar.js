@@ -38,33 +38,7 @@ router.get("/iniciarSesion", usuariosController.formularioObtenerUsuario);
 
 router.post("/iniciarSesion",
     check("correo", "El correo debe ser uno válido: xxx@zfleet.com").matches(/^[a-zA-Z0-9._%+-]+@zfleet\.com$/),
-    async function (request, response) {
-
-        const err = validationResult(request);
-        if (!err.isEmpty()) {
-            console.log("Errores de validacion:", err.array());
-            return response.status(400).json({ errores: err.array() });
-        }
-        try {
-            console.log(request.body.contrasenia);
-            const usuario = await usuariosController.obtenerUsuario(request.body.correo, request.body.contrasenia);
-            request.session.usuario = usuario;
-            if (request.body.recordar) {
-                request.session.cookie.maxAge = 24 * 60 * 60 * 1000;
-            } else {
-                request.session.cookie.expires = false;
-            }
-
-            return response.status(201).json({});
-        } catch (err) {
-            console.log("Error del backend");
-            if (err.status === 400) {
-                return response.status(400).json({ errores: [{ msg: err.message }] });
-            } else {
-                return response.status(500).json({ error: err.message });
-            }
-        }
-    })
+    usuariosController.obtenerUsuario);
 
 module.exports = {
     autenticarRouter: router

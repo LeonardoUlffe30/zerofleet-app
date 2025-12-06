@@ -119,7 +119,7 @@ function crearReserva(formulario) {
         body: JSON.stringify(body)
     })
     .then(response => {
-        return response.json().then( resultadoJson=> ({ ok: response.ok, body: resultadoJson }));
+        return response.json().then( resultadoJson => ({ ok: response.ok, body: resultadoJson }));
     })
     .then(resultado => {
         if (resultado.ok) {

@@ -46,7 +46,7 @@ function mostrarUsuarios(usuarios) {
     })
 }
 
-async function actualizarUsuarios() {
+function actualizarUsuarios() {
     const filtroRol = document.getElementById("filtroRol").value;
     const filtroCampo = document.getElementById("filtroCampo").value;
     const buscarInput = document.getElementById("buscar").value.trim();
@@ -56,43 +56,48 @@ async function actualizarUsuarios() {
     // Utilizamos encoding para convertir caracteres especiales(/=<>&" ") en SEGUROS para la URL
     // y evitar ataques de inyección como XSS. Por ejemplo, buscar="<script>alert('xss')</script>"
     // se convierte en buscar="%3Cscript%3Ealert('xss')%3C/script%3E"
+
     if (filtroRol)
         url += `filtroRol=${encodeURIComponent(filtroRol)}&`;
 
     if (filtroCampo && buscarInput)
         url += `filtroCampo=${encodeURIComponent(filtroCampo)}&buscar=${encodeURIComponent(buscarInput)}`;
 
-    try {
-        const data = await fetch(url);
-
-        if (data.status === 200) {
-            const usuarios = await data.json();
-            mostrarUsuarios(usuarios);
-        } else throw new Error(`HTTP error! status: ${data.status}`);
-
-    } catch (error) {
+    fetch(url)
+    .then(response => {
+        if (response.status === 200) {
+            return response.json(); // Convertimos a JSON
+        } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    })
+    .then(usuarios => {
+        mostrarUsuarios(usuarios); // Mostramos los usuarios
+    })
+    .catch(error => {
         console.error("Error al cargar los usuarios:", error);
-        mostrarMensaje("Error al cargar los usuarios", "danger");
-    }
+    });
 }
 
-async function eliminarUsuario(id) {
-    try {
-        const data = await fetch(`/usuarios/api/usuarios/${id}`, {
-            method: 'DELETE'
-        });
 
-        if (data.status === 200) {
-            const response = await data.json();
-            mostrarMensaje(response.mensaje, "success");
-            actualizarUsuarios();
-        } else throw new Error(`HTTP error! status: ${data.status}`);
-
-    } catch (error) {
+function eliminarUsuario(id) {
+    fetch(`/usuarios/api/usuarios/${id}`, { method: 'DELETE' })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    })
+    .then(data => {
+        mostrarMensaje(data.mensaje, "success");
+        actualizarUsuarios();
+    })
+    .catch(error => {
         console.error("Error al eliminar:", error);
-        mostrarMensaje("Error al eliminar el usuario", "danger");
-    }
+    });
 }
+
 
 function editarUsuario(id_usuario) {
     const filas = document.querySelectorAll('#tablausuarios tbody tr');
@@ -113,17 +118,17 @@ function editarUsuario(id_usuario) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rol: nuevoRol })
     })
-        .then(response => {
-            if (response.ok) {
-                mostrarMensaje("Rol actualizado de forma correcta", "success");
-                mostrarUsuarios();
-            }else{
-                mostrarMensaje("No se ha podido actualiza de forma correcta el rol", "error");
-            }
-        })
-        .catch(error => {
-            console.error("Error al cambiar el rol: " + error.message);
-        })
+    .then(response => {
+        if (response.ok) {
+            mostrarMensaje("Rol actualizado de forma correcta", "success");
+            mostrarUsuarios();
+        }else{
+            mostrarMensaje("No se ha podido actualiza de forma correcta el rol", "error");
+        }
+    })
+    .catch(error => {
+        console.error("Error al cambiar el rol: " + error.message);
+    })
 }
 
 function mostrarMensaje(mensaje, tipo) {
