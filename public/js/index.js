@@ -47,16 +47,17 @@ function cambiarIdioma() {
 }
 
 function desplegarBar() {
-    const btnToggleIcon = document.querySelector('.btn-toggle img');
+    const icono = document.getElementById('iconoHamburguesa');
     const menuDropdown = document.querySelector('.menu-dropdown');
 
     menuDropdown.classList.toggle('open');
+
     const isOpen = menuDropdown.classList.contains('open');
 
     if (isOpen) {
-        btnToggleIcon.src = '/assets/icons/darkXmark.svg';
+        icono.classList.replace("bi-list", "bi-x");
     } else {
-        btnToggleIcon.src = '/assets/icons/darkBars.svg'
+        icono.classList.replace("bi-x", "bi-list");
     }
 
 }
