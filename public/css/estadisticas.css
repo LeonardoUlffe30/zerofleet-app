@@ -1,0 +1,13 @@
+.ctablaEstadisticas {
+    display: flex;            /* Activa Flexbox */
+    flex-direction: column;   /* Apila el h5 y div en columna */
+    justify-content: center;
+    background-color: #000000;
+    color: #ffffff;
+    height: 100%;
+}
+
+body.alto-contraste .ctablaEstadisticas {
+    background-color: #ffffff;
+    color: #000000;
+}

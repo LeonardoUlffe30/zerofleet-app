@@ -13,7 +13,7 @@ function query(sql, params = []) {
 function inicial(request, response){
     response.render("estadisticas", {
             titulo: "Estadísticas",
-            estilo: "",
+            estilo: "estadisticas.css",
             script: "estadisticas.js",
         });
 }
