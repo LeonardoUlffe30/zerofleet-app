@@ -33,7 +33,7 @@ form {
 .contenedor-input input[type="checkbox"] {
     max-width: 1rem; 
     max-height: 1rem; 
-}
+} 
 
 #modalRegistrar input, #modalRegistrar select, #modalIniciarSesion input, #modalIniciarSesion select {
     padding: 0.5rem;
@@ -76,13 +76,15 @@ body.alto-contraste input::placeholder {
     opacity: 1; 
 }
 
-body.alto-contraste .btn-autenticar {
+body.alto-contraste #modalIniciarSesion input.btn-autenticar[type="submit"],
+body.alto-contraste #modalRegistrar input.btn-autenticar[type="submit"] {
     background-color: #ffffff; 
     color: #000000; 
     border: 2px solid #ffffff; 
 }
 
-body.alto-contraste .btn-autenticar:hover {
+body.alto-contraste #modalIniciarSesion input.btn-autenticar:hover[type="submit"],
+body.alto-contraste #modalRegistrar input.btn-autenticar:hover[type="submit"] {
     background-color: #cccccc; 
     color: #000000;
 }

@@ -178,7 +178,7 @@ body.alto-contraste nav a:hover {
     color: black;
 }
 
-body.alto-contraste #btnAccesibilidad {
+body.alto-contraste #btnAccesibilidad, #btn {
     background-color: black; 
     border: 1px solid white;
 }
