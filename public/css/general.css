@@ -55,11 +55,7 @@ body.alto-contraste #confirmacionModal .modal-content {
   color: #FFFFFF;
   border: 2px solid #FFFFFF;
 }
-
-body.alto-contraste #confirmacionModal .modal-title {
-  color: #FFFFFF;
-}
-
+body.alto-contraste #confirmacionModal .modal-title,
 body.alto-contraste #confirmacionModal p,
 body.alto-contraste #confirmacionModal #resumen-vehiculo {
   color: #FFFFFF;
