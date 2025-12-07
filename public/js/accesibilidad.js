@@ -40,21 +40,22 @@ function guardarPreferencias() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(preferencias)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Error guardando preferencias");
-            }
-            alert("Preferencias guardadas");
-            return response.json();
-        })
-        .catch(err => {
-            console.error("Error guardando preferencias:", err);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error guardando preferencias");
+                }
+                alert("Preferencias guardadas");
+                return response.json();
+            })
+            .catch(err => {
+                console.error("Error guardando preferencias:", err);
+            });
 
         window.atajosGlobales = preferencias.atajos;
 
     } else {
         // Usuario no autenticado, guardar en localStorage
+        window.atajosGlobales = preferencias.atajos;
         localStorage.setItem("preferenciasAccesibilidad", JSON.stringify(preferencias));
         alert("Preferencias guardadas en el navegador");
     }
