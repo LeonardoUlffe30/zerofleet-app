@@ -4,6 +4,8 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const pool = require("../config/db");
+const bcrypt = require("bcrypt");
+const concesionariosController = require("../controllers/usuariosController");
 
 // Funcion para actualizar estado BD
 const { setBDVacia } = require("../config/estadoDB");
@@ -31,6 +33,7 @@ router.post("/", upload.single("archivo"), function (request, response) {
 
     const vehiculos = datos.vehiculos || [];
     const concesionarios = datos.concesionarios || [];
+    const usuarios = datos.usuarios || [];
 
     // Insertar concesionarios
     concesionarios.forEach(c => {
@@ -47,7 +50,24 @@ router.post("/", upload.single("archivo"), function (request, response) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [v.id_vehiculo, v.matricula, v.marca, v.modelo, v.año_matriculacion, v.numero_plazas, v.autonomia_km, v.color, v.imagen, v.estado, v.tipo, v.precio_hora, v.id_concesionario]
         );
-    })
+    });
+
+    if (usuarios.length > 0) {
+        usuarios.forEach(u => {
+            const vueltas = 10;
+
+            // Encriptar contraseña
+            bcrypt.hash(u.contraseña, vueltas)
+                .then(contraseniaEncriptada => {
+                    pool.query(`
+                        INSERT INTO usuarios 
+                        (id_usuario, nombre, apellido, correo, contraseña, rol, telefono, id_concesionario)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [u.id_usuario, u.nombre, u.apellido, u.correo, contraseniaEncriptada, u.rol, u.telefono, u.id_concesionario]
+                    );
+                })
+        });
+    }
 
     console.log("Datos cargados correctamente. Ya puede usar la aplicación.");
 

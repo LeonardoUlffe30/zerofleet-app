@@ -143,6 +143,18 @@
         "duracion": "2 horas",
         "tipo": "coche"
         }
-    ]
+    ], 
+    "usuarios": [
+        {
+            "id_usuario": 1,
+            "nombre": "admin",
+            "apellido": "admin",
+            "correo": "admin@zfleet.com",
+            "contraseña": "Leo12345%",
+            "rol": "admin",
+            "telefono": "987654321",
+            "id_concesionario": 1
+        }
+    ] 
 
 }

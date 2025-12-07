@@ -93,6 +93,68 @@
             "precio_hora": 2.5, 
             "id_concesionario": 1 
         }
-    ]
+    ],
+    "reservas": [
+        {
+        "id_reserva": 1,
+        "id_usuario": 101,
+        "id_vehiculo": 501,
+        "fecha_inicio": "2024-07-01",
+        "fecha_fin": "2024-07-01",
+        "estado": "activa",
+        "nombre": "Juan",
+        "apellido": "Pérez",
+        "correo": "asdf@gmail.com",
+        "telefono": "123456789",
+        "horaIni": "10:00",
+        "horaFin": "12:00",
+        "duracion": "2 horas",
+        "tipo": "coche"
+        },
+        {
+        "id_reserva": 2,
+        "id_usuario": 102,
+        "id_vehiculo": 502,
+        "fecha_inicio": "2024-07-01",
+        "fecha_fin": "2024-07-01",
+        "estado": "finalizada",
+        "nombre": "Juan",
+        "apellido": "Pérez",
+        "correo": "asdf@gmail.com",
+        "telefono": "123456789",
+        "horaIni": "10:00",
+        "horaFin": "12:00",
+        "duracion": "2 horas",
+        "tipo": "coche"
+        },
+        {
+        "id_reserva": 3,
+        "id_usuario": 103,
+        "id_vehiculo": 503,
+        "fecha_inicio": "2024-07-01",
+        "fecha_fin": "2024-07-01",
+        "estado": "cancelada",
+        "nombre": "Juan",
+        "apellido": "Pérez",
+        "correo": "asdf@gmail.com",
+        "telefono": "123456789",
+        "horaIni": "10:00",
+        "horaFin": "12:00",
+        "duracion": "2 horas",
+        "tipo": "coche"
+        }
+    ], 
+    "usuarios": [
+        {
+            "id_usuario": 1,
+            "nombre": "admin",
+            "apellido": "admin",
+            "correo": "admin@zfleet.com",
+            "contraseña": "Leo12345%",
+            "rol": "admin",
+            "telefono": "987654321",
+            "id_concesionario": 1
+        }
+    ] 
 
 }
