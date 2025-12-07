@@ -23,12 +23,12 @@ function listarReservas(request, response) {
 function listarReservasTotales(request, response) {
     console.log("Acceso al controladorAPI de reservas ");
     const sql = `
-    SELECT v.id_vehiculo, v.matricula, v.marca, v.modelo, v.año_matriculacion, v.numero_plazas, v.autonomia_km, v.color, 
-    c.id_concesionario, c.nombre AS concesionario, c.ciudad, v.estado, v.tipo, v.precio_hora
-    FROM(
-        SELECT * FROM vehiculos WHERE activo = true
-    ) AS v
-    INNER JOIN concesionarios AS c ON v.id_concesionario = c.id_concesionario;`;
+    SELECT r.id_reserva, c.nombre, c.apellido, c.correo, c.telefono, v.matricula, v.marca, v.modelo,r.fecha_inicio, r.fecha_fin, r.estado
+    FROM (
+         SELECT * FROM reservas
+    ) AS r
+    INNER JOIN clientes AS c ON r.id_cliente = c.id_cliente
+    INNER JOIN vehiculos AS v ON r.id_vehiculo = v.id_vehiculo`;
 
     query(sql)
         .then(reservas => {
