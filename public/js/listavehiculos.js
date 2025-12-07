@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const filtroMarca = document.getElementById("filtroMarca");
     const filtroColor = document.getElementById("filtroColor");
     const filtroConcesionario = document.getElementById("filtroConcesionario");
+    const filtroCiudad = document.getElementById("filtroCiudad");
     const filtroPlazas = document.getElementById("filtroPlazas");
     const filtroAutonomia = document.getElementById("filtroAutonomia");
     const filtroTipo = document.getElementById("filtroTipo");
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     filtroMarca.addEventListener("change", actualizarVehiculos);
     filtroColor.addEventListener("input", retrasoActualizar);
     filtroConcesionario.addEventListener("change", actualizarVehiculos);
+    filtroCiudad.addEventListener("input", retrasoActualizar);
     filtroPlazas.addEventListener("input", retrasoActualizar);
     filtroAutonomia.addEventListener("input", retrasoActualizar);
     filtroTipo.addEventListener("change", actualizarVehiculos);
@@ -42,7 +44,8 @@ function mostrarVehiculos(vehiculos) {
                   <td>${v.numero_plazas}</td>
                   <td>${v.autonomia_km}</td>
                   <td>${v.color}</td>
-                  <td>${v.id_concesionario}</td>
+                  <td>${v.concesionario}</td>
+                  <td>${v.ciudad}</td>
                   <td>${v.estado}</td>
                   <td>${v.tipo}</td>
                   <td>${v.precio_hora}</td>
@@ -60,6 +63,7 @@ function actualizarVehiculos() {
         filtroMarca: document.getElementById("filtroMarca").value,
         filtroColor: document.getElementById("filtroColor").value.trim(),
         filtroConcesionario: document.getElementById("filtroConcesionario").value,
+        filtroCiudad: document.getElementById("filtroCiudad").value.trim(),
         filtroPlazas: document.getElementById("filtroPlazas").value,
         filtroAutonomia: document.getElementById("filtroAutonomia").value,
         filtroTipo: document.getElementById("filtroTipo").value
@@ -75,39 +79,39 @@ function actualizarVehiculos() {
     }
 
     fetch(url)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(vehiculos => {
-        mostrarVehiculos(vehiculos);
-    })
-    .catch(error => {
-        console.error("Error al cargar los vehiculos:", error);
-        mostrarMensaje("Error al cargar los vehículos", "danger");
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(vehiculos => {
+            mostrarVehiculos(vehiculos);
+        })
+        .catch(error => {
+            console.error("Error al cargar los vehiculos:", error);
+            mostrarMensaje("Error al cargar los vehículos", "danger");
+        });
 }
 
 function eliminarVehiculo(id) {
     fetch(`/vehiculos/api/vehiculos/${id}`, {
         method: 'DELETE'
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json(); 
-    })
-    .then(data => {
-        mostrarMensaje(data.mensaje, "success");
-        return actualizarVehiculos(); 
-    })
-    .catch(error => {
-        console.error("Error al eliminar:", error);
-        mostrarMensaje("Error al eliminar el vehiculo", "danger");
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            mostrarMensaje(data.mensaje, "success");
+            return actualizarVehiculos();
+        })
+        .catch(error => {
+            console.error("Error al eliminar:", error);
+            mostrarMensaje("Error al eliminar el vehiculo", "danger");
+        });
 }
 
 
