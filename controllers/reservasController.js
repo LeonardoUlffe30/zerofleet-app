@@ -69,7 +69,7 @@ function crearReserva(request, response) {
     const err = validationResult(request);
     if (!err.isEmpty()) {
         console.log("Errores de validación:", err.array());
-        throw { tipo: "VALIDACION", errores: err.array() };
+        return response.status(400).json({ errores: err.errores });
     }
 
     const { nombreCliente, apellidoCliente, correoCliente, telefonoCliente, vehiculo, fechaHoraIni, fechaHoraFin, duracion} = request.body;
@@ -137,9 +137,7 @@ function crearReserva(request, response) {
         response.status(201).json({ mensaje: "Reserva creada", id: resultado.insertId });
     })
     .catch(err => {
-        if (err.tipo === "VALIDACION") {
-            return response.status(400).json({ errores: err.errores });
-        } else if (err.tipo === "NO_ENCONTRADO") {
+        if (err.tipo === "NO_ENCONTRADO") {
             return response.status(404).json({ mensaje: err.mensaje });
         } else {
             console.error(err);

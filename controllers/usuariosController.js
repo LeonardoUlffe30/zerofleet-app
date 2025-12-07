@@ -127,9 +127,7 @@ function crearUsuario(request, response) {
             response.status(201).json({ mensaje: "Usuario creado correctamente" });
         })
         .catch(err => {
-            if (err.tipo === "VALIDACION") {
-                return response.status(400).json({ errores: err.errores });
-            } else if (err.tipo === "NO_ENCONTRADO") {
+            if (err.tipo === "NO_ENCONTRADO") {
                 return response.status(404).json({ mensaje: err.mensaje });
             } else {
                 console.error(err);
