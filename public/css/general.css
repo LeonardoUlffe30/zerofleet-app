@@ -49,3 +49,32 @@ body.alto-contraste #usuarios label,
 body.alto-contraste #reserva label {
     color: #000000;
 }
+
+body.alto-contraste #confirmacionModal .modal-content {
+  background-color: #000000;
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+}
+
+body.alto-contraste #confirmacionModal .modal-title {
+  color: #FFFFFF;
+}
+
+body.alto-contraste #confirmacionModal p,
+body.alto-contraste #confirmacionModal #resumen-vehiculo {
+  color: #FFFFFF;
+}
+
+body.alto-contraste #confirmacionModal .btn {
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid #FFFFFF;
+}
+
+body.alto-contraste #confirmacionModal .btn:hover {
+  background-color: #444444;
+}
+
+body.alto-contraste #confirmacionModal .btn-close {
+  filter: invert(1);
+}
