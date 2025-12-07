@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function cargarReservas(id_usuario, rol) {
-    console.log(rol);
     const url = rol === 'empleado' ?  `/reservas/mis-reservas/${id_usuario}` : `/reservas`
     fetch(url)
         .then(response => response.json())
