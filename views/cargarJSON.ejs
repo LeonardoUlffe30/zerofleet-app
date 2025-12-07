@@ -1,7 +1,11 @@
-<h2>Cargar archivo JSON con datos iniciales</h2>
-
-<form action="/cargar-json" method="POST" enctype="multipart/form-data">
-    <label>Seleccionar archivo JSON:</label>
-    <input type="file" name="archivo" accept="application/json" required>
-    <button type="submit">Cargar datos</button>
-</form>
+<section id="cargarJSON">
+    <h2>Carga de datos iniciales (JSON)</h2>
+    <div class="container p-2 text-center">
+        <form id="formulario-cargar" action="/cargar-json" method="POST" enctype="multipart/form-data">
+            <div id ="mensaje"></div>
+            <input type="file" name="archivo" accept="application/json" required>
+            </div>
+            <button id="btnCargarJSON" type="submit" class="btn btn-secondary">Cargar datos</button>
+        </form>
+    </div>
+</section>

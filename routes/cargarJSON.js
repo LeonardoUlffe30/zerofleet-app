@@ -5,14 +5,17 @@ const fs = require("fs");
 const path = require("path");
 const pool = require("../config/db");
 
+// Funcion para actualizar estado BD
+const { setBDVacia } = require("../config/estadoDB");
+
 // Configuracion de subida de archivo
 const upload = multer({ dest: "uploads/" });
 
 // Mostrar formulario para subir JSON
 router.get("/", function (request, response) {
     response.render("cargarJSON", {
-        titulo: "Cargar",
-        estilo: "",
+        titulo: "Carga de JSON",
+        estilo: "cargarJSON.css",
         script: ""
     });
 });
@@ -47,7 +50,10 @@ router.post("/", upload.single("archivo"), function (request, response) {
     })
 
     console.log("Datos cargados correctamente. Ya puede usar la aplicación.");
-    response.redirect("/");
+
+    setBDVacia(false);
+
+    response.status(200).json({ mensaje: "Datos cargados correctamente" });
 });
 
 module.exports = router;

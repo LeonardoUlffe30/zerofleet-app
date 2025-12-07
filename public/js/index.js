@@ -64,10 +64,10 @@ function desplegarBar() {
 
 window.addEventListener('resize', () => {
     const menu = document.querySelector('.menu-dropdown');
-    const btnToggleIcon = document.querySelector('.btn-toggle img');
+    const icono = document.getElementById('iconoHamburguesa');
 
-    if (window.innerWidth > 1110) {
+    if (window.innerWidth > 1060) {
         menu.classList.remove('open'); // cierra el menú si está abierto
-        btnToggleIcon.src = '/assets/icons/darkBars.svg'
+        icono.classList.replace("bi-x", "bi-list");
     }
 });

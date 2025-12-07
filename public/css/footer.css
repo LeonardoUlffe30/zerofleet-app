@@ -2,7 +2,6 @@
     width: 100%;
     background-color: rgba(255, 255, 255, 0.8);
     border-top: 1px solid rgba(0,0,0,0.1);
-    margin-top: 3rem;
 }
 
 .footer-logo-container {
@@ -18,7 +17,7 @@
     justify-content: center;
     gap: 0.5rem;
     text-decoration: none;
-    color: black
+    color: black;
 }
 
 .footer-logo img {
@@ -86,6 +85,7 @@ body.alto-contraste .footer-links a:hover {
 @media (max-width: 1110px) {
     .footer-logo-container {
         padding-right: 0.75rem;
+        align-items: center;
     }
 
     .footer-links {

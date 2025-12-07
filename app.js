@@ -6,6 +6,9 @@ const expressLayouts = require("express-ejs-layouts"); // Módulo para layouts e
 const cookieParser = require("cookie-parser"); // Módulo para cookies
 const { inicializarBD } = require("./config/initDB");
 
+// Estado global de la BD
+const { getBDVacia, setBDVacia } = require("./config/estadoDB");
+
 // Módulo de rutas
 const vehiculosRouter = require("./routes/vehiculos");
 const reservasRouter = require("./routes/reservas");
@@ -15,8 +18,6 @@ const cargarJSONRouter = require("./routes/cargarJSON");
 const concesionariosRouter = require("./routes/concesionarios");
 const usuariosRouter = require("./routes/usuarios");
 const estadisticasRouter = require("./routes/estadisticas");
-
-let bdVacia = false;
 
 const app = express(); // creamos la aplicación de express
 const PORT = 3000;
@@ -64,8 +65,13 @@ app.use("/estadisticas", estadisticasRouter);
 
 // Ruta principal
 app.get("/", function (request, response) {
-    if (bdVacia) {
-        return response.redirect("/cargar-json");
+    if (getBDVacia()) {
+        return response.render("cargarJSON", {
+            titulo: "Carga de JSON",
+            estilo: "cargarJSON.css",
+            script: "cargarJSON.js",
+            error: ""
+        });
     }
 
     response.render("index", {
@@ -103,7 +109,7 @@ inicializarBD((err, info) => {
         process.exit(1);
     }
 
-    bdVacia = info.vacia;
+    setBDVacia(info.vacia);
 
     app.listen(PORT, function (err) {
         if (err) {

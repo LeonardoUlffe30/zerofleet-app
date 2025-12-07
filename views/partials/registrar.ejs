@@ -35,8 +35,8 @@
           <div class="contenedor-input">
               <select id="concesionario" name="concesionario" required>
                   <option value="" disabled selected>Concesionario</option>
-                  <% concesionarios.forEach(v => { %>
-                      <option value="<%= v.id_concesionario %>"><%= v.id_concesionario %></option>
+                  <% concesionarios.forEach(c => { %>
+                      <option value="<%= c.id_concesionario %>"><%= c.nombre %></option>
                   <% }) %>
               </select>
           </div>
