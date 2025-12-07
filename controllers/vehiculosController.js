@@ -264,51 +264,60 @@ function actualizarVehiculo(request, response) {
     }
 
     const imagen = request.file ? request.file.filename : "";
-    const { matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia, color, estado, tipo, precioHora, concesionarioVehiculo } = request.body;
+    const {matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia, color, estado, tipo, precioHora, concesionarioVehiculo } = request.body;
 
-    let sql = `SELECT id_concesionario FROM concesionarios WHERE nombre = ?`;
-    let params = [concesionarioVehiculo];
+     sql = "SELECT matricula FROM vehiculos WHERE matricula = ?";
+    params = [matricula];
 
     query(sql, params)
-        .then(concesionarioId => {
-            if (concesionarioId.length === 0) {
-                throw { status: 400, mensaje: "Concesionario no existe" };
-            }
+    .then(existente => {
+        if (existente.length > 0) {
+            throw { status: 400, mensaje: "La matrícula ya existe" };
+        }
 
-            const id_concesionario = concesionarioId[0].id_concesionario;
+        sql = "SELECT id_concesionario FROM concesionarios WHERE nombre = ?";
+        params = [concesionarioVehiculo];
+        return query(sql, params);
+    })
+    .then(concesionarioId => {
+        if (concesionarioId.length === 0) {
+            throw { status: 400, mensaje: "Concesionario no existe" };
+        }
 
-            // La matricula a filtrar del WHERE es la antigua (viene en la URL /id/editar)
-            // y la matricula a actualizar (en caso se cambie, viene en el request.body) 
+        const id_concesionario = concesionarioId[0].id_concesionario;
 
-            sql = `
-            UPDATE vehiculos SET
-                matricula = ?, marca = ?, modelo = ?, año_matriculacion = ?, 
-                numero_plazas = ?, autonomia_km = ?, color = ?, imagen = ?, 
-                estado = ?, tipo = ?, precio_hora = ?, id_concesionario = ?
-                WHERE matricula = ? AND activo = true `;
+        // La matricula a filtrar del WHERE es la antigua (viene en la URL /id/editar)
+        // y la matricula a actualizar (en caso se cambie, viene en el request.body) 
 
-            params = [
-                matricula, marca, modelo, anyoMatriculacion,
-                numeroPlazas, autonomia, color, imagen,
-                estado, tipo, precioHora, id_concesionario, request.params.id
-            ];
+        sql = `
+        UPDATE vehiculos SET
+            matricula = ?, marca = ?, modelo = ?, año_matriculacion = ?, 
+            numero_plazas = ?, autonomia_km = ?, color = ?, imagen = ?, 
+            estado = ?, tipo = ?, precio_hora = ?, id_concesionario = ?
+            WHERE matricula = ? AND activo = true `;
 
-            return query(sql, params);
-        })
-        .then(resultado => {
-            if (resultado && resultado.affectedRows === 0) {
-                throw { status: 400, mensaje: "Vehiculo no existe" };
-            }
-            response.status(200).json({ mensaje: "Vehiculo actualizado correctamente" });
-        })
-        .catch(error => {
-            if (error.status && error.mensaje) {
-                response.status(error.status).json({ mensaje: error.mensaje });
-            } else {
-                console.error(error);
-                response.status(500).json({ error: "Error al crear el vehículo" });
-            }
-        });
+        params = [
+            matricula, marca, modelo, anyoMatriculacion,
+            numeroPlazas, autonomia, color, imagen,
+            estado, tipo, precioHora, id_concesionario, request.params.id
+        ];
+
+        return query(sql, params);
+    })
+    .then(resultado => {
+        if (resultado && resultado.affectedRows === 0) {
+            throw { status: 400, mensaje: "Vehiculo no existe" };
+        }
+        response.status(200).json({ mensaje: "Vehiculo actualizado correctamente" });
+    })
+    .catch(error => {
+        if (error.status && error.mensaje) {
+            response.status(error.status).json({ mensaje: error.mensaje });
+        } else {
+            console.error(error);
+            response.status(500).json({ error: "Error al crear el vehículo" });
+        }
+    });
 }
 
 function obtenerFiltros(request, response) {

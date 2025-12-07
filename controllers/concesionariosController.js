@@ -34,7 +34,6 @@ function listarConcesionarios(request, response) {
     });
 }
 
-
 // ------------------- LISTAR CONCESIONARIOS API CON FETCH ---------------------
 function listarConcesionariosApi(request, response) {
     const filtroNombre = (request.query.filtroNombre || "").toLowerCase();
@@ -68,7 +67,6 @@ function listarConcesionariosApi(request, response) {
         response.status(500).json({ error: "Error al obtener concesionarios" });
     });
 }
-
 
 function formularioCrearConcesionario(request, response) {
     response.status(200).render("concesionarios", {

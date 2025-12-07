@@ -12,7 +12,6 @@ function cargarReservas(id_usuario, rol) {
             const tbody = document.querySelector('#tablareservas tbody');
             tbody.innerHTML = '';
             reservas.forEach(r => {
-                console.log(r.id_reserva);
                 const acciones = usuario ? `
                 <td class = "fit">
                     <button class="btn btn-danger" onclick="cambiarEstado('${r.id_reserva}')">Cambiar estado</button>
