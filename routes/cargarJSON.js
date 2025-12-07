@@ -36,20 +36,24 @@ router.post("/", upload.single("archivo"), function (request, response) {
     const usuarios = datos.usuarios || [];
 
     // Insertar concesionarios
+    console.log("-------------- CONCESIONARIOS AÑADIDOS ----------------");
     concesionarios.forEach(c => {
         pool.query(
             `INSERT INTO concesionarios (id_concesionario, nombre, ciudad, direccion, telefono_contacto) VALUES (?, ?, ?, ?, ?)`,
             [c.id_concesionario, c.nombre, c.ciudad, c.direccion, c.telefono_contacto]
         );
+        console.log(c);
     });
 
     // Insertar vehiculos
+    console.log("-------------- VEHICULOS AÑADIDOS ----------------");
     vehiculos.forEach(v => {
         pool.query(
             `INSERT INTO vehiculos (id_vehiculo, matricula, marca, modelo, año_matriculacion, numero_plazas, autonomia_km, color, imagen, estado, tipo, precio_hora, id_concesionario)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [v.id_vehiculo, v.matricula, v.marca, v.modelo, v.año_matriculacion, v.numero_plazas, v.autonomia_km, v.color, v.imagen, v.estado, v.tipo, v.precio_hora, v.id_concesionario]
         );
+        console.log(v);
     });
 
     if (usuarios.length > 0) {
