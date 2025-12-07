@@ -91,7 +91,7 @@ function crearUsuario(request, response) {
 
     if (!err.isEmpty()) {
         console.log("Errores de validación:", err.array());
-        throw { tipo: "VALIDACION", errores: err.array() };
+        return response.status(400).json({ errores: err.array() });
     }
 
     const { nombre, apellido, correo, contrasenia, telefono, concesionario } = request.body;

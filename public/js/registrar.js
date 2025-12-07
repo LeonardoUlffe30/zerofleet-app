@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function validarFormulario(event) {
         event.preventDefault();
         if (!validarNombre() || !validarApellido() || !validarCorreo() || !validarContrasenia() || !validarRepetirContrasenia()) {
-            if(campos.telefono.value !==  ""){
+            if (campos.telefono.value !== "") {
                 !validarTelefono();
             }
             alert("Por favor, corrige los errores antes de enviar el formulario.");
@@ -32,37 +32,37 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         fetch("/autenticar/registrar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datosRegistro)
-    })
-    .then(response => {
-        return response.json().then(resultadoJson => ({ ok: response.ok, body: resultadoJson }));
-    })
-    .then(resultado => {
-        const mensajeError = document.getElementById("mensajesRegistrar");
-        console.log("data:", resultado.body);
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datosRegistro)
+        })
+            .then(response => {
+                return response.json().then(resultadoJson => ({ ok: response.ok, body: resultadoJson }));
+            })
+            .then(resultado => {
+                const mensajeError = document.getElementById("mensajesRegistrar");
+                console.log("data:", resultado.body);
 
-        if (!resultado.ok) {
-            if (resultado.body.errores) {
-                mensajeError.innerHTML = resultado.body.errores.map(e => `
+                if (!resultado.ok) {
+                    if (resultado.body.errores) {
+                        mensajeError.innerHTML = resultado.body.errores.map(e => `
                     <div class="alert alert-danger" role="alert">
                         <p>${e.msg}</p>
                     </div>`).join("");
-            } else {
-                mensajeError.innerHTML = `
+                    } else {
+                        mensajeError.innerHTML = `
                     <div class="alert alert-danger" role="alert">
                         <p>${resultado.body.mensaje}</p>
                     </div>`;
-            }
-        } else {
-            window.location.href = "/";
-        }
-    })
-    .catch(error => {
-        console.error("Error: " + error.message);
-    });
-}
+                    }
+                } else {
+                    window.location.href = "/";
+                }
+            })
+            .catch(error => {
+                console.error("Error: " + error.message);
+            });
+    }
 
     function validarCampo(campo, condicion, mensaje) {
         var error = campo.nextElementSibling;
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function validarCorreo() {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const regex = /^[a-zA-Z0-9._%+-]+@zfleet\.com$/;
         return validarCampo(
             campos.correo,
             regex.test(campos.correo.value),
