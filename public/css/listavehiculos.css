@@ -23,6 +23,12 @@ caption {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+#filtroVehiculos label {
+  font-weight: 600;
 }
 
 #filtroVehiculos div {
@@ -30,7 +36,8 @@ caption {
   flex-direction: column;
 }
 
-#filtroVehiculos input, #filtroVehiculos select {
+#filtroVehiculos input,
+#filtroVehiculos select {
     font-size: 16px;
     padding: 4px;
     border: 0.12px solid black;
@@ -40,3 +47,4 @@ caption {
     max-width: 240px;
     width: 150px;
 }
+

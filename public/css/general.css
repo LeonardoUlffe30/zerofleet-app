@@ -31,3 +31,11 @@ main, footer {
 table, th, td {
     border: 1px solid black;
 }
+
+body.alto-contraste legend,
+body.alto-contraste #vehiculos label,
+body.alto-contraste #concesionarios label,
+body.alto-contraste #usuarios label,
+body.alto-contraste #reserva label {
+    color: #000000;
+}

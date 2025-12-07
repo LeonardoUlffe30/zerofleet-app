@@ -1,5 +1,4 @@
 <section id="reserva">
-    <h2>Reserva</h2>
     <div id="contenedor-progreso">
         <label for="progreso">Progreso</label>
         <progress id="progreso" max="100" min="0" value=""></progress>
@@ -10,101 +9,102 @@
         method="POST">
 
         <div id="mensajes"></div>
-        <fieldset> 
-            <legend>Información personal</legend>
-
-            <div class="container text-left">
-                <div>
-                    <label for="nombreCliente">Nombre: </label>
-                    <input type="text" id="nombreCliente" name="nombreCliente" required>
-                </div>
-                <div>
-                    <label for="apellidoCliente">Apellido: </label>
-                    <input type="text" id="apellidoCliente" name="apellidoCliente" required>
-                </div>
-                
-                <div>
-                    <label for="correoCliente">Email: </label>
-                    <input type="email" id="correoCliente" name="correoCliente" required>
-                </div>
-                <div>
-                    <label for="telefonoCliente">Teléfono: </label>
-                    <input type="tel" id="telefonoCliente" name="telefonoCliente" pattern="[0-9]{9}">
-                </div>
-                
-            </div>
-        </fieldset>
-
         <fieldset>
-            <legend>Vehículo</legend>
+            <legend>Datos para reservar</legend>
+            <fieldset> 
+                <legend>Información personal</legend>
 
-            <div class="container text-left">
-                <div>
-                    <label for="vehiculo">Vehículo: </label>
-                    <select id="vehiculo" name="vehiculo" required>
-                        <option value="" disabled selected>Seleccione un vehículo</option>
-
-                        <% vehiculos.forEach(v => { %>
-                            <option value="<%= v.matricula %>"><%= v.matricula %></option>
-                        <% }) %>
-
-                    </select>
+                <div class="container text-left">
+                    <div>
+                        <label for="nombreCliente">Nombre: </label>
+                        <input type="text" id="nombreCliente" name="nombreCliente" required>
+                    </div>
+                    <div>
+                        <label for="apellidoCliente">Apellido: </label>
+                        <input type="text" id="apellidoCliente" name="apellidoCliente" required>
+                    </div>
+                    
+                    <div>
+                        <label for="correoCliente">Email: </label>
+                        <input type="email" id="correoCliente" name="correoCliente" required>
+                    </div>
+                    <div>
+                        <label for="telefonoCliente">Teléfono: </label>
+                        <input type="tel" id="telefonoCliente" name="telefonoCliente" pattern="[0-9]{9}">
+                    </div>
+                    
                 </div>
-            </div>
-        </fieldset>
+            </fieldset>
 
+            <fieldset>
+                <legend>Vehículo</legend>
 
-        <fieldset>
-            <legend>Fecha y hora de inicio</legend>
+                <div class="container text-left">
+                    <div>
+                        <label for="vehiculo">Vehículo: </label>
+                        <select id="vehiculo" name="vehiculo" required>
+                            <option value="" disabled selected>Seleccione un vehículo</option>
 
-            <div class="container">
-                <div>
-                    <label for="fechaHoraIni">Fecha/Hora: </label>
-                    <div id="datetimepickerIni" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                        <input type="text" class="form-control" id="fechaHoraIni" name="fechaHoraIni" data-td-target="#datetimepickerIni" required>
-                        <span class="input-group-text" data-td-toggle="datetimepicker">
-                            <i class="bi bi-calendar-event"></i>
-                        </span>
+                            <% vehiculos.forEach(v => { %>
+                                <option value="<%= v.matricula %>"><%= v.matricula %></option>
+                            <% }) %>
+
+                        </select>
                     </div>
                 </div>
-            </div>
-        </fieldset>
+            </fieldset>
 
-        <fieldset>
-            <legend>Fecha y hora de Fin</legend>
+            <fieldset>
+                <legend>Fecha y Hora de Inicio y Fin</legend>
 
-            <div class="container">
-                <div>
-                    <label for="fechaHoraFin">Fecha/Hora: </label>
-                    <div id="datetimepickerFin" data-td-target-input="nearest" data-td-target-toggle="nearest">
-                        <input type="text" class="form-control" id="fechaHoraFin" name="fechaHoraFin" data-td-target="#datetimepickerFin" required />
-                        <span class="input-group-text" data-td-toggle="datetimepicker">
-                            <i class="bi bi-calendar-event"></i>
-                        </span>
+                <div class="container">
+                    <div>
+                        <label for="fechaHoraIni">Fecha/Hora: </label>
+                        <div id="datetimepickerIni" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                            <input type="text" class="form-control" id="fechaHoraIni" name="fechaHoraIni" data-td-target="#datetimepickerIni" required>
+                            <span class="input-group-text" data-td-toggle="datetimepicker">
+                                <i class="bi bi-calendar-event"></i>
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </fieldset>
+            </fieldset>
 
-        <fieldset>
-            <legend>Duración</legend>
+            <fieldset>
+                <legend>Fecha y hora de Fin</legend>
 
-            <div class="container">
-                <div class="mb-3">
-                    <label for="duracion">Horas de reserva: </label>
-                    <input type="number" id="duracion" name="duracion" min="1">
+                <div class="container">
+                    <div>
+                        <label for="fechaHoraFin">Fecha/Hora: </label>
+                        <div id="datetimepickerFin" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                            <input type="text" class="form-control" id="fechaHoraFin" name="fechaHoraFin" data-td-target="#datetimepickerFin" required />
+                            <span class="input-group-text" data-td-toggle="datetimepicker">
+                                <i class="bi bi-calendar-event"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Duración</legend>
+
+                <div class="container">
+                    <div class="mb-3">
+                        <label for="duracion">Horas de reserva: </label>
+                        <input type="number" id="duracion" name="duracion" min="1">
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <div class="contenedor-condiciones">
+                <div>
+                    <label for="condiciones">Condiciones</label>
+                    <input type="checkbox" id="condiciones" name="condiciones" required>
                 </div>
             </div>
-
         </fieldset>
-
-        <div class="contenedor-condiciones">
-            <div>
-                <label for="condiciones">Condiciones</label>
-                <input type="checkbox" id="condiciones" name="condiciones" required>
-            </div>
-        </div>
-
         <div class="form-acciones">
             <button type="submit" class="btn btn-dark">Enviar</button>
             <button type="reset" class="btn btn-light">Borrar</button>

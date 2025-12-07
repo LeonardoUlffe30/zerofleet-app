@@ -25,6 +25,10 @@ caption {
   gap: 0.25rem;
 }
 
+#filtroConcesionarios label {
+  font-weight: 600;
+}
+
 #filtroConcesionarios div {
   display: flex;
   flex-direction: column;
