@@ -148,14 +148,14 @@ function validarApellido(apellido) {
     );
 }
 
-function validarCorreo(correo) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function validarCorreo() {
+    const regex = /^[a-zA-Z0-9._%+-]+@zfleet\.com$/;
     return validarCampo(
-        correo,
-        regex.test(correo.value),
+        campos.correo,
+        regex.test(campos.correo.value),
         "Ingrese un correo electrónico válido."
     );
-}
+    }
 
 function validarRol(rol) {
     return validarCampo(

@@ -9,6 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function procesarFormulario(event) {
         event.preventDefault();
+        if (!validarCorreo(correo)) {
+            if (correo.value !== "") {
+                !validarTelefono();
+            }
+            alert("Por favor, corrige los errores antes de enviar el formulario.");
+            return false;
+        }
 
         const datosIniciarSesion = {
             correo: correo.value,
@@ -49,3 +56,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
+    function validarCampo(campo, condicion, mensaje) {
+        var error = campo.nextElementSibling;
+
+        if (!error || !error.classList.contains("error")) {
+            error = document.createElement("span");
+            error.classList.add("error");
+            error.setAttribute("aria-live", "polite");
+            campo.insertAdjacentElement("afterend", error);
+        }
+
+        if (campo.value == "") {
+            campo.style.border = "1px solid black";
+            error.textContent = "";
+            return true;
+        }
+
+        if (!condicion) {
+            error.textContent = mensaje;
+            error.style.color = "red"
+            campo.style.border = "2px solid red";
+            return false;
+        } else {
+            campo.style.border = "2px solid green";
+            if (error && error.classList.contains("error")) {
+                error.textContent = "";
+            }
+            return true;
+        }
+    }
+
+function validarCorreo(correo) {
+        const regex = /^[a-zA-Z0-9._%+-]+@zfleet\.com$/;
+        return validarCampo(
+            correo,
+            regex.test(correo.value),
+            "Ingrese un correo electrónico válido."
+        );
+    }
