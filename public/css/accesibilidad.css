@@ -1,0 +1,49 @@
+body.alto-contraste .accesibilidad-modal {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+body.alto-contraste .accesibilidad-modal .modal-content {
+  background-color: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+
+body.alto-contraste .accesibilidad-modal .modal-header,
+body.alto-contraste .accesibilidad-modal .modal-footer {
+  border-color: #fff !important;
+}
+
+body.alto-contraste .accesibilidad-modal .modal-title {
+  color: #fff !important;
+}
+
+body.alto-contraste .accesibilidad-modal button,
+body.alto-contraste .accesibilidad-modal .btn {
+  background-color: #222 !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+}
+
+body.alto-contraste .accesibilidad-modal button:hover,
+body.alto-contraste .accesibilidad-modal .btn:hover {
+  background-color: #444 !important;
+}
+
+body.alto-contraste .accesibilidad-modal .btn-close {
+  filter: invert(1);
+}
+
+body.alto-contraste .accesibilidad-modal input {
+  background-color: #222 !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+}
+
+body.alto-contraste .accesibilidad-modal input::placeholder {
+  color: #ccc !important;
+}
+
+body.alto-contraste .accesibilidad-modal label {
+  color: #fff !important;
+}

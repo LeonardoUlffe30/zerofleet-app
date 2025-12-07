@@ -151,8 +151,8 @@ function validarApellido(apellido) {
 function validarCorreo() {
     const regex = /^[a-zA-Z0-9._%+-]+@zfleet\.com$/;
     return validarCampo(
-        campos.correo,
-        regex.test(campos.correo.value),
+        correo,
+        regex.test(correo.value),
         "Ingrese un correo electrónico válido."
     );
     }
