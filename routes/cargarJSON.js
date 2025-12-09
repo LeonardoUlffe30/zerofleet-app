@@ -34,6 +34,7 @@ router.post("/", upload.single("archivo"), function (request, response) {
     const vehiculos = datos.vehiculos || [];
     const concesionarios = datos.concesionarios || [];
     const usuarios = datos.usuarios || [];
+    const clientes = datos.clientes || [];
 
     // Insertar concesionarios
     console.log("-------------- CONCESIONARIOS AÑADIDOS ----------------");
@@ -57,6 +58,7 @@ router.post("/", upload.single("archivo"), function (request, response) {
     });
 
     if (usuarios.length > 0) {
+        console.log("-------------- USUARIOS AÑADIDOS ----------------");
         usuarios.forEach(u => {
             const vueltas = 10;
 
@@ -70,7 +72,20 @@ router.post("/", upload.single("archivo"), function (request, response) {
                         [u.id_usuario, u.nombre, u.apellido, u.correo, contraseniaEncriptada, u.rol, u.telefono, u.id_concesionario]
                     );
                 })
+            console.log(u);
         });
+    }
+
+    if (clientes.length > 0) {
+        console.log("-------------- CLIENTES AÑADIDOS ----------------");
+        clientes.forEach(c => {
+            pool.query(
+                `INSERT INTO clientes (id_cliente, nombre, apellido, correo, telefono)
+                VALUES (?, ?, ?, ?, ?)`,
+                [c.id_cliente, c.nombre, c.apellido, c.correo, c.telefono]
+            )
+            console.log(c);
+        })
     }
 
     console.log("Datos cargados correctamente. Ya puede usar la aplicación.");
