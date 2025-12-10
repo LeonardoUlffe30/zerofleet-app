@@ -82,7 +82,7 @@
                 
             <div class="file-wrapper">
               <label for="imagen">Imagen del vehiculo</label>
-              <input class="input-file" type="file" name="imagen" style="display:none;">
+              <input class="input-file" type="file" name="imagen" style="display:none;" <%= vehiculo ? "" : "required" %>>
   
               <!-- botón para abrir el explorador de archivos -->
               <button type="button" id="btn-seleccionar">Seleccionar archivo</button>
