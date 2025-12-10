@@ -1,0 +1,242 @@
+{
+    "concesionarios": [
+        { 
+            "id_concesionario": 1, 
+            "nombre": "Central Madrid", 
+            "ciudad": "Madrid", 
+            "direccion": "Av. Central 123", 
+            "telefono_contacto": "911223344" 
+        },
+        { 
+            "id_concesionario": 2, 
+            "nombre": "Sevilla Sur", 
+            "ciudad": "Sevilla", 
+            "direccion": "Calle Sol 88", 
+            "telefono_contacto": "955112233" 
+        },
+        { 
+            "id_concesionario": 3, 
+            "nombre": "Barcelona Norte", 
+            "ciudad": "Barcelona", 
+            "direccion": "Passeig de Gràcia 55", 
+            "telefono_contacto": "933445566" 
+        },
+        { 
+            "id_concesionario": 4, 
+            "nombre": "Valencia Este", 
+            "ciudad": "Valencia", 
+            "direccion": "Av. del Mar 210", 
+            "telefono_contacto": "961778899" 
+        },
+        { 
+            "id_concesionario": 5, 
+            "nombre": "Bilbao Centro", 
+            "ciudad": "Bilbao", 
+            "direccion": "Calle Euskadi 12", 
+            "telefono_contacto": "944556677" 
+        }
+    ],
+    "vehiculos": [
+        {
+            "matricula": "1234ABC",
+            "marca": "Tesla", 
+            "modelo": "Modal 3",
+            "año_matriculacion": 2003,
+            "numero_plazas": 4, 
+            "autonomia_km": 100,
+            "color": "rojo", 
+            "imagen": "vehiculo1.png",
+            "estado": "disponible", 
+            "tipo": "coche", 
+            "precio_hora": 2.5,
+            "id_concesionario": 3
+        },
+        {
+            "matricula": "5678DEF", 
+            "marca": "BMW", 
+            "modelo": "ie47",
+            "año_matriculacion": 2005,
+            "numero_plazas": 6, 
+            "autonomia_km": 450,
+            "color": "azul noche", 
+            "imagen": "vehiculo2.png",
+            "estado": "reservado",
+            "tipo": "coche", 
+            "precio_hora": 3.8, 
+            "id_concesionario": 2 
+        },
+        { 
+            "matricula": "9012GHI", 
+            "marca": "Yamaha", 
+            "modelo": "Tracer 9",
+            "año_matriculacion": 2020,
+            "numero_plazas": 2, 
+            "autonomia_km": 600, 
+            "color": "plateado",
+            "imagen": "vehiculo3.png",
+            "estado": "mantenimiento",
+            "tipo": "moto", 
+            "precio_hora": 4.5, 
+            "id_concesionario": 2 
+        },
+        {
+            "matricula": "3456JKL", 
+            "marca": "Audi", 
+            "modelo": "Giant",
+            "año_matriculacion": 2023,
+            "numero_plazas": 4, 
+            "autonomia_km": 120,
+            "color": "negro", 
+            "imagen": "vehiculo4.png",
+            "estado": "disponible",
+            "tipo": "coche", 
+            "precio_hora": 3,
+            "id_concesionario": 2
+        },
+        {
+            "matricula": "7890MNO", 
+            "marca": "Ducati", 
+            "modelo": "As7",
+            "año_matriculacion": 2019,
+            "numero_plazas": 2, 
+            "autonomia_km": 100,
+            "color": "morado mate", 
+            "imagen": "vehiculo5.png",
+            "estado": "mantenimiento",
+            "tipo": "moto", 
+            "precio_hora": 2.5, 
+            "id_concesionario": 1 
+        },
+        {
+            "matricula": "2222BBB",
+            "marca": "Renault",
+            "modelo": "Kangoo E-Tech",
+            "año_matriculacion": 2023,
+            "numero_plazas": 2,
+            "autonomia_km": 280,
+            "color": "blanco",
+            "imagen": "Vehiculo1.png",
+            "estado": "disponible",
+            "tipo": "van",
+            "precio_hora": 3.0,
+            "id_concesionario": 4
+        },
+        {
+            "matricula": "3333CCC",
+            "marca": "Ford",
+            "modelo": "Transit",
+            "año_matriculacion": 2019,
+            "numero_plazas": 3,
+            "autonomia_km": 200,
+            "color": "negro",
+            "imagen": "Vehiculo2.png",
+            "estado": "disponible",
+            "tipo": "camioneta",
+            "precio_hora": 3.7,
+            "id_concesionario": 5
+        },
+        {
+            "matricula": "4444DDD",
+            "marca": "Volkswagen",
+            "modelo": "ID.4",
+            "año_matriculacion": 2021,
+            "numero_plazas": 5,
+            "autonomia_km": 500,
+            "color": "verde lima",
+            "imagen": "Vehiculo3.png",
+            "estado": "reservado",
+            "tipo": "coche",
+            "precio_hora": 4.0,
+            "id_concesionario": 1
+        }
+    ],
+    "usuarios": [
+        {
+            "id_usuario": 1,
+            "nombre": "admin",
+            "apellido": "admin",
+            "correo": "admin@zfleet.com",
+            "contraseña": "Leo12345%",
+            "rol": "admin",
+            "telefono": "987654321",
+            "id_concesionario": 1
+        },
+        {
+            "id_usuario": 2,
+            "nombre": "Laura",
+            "apellido": "Martínez",
+            "correo": "laura.martinez@zfleet.com",
+            "contraseña": "Pass1234!",
+            "rol": "empleado",
+            "telefono": "600123456",
+            "id_concesionario": 2
+        },
+        {
+            "id_usuario": 3,
+            "nombre": "Carlos",
+            "apellido": "Ruiz",
+            "correo": "carlos.ruiz@zfleet.com",
+            "contraseña": "Pass1234!",
+            "rol": "empleado",
+            "telefono": "600987654",
+            "id_concesionario": 3
+        },
+        {
+            "id_usuario": 4,
+            "nombre": "Elena",
+            "apellido": "Santos",
+            "correo": "elena.santos@zfleet.com",
+            "contraseña": "Pass1234!",
+            "rol": "empleado",
+            "telefono": "611224466",
+            "id_concesionario": 4
+        },
+        {
+            "id_usuario": 5,
+            "nombre": "Miguel",
+            "apellido": "Torres",
+            "correo": "miguel.torres@zfleet.com",
+            "contraseña": "Pass1234!",
+            "rol": "empleado",
+            "telefono": "633442211",
+            "id_concesionario": 5
+        }
+    ], 
+    "clientes": [
+        {
+            "id_cliente": 1,
+            "nombre": "Juan",
+            "apellido": "Pérez",
+            "correo": "juan.perez@gmail.com",
+            "telefono": "600000111"
+        },
+        {
+            "id_cliente": 2,
+            "nombre": "María",
+            "apellido": "López",
+            "correo": "maria.lopez@gmail.com",
+            "telefono": "600000222"
+        },
+        {
+            "id_cliente": 3,
+            "nombre": "Antonio",
+            "apellido": "Morales",
+            "correo": "antonio.morales@gmail.com",
+            "telefono": "600000333"
+        },
+        {
+            "id_cliente": 4,
+            "nombre": "Lucía",
+            "apellido": "Gómez",
+            "correo": "lucia.gomez@gmail.com",
+            "telefono": "600000444"
+        },
+        {
+            "id_cliente": 5,
+            "nombre": "Rosa",
+            "apellido": "Serrano",
+            "correo": "rosa.serrano@gmail.com",
+            "telefono": "600000555"
+        }
+  ]
+}

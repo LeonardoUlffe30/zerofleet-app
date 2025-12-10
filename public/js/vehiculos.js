@@ -12,15 +12,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const precioHora = document.getElementById("precioHora");
     const concesionario = document.getElementById("concesionarioVehiculo");
     const imagen = document.querySelector("input[name='imagen']");
+    const nombreImagen = document.getElementById("nombre-imagen");
     const progreso = document.getElementById("progreso");
     const confirmarModal = document.getElementById("confirmarVehiculo");
+    const btnSeleccionar = document.getElementById("btn-seleccionar");
+
+    btnSeleccionar.addEventListener("click", () => {
+        imagen.click();
+    });
+
+    imagen.addEventListener("change", () => {
+        if (imagen.files.length > 0) {
+            nombreImagen.textContent = "Archivo seleccionado: " + imagen.files[0].name;
+        } else if (nombreImagen.dataset.original) {
+            nombreImagen.textContent = "Archivo actual: " + nombreImagen.dataset.original;
+        } else {
+            nombreImagen.textContent = "";
+        }
+    });
+
 
     // Cargamos los nombres de los concesionarios en base a lo que esta en la base de datos
     cargarNombres();
 
     // Actualizar progreso
     formulario.addEventListener("input", () => actualizarProgreso(progreso, matricula, marca, modelo, anyoMatriculacion,
-        numeroPlazas, autonomia, color, tipo, estado, precioHora, concesionario, imagen));
+        numeroPlazas, autonomia, color, tipo, estado, precioHora, concesionario, imagen, formulario.dataset.modo));
 
     // Validar en tiempo real
     matricula.addEventListener("input", () => validarMatricula(matricula));
@@ -34,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     estado.addEventListener("change", () => validarEstado(estado));
     precioHora.addEventListener("input", () => validarPrecio(precioHora));
     concesionario.addEventListener("input", () => validarConcesionario(concesionario));
-    imagen.addEventListener("change", () => validarImagen(imagen));
+    imagen.addEventListener("change", () => validarImagen(imagen, formulario.dataset.modo));
 
     // Validar al enviar el formulario
     formulario.addEventListener("submit", (event) => validarFormulario(event, matricula, marca, modelo, anyoMatriculacion,
@@ -61,34 +78,34 @@ function actualizarVehiculo(formulario) {
         method: "POST",
         body: formData
     })
-    .then(response => {
-        const ok = response.ok;
-        return response.json().then(data => ({ ok, data }));
-    })
-    .then(resultado => {
-        if (resultado.ok) {
-            mensajesDiv.innerHTML = `
+        .then(response => {
+            const ok = response.ok;
+            return response.json().then(data => ({ ok, data }));
+        })
+        .then(resultado => {
+            if (resultado.ok) {
+                mensajesDiv.innerHTML = `
             <div class="alert alert-success" role="alert">
                 <p>Vehículo actualizado con éxito</p>
             </div>`;
-            window.location.href = "/vehiculos/";
-        } else {
-            if (resultado.data.errores) {
-                mensajesDiv.innerHTML = resultado.data.errores.map(e => `
+                window.location.href = "/vehiculos/";
+            } else {
+                if (resultado.data.errores) {
+                    mensajesDiv.innerHTML = resultado.data.errores.map(e => `
                 <div class="alert alert-danger" role="alert">
                     <p>${e.msg}</p>
                 </div>`).join("");
-            } else if (resultado.data.mensaje) {
-                mensajesDiv.innerHTML = `
+                } else if (resultado.data.mensaje) {
+                    mensajesDiv.innerHTML = `
                 <div class="alert alert-danger" role="alert">
                     <p>${resultado.data.mensaje}</p>
                 </div>`;
+                }
             }
-        }
-    })
-    .catch(error => {
-        console.error("Error al actualizar el vehiculo:", error);
-    });
+        })
+        .catch(error => {
+            console.error("Error al actualizar el vehiculo:", error);
+        });
 }
 
 
@@ -100,31 +117,31 @@ function crearVehiculo(formulario) {
         method: "POST",
         body: formData
     })
-    .then(response => {
-        const ok = response.ok;
-        return response.json().then(data => ({ ok, data }));
-    })
-    .then(resultado => {
-        if (resultado.ok) {
-            alert(`Vehículo registrado con éxito`);
-            window.location.href = "/vehiculos/";
-        } else {
-            if (resultado.data.errores) {
-                mensajesDiv.innerHTML = resultado.data.errores.map(e => `
+        .then(response => {
+            const ok = response.ok;
+            return response.json().then(data => ({ ok, data }));
+        })
+        .then(resultado => {
+            if (resultado.ok) {
+                alert(`Vehículo registrado con éxito`);
+                window.location.href = "/vehiculos/";
+            } else {
+                if (resultado.data.errores) {
+                    mensajesDiv.innerHTML = resultado.data.errores.map(e => `
             <div class="alert alert-danger" role="alert">
                 <p>${e.msg}</p>
             </div>`).join("");
-            } else if (resultado.data.mensaje) {
-                mensajesDiv.innerHTML = `
+                } else if (resultado.data.mensaje) {
+                    mensajesDiv.innerHTML = `
             <div class="alert alert-danger" role="alert">
                 <p>${resultado.data.mensaje}</p>
             </div>`;
+                }
             }
-        }
-    })
-    .catch(error => {
-        console.error("Error al crear el vehiculo:", error);
-    });
+        })
+        .catch(error => {
+            console.error("Error al crear el vehiculo:", error);
+        });
 }
 
 
@@ -277,13 +294,15 @@ function validarPrecio(precioHora) {
     )
 }
 
-function validarImagen(imagen) {
-    if (!imagen.files.length) {
-        return validarCampo(
-            imagen,
-            false,
-            "Debe subir una imagen del vehículo."
-        );
+function validarImagen(imagen, modo) {
+    if (modo === "crear") {
+        if (!imagen.files.length) {
+            return validarCampo(
+                imagen,
+                false,
+                "Debe subir una imagen del vehículo."
+            );
+        }
     }
 
     return true;
@@ -299,7 +318,7 @@ function validarConcesionario(concesionario) {
 }
 
 function actualizarProgreso(progreso, matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia, color,
-    tipo, estado, precioHora, concesionario, imagen
+    tipo, estado, precioHora, concesionario, imagen, modo
 ) {
     const total = 12;
     let validos = 0;
@@ -315,7 +334,11 @@ function actualizarProgreso(progreso, matricula, marca, modelo, anyoMatriculacio
     if (estado.value.trim() && validarEstado(estado)) validos++;
     if (precioHora.value && validarPrecio(precioHora)) validos++;
     if (concesionario.value && validarConcesionario(concesionario)) validos++;
-    if (imagen.value.trim() && validarImagen(imagen)) validos++;
+    if (modo === "editar") {
+        validos++;
+    } else {
+        if (imagen.value.trim() && validarImagen(imagen)) validos++;
+    }
 
     progreso.value = (validos / total) * 100;
 }

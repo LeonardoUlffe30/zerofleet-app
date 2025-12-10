@@ -263,8 +263,27 @@ function actualizarVehiculo(request, response) {
         return response.status(400).json({ errores: errores.array() });
     }
 
-    const imagen = request.file ? request.file.filename : "";
+    let imagen = request.file ? request.file.filename : null;
     const { matricula, marca, modelo, anyoMatriculacion, numeroPlazas, autonomia, color, estado, tipo, precioHora, concesionarioVehiculo } = request.body;
+
+    if (!imagen) {
+        sql = "SELECT imagen FROM vehiculos WHERE matricula = ? AND activo = true";
+        params = [request.params.id];
+
+        query(sql, params)
+            .then(resultado => {
+                if (resultado.length === 0) throw { status: 400, mensaje: "Vehiculo no existe" };
+
+                imagen = resultado[0].imagen;
+            }).catch(error => {
+                if (error.status && error.mensaje) {
+                    response.status(error.status).json({ mensaje: error.mensaje });
+                } else {
+                    console.error(error);
+                    response.status(500).json({ error: "Error al crear el vehículo" });
+                }
+            });
+    }
 
     sql = "SELECT id_concesionario FROM concesionarios WHERE nombre = ?";
     params = [concesionarioVehiculo];

@@ -82,7 +82,15 @@
                 
             <div class="file-wrapper">
               <label for="imagen">Imagen del vehiculo</label>
-              <input class="input-file" type="file" name="imagen" required>
+              <input class="input-file" type="file" name="imagen" style="display:none;">
+  
+              <!-- botón para abrir el explorador de archivos -->
+              <button type="button" id="btn-seleccionar">Seleccionar archivo</button>
+              <% if (vehiculo && vehiculo.imagen) { %>
+                <span id="nombre-imagen" data-original="<%= vehiculo.imagen %>">Archivo actual: <%= vehiculo.imagen %></span>
+              <% } else { %>
+                <span id="nombre-imagen"></span>
+              <% } %>
             </div>
           </div>
         </fieldset>
